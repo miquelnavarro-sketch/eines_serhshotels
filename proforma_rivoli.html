@@ -551,7 +551,7 @@
     <div class="sec-wrapper">
         <div class="section-header">
             <span data-i18n="sec_catering">3. RESTAURACIÓ I CÀTERING (IVA 10%)</span>
-            <button class="btn btn-add" onclick="afegirFila('body-restauracio', 'RESTAURACIO')" data-i18n="btn_add_catering">+ Afegir Servei Càtering</button>
+            <button class="btn btn-add" onclick="afegirFila('body-restauracio', 'RESTAURACIO')" data-i18n="btn_add_catering">+ Afegir Servei Càatering</button>
         </div>
         <table>
             <tbody id="body-restauracio"></tbody>
@@ -780,7 +780,7 @@
             sec_rooms: "2. SALES I EQUIPAMENTS (IVA 21%)",
             btn_add_room_eq: "+ Afegir Sala / Equip",
             sec_catering: "3. RESTAURACIÓ I CÀTERING (IVA 10%)",
-            btn_add_catering: "+ Afegir Servei Càtering",
+            btn_add_catering: "+ Afegir Servei Càatering",
             tax_title: "Taxa Turística (Persones > 17 anys - Barcelona)",
             tax_pax_label: "Persones > 17 anys:",
             tax_nights_label: "Nits a liquidar (Màx 7):",
@@ -1734,7 +1734,7 @@
         return `PRO-${year}-${nextSeq}`;
     }
 
-    /* FUNCIÓ CORREGIDA PER A EVITAR BLOQUEIG DE CORS */
+    /* ENVIAMENT PER FORMULARi A Causa DE CORS */
     async function guardarProformaActual() {
         const num = document.getElementById('proforma-num-input').value.trim();
         if (!num) {
@@ -1794,19 +1794,22 @@
         };
 
         try {
+            const payload = encodeURIComponent(JSON.stringify(data));
+            
             await fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
-                redirect: "follow",
+                mode: "no-cors",
                 headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
+                    "Content-Type": "application/x-www-form-urlencoded"
                 },
-                body: JSON.stringify(data)
+                body: "data=" + payload
             });
-            alert(`Proforma ${num} desada directament a Google Sheets!`);
-            actualitzarDesplegableProformes();
+
+            alert(`Proforma ${num} enviada a desar a Google Sheets!`);
+            setTimeout(actualitzarDesplegableProformes, 1500);
         } catch (error) {
             console.error(error);
-            alert("Error en desar a Google Sheets. Comprova la configuració de permisos a Google Apps Script.");
+            alert("Error en l'enviament a Google Sheets.");
         }
     }
 
