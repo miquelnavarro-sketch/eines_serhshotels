@@ -1007,7 +1007,7 @@
             tax_total_label: "Total Taxe de Séjour (10% TVA incl.):",
             title_payments: "Échéancier de Dépôts et Paiements",
             btn_add_deposit: "+ Dépôt Intermédiaire",
-            pct_alert_msg: "⚠️ Les dépôts intermédiaires dépassent 100% de la proforma!",
+            pct_alert_msg: "⚠️️ Les dépôts intermédiaires dépassent 100% de la proforma!",
             base_10_label: "Base Imposable Héb./Rest. (10%):",
             vat_10_label: "Montant TVA Héb./Rest. (10%):",
             base_21_label: "Base Imposable Salles/Éq. (21%):",
@@ -1734,82 +1734,106 @@
         return `PRO-${year}-${nextSeq}`;
     }
 
-    /* ENVIAMENT PER FORMULARi A Causa DE CORS */
+    /* ENVIAMENT SEGUR I ROBUST PER A GOOGLE SHEETS */
     async function guardarProformaActual() {
-        const num = document.getElementById('proforma-num-input').value.trim();
-        if (!num) {
-            alert("S'ha d'indicar un número de proforma!");
-            return;
-        }
-
-        const data = {
-            num: num,
-            docDate: document.getElementById('data-doc').value,
-            lang: currentLang,
-            clientCompany: document.getElementById('client-company-input').value,
-            clientNif: document.getElementById('client-nif-input').value,
-            clientName: document.getElementById('client-name-input').value,
-            clientEmail: document.getElementById('client-email-input').value,
-            groupName: document.getElementById('group-name-input').value,
-            pmsRef: document.getElementById('pms-ref-input').value,
-            inDate: document.getElementById('in-date').value,
-            outDate: document.getElementById('out-date').value,
-            notes: document.getElementById('notes-textarea').value,
-            taxEnable: document.getElementById('tax-enable').checked,
-            taxPax: document.getElementById('tax-pax').value,
-            taxNits: document.getElementById('tax-nits').value,
-            
-            items: Array.from(document.querySelectorAll('tbody tr')).map(row => {
-                const select = row.querySelector('.concept-select');
-                const custom = row.querySelector('.custom-input');
-                return {
-                    bodyId: row.closest('tbody').id,
-                    concept: custom ? custom.value : (select ? select.value : ''),
-                    isCustom: !!custom,
-                    startDate: row.querySelector('.item-date-start') ? row.querySelector('.item-date-start').value : '',
-                    endDate: row.querySelector('.item-date-end') ? row.querySelector('.item-date-end').value : '',
-                    qty: row.querySelector('.qty').value,
-                    nits: row.querySelector('.nits').value,
-                    preu: row.querySelector('.preu').value,
-                    desc: row.querySelector('.desc').value,
-                    iva: row.querySelector('.iva').value
-                };
-            }),
-
-            payments: Array.from(document.querySelectorAll('.payment-row')).map(row => ({
-                isFinal: row.classList.contains('final-row'),
-                pct: row.querySelector('.pay-pct') ? row.querySelector('.pay-pct').value : 0,
-                mode: row.querySelector('.pay-mode-select') ? row.querySelector('.pay-mode-select').value : 'FIXED',
-                days: row.querySelector('.pay-days-input') ? row.querySelector('.pay-days-input').value : 0,
-                date: row.querySelector('.pay-date').value,
-                isPaid: row.classList.contains('is-paid')
-            })),
-
-            cancellations: Array.from(document.querySelectorAll('.canc-row')).map(row => ({
-                type: row.getAttribute('data-type'),
-                d1: row.querySelector('.canc-d1') ? row.querySelector('.canc-d1').value : 0,
-                d2: row.querySelector('.canc-d2') ? row.querySelector('.canc-d2').value : 0,
-                pct: row.querySelector('.canc-pct') ? row.querySelector('.canc-pct').value : 0
-            }))
-        };
-
         try {
-            const payload = encodeURIComponent(JSON.stringify(data));
-            
+            const numInput = document.getElementById('proforma-num-input');
+            const num = numInput ? numInput.value.trim() : '';
+
+            if (!num) {
+                alert("S'ha d'indicar un número de proforma!");
+                return;
+            }
+
+            const data = {
+                num: num,
+                docDate: document.getElementById('data-doc') ? document.getElementById('data-doc').value : '',
+                lang: currentLang,
+                clientCompany: document.getElementById('client-company-input') ? document.getElementById('client-company-input').value : '',
+                clientNif: document.getElementById('client-nif-input') ? document.getElementById('client-nif-input').value : '',
+                clientName: document.getElementById('client-name-input') ? document.getElementById('client-name-input').value : '',
+                clientEmail: document.getElementById('client-email-input') ? document.getElementById('client-email-input').value : '',
+                groupName: document.getElementById('group-name-input') ? document.getElementById('group-name-input').value : '',
+                pmsRef: document.getElementById('pms-ref-input') ? document.getElementById('pms-ref-input').value : '',
+                inDate: document.getElementById('in-date') ? document.getElementById('in-date').value : '',
+                outDate: document.getElementById('out-date') ? document.getElementById('out-date').value : '',
+                notes: document.getElementById('notes-textarea') ? document.getElementById('notes-textarea').value : '',
+                taxEnable: document.getElementById('tax-enable') ? document.getElementById('tax-enable').checked : false,
+                taxPax: document.getElementById('tax-pax') ? document.getElementById('tax-pax').value : 0,
+                taxNits: document.getElementById('tax-nits') ? document.getElementById('tax-nits').value : 0,
+                
+                items: Array.from(document.querySelectorAll('tbody tr')).map(row => {
+                    const select = row.querySelector('.concept-select');
+                    const custom = row.querySelector('.custom-input');
+                    const startDateInput = row.querySelector('.item-date-start');
+                    const endDateInput = row.querySelector('.item-date-end');
+                    const qtyInput = row.querySelector('.qty');
+                    const nitsInput = row.querySelector('.nits');
+                    const preuInput = row.querySelector('.preu');
+                    const descInput = row.querySelector('.desc');
+                    const ivaSelect = row.querySelector('.iva');
+
+                    return {
+                        bodyId: row.closest('tbody') ? row.closest('tbody').id : '',
+                        concept: custom ? custom.value : (select ? select.value : ''),
+                        isCustom: !!custom,
+                        startDate: startDateInput ? startDateInput.value : '',
+                        endDate: endDateInput ? endDateInput.value : '',
+                        qty: qtyInput ? qtyInput.value : 0,
+                        nits: nitsInput ? nitsInput.value : 0,
+                        preu: preuInput ? preuInput.value : 0,
+                        desc: descInput ? descInput.value : 0,
+                        iva: ivaSelect ? ivaSelect.value : 10
+                    };
+                }),
+
+                payments: Array.from(document.querySelectorAll('.payment-row')).map(row => {
+                    const pctInput = row.querySelector('.pay-pct');
+                    const modeSelect = row.querySelector('.pay-mode-select');
+                    const daysInput = row.querySelector('.pay-days-input');
+                    const dateInput = row.querySelector('.pay-date');
+
+                    return {
+                        isFinal: row.classList.contains('final-row'),
+                        pct: pctInput ? pctInput.value : 0,
+                        mode: modeSelect ? modeSelect.value : 'FIXED',
+                        days: daysInput ? daysInput.value : 0,
+                        date: dateInput ? dateInput.value : '',
+                        isPaid: row.classList.contains('is-paid')
+                    };
+                }),
+
+                cancellations: Array.from(document.querySelectorAll('.canc-row')).map(row => {
+                    const d1Input = row.querySelector('.canc-d1');
+                    const d2Input = row.querySelector('.canc-d2');
+                    const pctInput = row.querySelector('.canc-pct');
+
+                    return {
+                        type: row.getAttribute('data-type'),
+                        d1: d1Input ? d1Input.value : 0,
+                        d2: d2Input ? d2Input.value : 0,
+                        pct: pctInput ? pctInput.value : 0
+                    };
+                })
+            };
+
+            const jsonString = JSON.stringify(data);
+
             await fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
+                    "Content-Type": "text/plain;charset=utf-8"
                 },
-                body: "data=" + payload
+                body: jsonString
             });
 
-            alert(`Proforma ${num} enviada a desar a Google Sheets!`);
+            alert(`Proforma ${num} enviada correctament a Google Sheets!`);
             setTimeout(actualitzarDesplegableProformes, 1500);
+
         } catch (error) {
-            console.error(error);
-            alert("Error en l'enviament a Google Sheets.");
+            console.error("Error en desar:", error);
+            alert("S'ha produït un error en intentar desar: " + error.message);
         }
     }
 
@@ -1926,7 +1950,6 @@
         afegirTramCancelacio('RANGE', 14, 8, 75);
         afegirTramCancelacio('ARRIVAL', 7, 0, 100);
 
-        // Afegir línia d'Allotjament inicial
         afegirFila('body-allotjament', 'ALLOTJAMENT', 0, 0, 0);
 
         canviarIdioma(currentLang);
