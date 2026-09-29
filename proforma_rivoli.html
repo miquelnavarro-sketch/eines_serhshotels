@@ -351,7 +351,6 @@
             input, select, textarea { border: none !important; background: transparent !important; appearance: none; -webkit-appearance: none; padding: 0 !important; }
             .field-group label { width: 120px; }
             
-            /* REGLES PER EVITAR TALLS DE PÀGINA EN APARTATS */
             .header, .grid, .sec-wrapper, .summary-block, .tax-card, .cancellation-section, .bank-card, .signatures-wrapper {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
@@ -377,7 +376,6 @@
             .canc-row .print-text { display: inline !important; }
             .canc-row .edit-days { display: none !important; }
 
-            /* Amagar selectors de càlcul de dates de pagaments en imprimir */
             .pay-mode-select, .pay-days-input, .pay-date { display: none !important; }
             .payment-row .print-pay-text { display: inline !important; font-weight: normal; }
 
@@ -392,7 +390,6 @@
                 width: 100%;
             }
 
-            /* Netejar el valor del descompte si és 0% en imprimir */
             .desc-cell[data-desc-zero="true"] input {
                 display: none !important;
             }
@@ -664,7 +661,6 @@
             📌 <span data-i18n="bank_concept_text">Cal indicar el número de proforma o nom del grup en el concepte de la transferència.</span>
         </div>
         
-        <!-- Frase sobre la Taxa Turística visible ÚNICAMENT quan la taxa NO està activada -->
         <div id="tax-disclaimer-text" class="tax-disclaimer" data-i18n="notes_tax_disclaimer">
             • Si no està inclosa a la proforma, la taxa turística de Barcelona es liquidarà directament al check-in segons la normativa vigent.
         </div>
@@ -722,7 +718,6 @@
         }
     }
 
-    // Comprovar si ja s'ha desbloquejat en aquesta sessió
     if (sessionStorage.getItem('proforma_authenticated') === 'true') {
         window.addEventListener('DOMContentLoaded', () => {
             const overlay = document.getElementById('pin-lock-overlay');
@@ -785,7 +780,7 @@
             sec_rooms: "2. SALES I EQUIPAMENTS (IVA 21%)",
             btn_add_room_eq: "+ Afegir Sala / Equip",
             sec_catering: "3. RESTAURACIÓ I CÀTERING (IVA 10%)",
-            btn_add_catering: "+ Afegir Servei Càatering",
+            btn_add_catering: "+ Afegir Servei Càtering",
             tax_title: "Taxa Turística (Persones > 17 anys - Barcelona)",
             tax_pax_label: "Persones > 17 anys:",
             tax_nights_label: "Nits a liquidar (Màx 7):",
@@ -1620,7 +1615,6 @@
                 calcDateObj = valDate ? new Date(valDate) : null;
             }
 
-            // Validació cronològica: evitar que un dipòsit posterior sigui anterior a l'anterior
             if (lastPayDateObj && calcDateObj && calcDateObj < lastPayDateObj) {
                 calcDateObj = new Date(lastPayDateObj);
             }
@@ -1740,6 +1734,7 @@
         return `PRO-${year}-${nextSeq}`;
     }
 
+    /* FUNCIÓ CORREGIDA PER A EVITAR BLOQUEIG DE CORS */
     async function guardarProformaActual() {
         const num = document.getElementById('proforma-num-input').value.trim();
         if (!num) {
@@ -1801,13 +1796,17 @@
         try {
             await fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
+                redirect: "follow",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
                 body: JSON.stringify(data)
             });
             alert(`Proforma ${num} desada directament a Google Sheets!`);
             actualitzarDesplegableProformes();
         } catch (error) {
             console.error(error);
-            alert("Error en desar a Google Sheets.");
+            alert("Error en desar a Google Sheets. Comprova la configuració de permisos a Google Apps Script.");
         }
     }
 
