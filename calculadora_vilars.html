@@ -21,7 +21,6 @@
       --danger: #ef4444;
       --radius: 12px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--light); color: var(--dark); line-height: 1.45; padding: 20px; }
 
@@ -42,7 +41,7 @@
     .login-subtitle { font-size: 12px; color: var(--gray-700); margin-bottom: 20px; }
     .login-error { color: var(--danger); font-size: 12px; font-weight: 700; margin-top: 10px; display: none; }
 
-    .calc-container { max-width: 900px; margin: 0 auto; background: var(--white); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(30,86,49,0.15); overflow: hidden; display: none; }
+    .calc-container { max-width: 950px; margin: 0 auto; background: var(--white); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(30,86,49,0.15); overflow: hidden; display: none; }
 
     .header {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -62,7 +61,7 @@
 
     .content { padding: 30px; }
 
-    .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 16px; }
     .card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
 
@@ -72,20 +71,29 @@
     input, select { width: 100%; padding: 10px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 13px; font-family: inherit; color: var(--dark); background: white; font-weight: 500; }
     input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(30,86,49,0.1); }
 
+    /* PRESETS DESCOMPTE */
+    .preset-container { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+    .chip-btn {
+      background: #e2e8f0; border: none; padding: 4px 8px; border-radius: 6px;
+      font-size: 10px; font-weight: 700; color: var(--gray-700); cursor: pointer; transition: all 0.15s ease;
+    }
+    .chip-btn:hover { background: var(--primary-light); color: white; }
+
     .validation-alert { font-size: 12px; font-weight: 700; color: var(--danger); background: #fef2f2; padding: 10px 14px; border-radius: 8px; border: 1px solid #fecaca; margin-bottom: 20px; display: none; text-align: center; }
 
     /* PANNELL DE RESULTATS */
     .results-panel { background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: var(--radius); padding: 24px; }
     .results-header { font-size: 13px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin-bottom: 16px; }
 
-    .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
-    .stat-box { background: white; padding: 18px; border-radius: 10px; border: 1px solid var(--gray-200); text-align: center; }
+    .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .stat-box { background: white; padding: 16px; border-radius: 10px; border: 1px solid var(--gray-200); text-align: center; }
     .stat-label { font-size: 11px; font-weight: 700; color: var(--gray-700); text-transform: uppercase; margin-bottom: 6px; }
-    .stat-value { font-size: 24px; font-weight: 800; color: var(--primary); }
-    .stat-value.highlight { color: var(--orange); font-size: 28px; }
+    .stat-value { font-size: 22px; font-weight: 800; color: var(--primary); }
+    .stat-value.highlight { color: var(--orange); font-size: 26px; }
+    .stat-value.subtext { font-size: 14px; color: var(--gray-700); font-weight: 600; }
 
     .breakdown-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
-    .breakdown-table td { padding: 6px 0; border-bottom: 1px dashed var(--gray-300); color: var(--gray-700); }
+    .breakdown-table td { padding: 8px 0; border-bottom: 1px dashed var(--gray-300); color: var(--gray-700); }
     .breakdown-table td:last-child { text-align: right; font-weight: 700; color: var(--dark); }
     .breakdown-table tr:last-child td { border-bottom: none; font-weight: 800; font-size: 13px; color: var(--primary); padding-top: 10px; }
 
@@ -98,7 +106,6 @@
 </head>
 <body>
 
-<!-- PANTALLA DE SEGURETAT -->
 <div id="login-overlay" class="login-overlay">
   <div class="login-box">
     <div class="login-title">Vilar Rural Sant Hilari</div>
@@ -158,7 +165,7 @@
         </div>
 
         <div class="card">
-          <div class="card-title">🍽️ Règim i Extres</div>
+          <div class="card-title">🍽️ Règim, Extres i Descomptes</div>
           <div class="form-group">
             <label>Règim d'Estada</label>
             <select id="dir-sel-regimen">
@@ -176,8 +183,16 @@
             </select>
           </div>
           <div class="form-group" style="margin-top: 10px;">
-            <label style="color:var(--orange);">Descompte Allotjament/Règim (%)</label>
+            <label style="color:var(--orange);">Descompte Vigent Allotjament/Règim (%)</label>
             <input type="number" id="dir-disc" value="0" min="0" max="100" placeholder="0%">
+            <div class="preset-container">
+              <button class="chip-btn" onclick="setPresetDisc('dir-disc', 0)">0%</button>
+              <button class="chip-btn" onclick="setPresetDisc('dir-disc', 5)">5%</button>
+              <button class="chip-btn" onclick="setPresetDisc('dir-disc', 10)">10%</button>
+              <button class="chip-btn" onclick="setPresetDisc('dir-disc', 15)">15%</button>
+              <button class="chip-btn" onclick="setPresetDisc('dir-disc', 20)">20%</button>
+              <button class="chip-btn" onclick="setPresetDisc('dir-disc', 25)">25%</button>
+            </div>
           </div>
         </div>
       </div>
@@ -187,6 +202,7 @@
         <div class="results-grid">
           <div class="stat-box"><div class="stat-label">Preu Nit (IVA Inc.)</div><div class="stat-value" id="dir-res-night">0,00 €</div></div>
           <div class="stat-box"><div class="stat-label">Total Estada (IVA Inc.)</div><div class="stat-value highlight" id="dir-res-total">0,00 €</div></div>
+          <div class="stat-box"><div class="stat-label">Descompte Aplicat</div><div class="stat-value subtext" id="dir-res-disc-val">0,00 € (0%)</div></div>
           <div class="stat-box"><div class="stat-label">Mitjana Nit / Persona</div><div class="stat-value" id="dir-res-pax">0,00 €</div></div>
         </div>
       </div>
@@ -199,8 +215,19 @@
         <div class="card" style="border-left: 4px solid var(--orange);">
           <div class="card-title" style="color:var(--orange);">📌 Tarifa Origen / Coneguda</div>
           <div class="form-group">
-            <label>Preu Nit Conegut (€ IVA Inc.)</label>
-            <input type="number" id="inv-known-price" value="150.00" step="0.01" style="font-weight:700; color:var(--orange);">
+            <label>Preu Nit Conegut FINAL (€ IVA Inc.)</label>
+            <input type="number" id="inv-known-price" value="100.00" step="0.01" style="font-weight:700; color:var(--orange);">
+          </div>
+          <div class="form-group">
+            <label style="color:var(--orange);">Descompte Ja Inclòs a l'Origen (%)</label>
+            <input type="number" id="inv-orig-disc" value="20" min="0" max="100" placeholder="0%">
+            <div class="preset-container">
+              <button class="chip-btn" onclick="setPresetDisc('inv-orig-disc', 0)">0%</button>
+              <button class="chip-btn" onclick="setPresetDisc('inv-orig-disc', 10)">10%</button>
+              <button class="chip-btn" onclick="setPresetDisc('inv-orig-disc', 15)">15%</button>
+              <button class="chip-btn" onclick="setPresetDisc('inv-orig-disc', 20)">20%</button>
+              <button class="chip-btn" onclick="setPresetDisc('inv-orig-disc', 25)">25%</button>
+            </div>
           </div>
           <div class="form-group">
             <label>Tipus Habitació Actual</label>
@@ -237,6 +264,17 @@
         <div class="card" style="border-left: 4px solid var(--primary);">
           <div class="card-title">🎯 Nova Opció a Comparar</div>
           <div class="form-group">
+            <label style="color:var(--primary);">Descompte Nova Opció (%)</label>
+            <input type="number" id="inv-target-disc" value="20" min="0" max="100" placeholder="0%">
+            <div class="preset-container">
+              <button class="chip-btn" onclick="setPresetDisc('inv-target-disc', 0)">0%</button>
+              <button class="chip-btn" onclick="setPresetDisc('inv-target-disc', 10)">10%</button>
+              <button class="chip-btn" onclick="setPresetDisc('inv-target-disc', 15)">15%</button>
+              <button class="chip-btn" onclick="setPresetDisc('inv-target-disc', 20)">20%</button>
+              <button class="chip-btn" onclick="setPresetDisc('inv-target-disc', 25)">25%</button>
+            </div>
+          </div>
+          <div class="form-group">
             <label>Nou Tipus Habitació</label>
             <select id="inv-target-tipo">
               <option value="confort">Confort</option>
@@ -244,7 +282,7 @@
               <option value="jardi">Jardí (+10%)</option>
               <option value="baby_room">Baby Room (+15%)</option>
               <option value="baby_quad">Baby Quad (+20%)</option>
-              <option value="suite" selected>Suite (+30%)</option>
+              <option value="suite">Suite (+30%)</option>
             </select>
           </div>
           <div class="form-group"><label>Adults</label><input type="number" id="inv-target-adults" value="2" min="1" max="4"></div>
@@ -252,8 +290,8 @@
           <div class="form-group">
             <label>Nou Règim</label>
             <select id="inv-target-regimen">
-              <option value="AD">AD</option>
-              <option value="MP" selected>MP</option>
+              <option value="AD" selected>AD</option>
+              <option value="MP">MP</option>
               <option value="PC">PC</option>
             </select>
           </div>
@@ -274,19 +312,27 @@
 
       <div class="results-panel">
         <div class="results-header">🔍 Resultat del Càlcul Invers i Comparativa</div>
-        <div class="results-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="results-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
           <div class="stat-box">
-            <div class="stat-label">Nou Preu Nit (IVA Inc.)</div>
+            <div class="stat-label">Nou Preu Nit (Final)</div>
             <div class="stat-value highlight" id="inv-res-new-night">0,00 €</div>
           </div>
           <div class="stat-box">
             <div class="stat-label">Diferència x Nit</div>
             <div class="stat-value highlight" id="inv-res-diff" style="color: var(--primary);">0,00 €</div>
           </div>
+          <div class="stat-box">
+            <div class="stat-label">Base Adult Calculada</div>
+            <div class="stat-value subtext" id="inv-res-calc-base">0,00 €</div>
+          </div>
         </div>
         <table class="breakdown-table">
-          <tr><td>Preu Nit de l'Opció Origen</td><td id="inv-bk-orig">0,00 €</td></tr>
-          <tr><td>Preu Nit de la Nova Opció Comparada</td><td id="inv-bk-target">0,00 €</td></tr>
+          <tr><td>Preu Nit de l'Opció Origen (Final Cobrat)</td><td id="inv-bk-orig">0,00 €</td></tr>
+          <tr><td>Preu BRUT Origen (Sense Descompte Reconstruït)</td><td id="inv-bk-orig-gross">0,00 €</td></tr>
+          <tr><td>Descompte Reconstruït a l'Origen</td><td id="inv-bk-orig-disc">0,00 € (0%)</td></tr>
+          <tr><td>Preu BRUT Nova Opció (Sense Descompte)</td><td id="inv-bk-target-gross">0,00 €</td></tr>
+          <tr><td>Descompte Aplicat a Nova Opció</td><td id="inv-bk-target-disc">0,00 € (0%)</td></tr>
+          <tr><td>PREU FINAL NOVA NIT (Amb Descompte)</td><td id="inv-bk-target">0,00 €</td></tr>
           <tr><td>TOTAL NOVA ESTADA COMPLETA</td><td id="inv-bk-total-estada">0,00 €</td></tr>
         </table>
       </div>
@@ -322,6 +368,18 @@
     return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
   }
 
+  function setPresetDisc(inputId, value) {
+    const el = document.getElementById(inputId);
+    if (el) {
+      el.value = value;
+      if (inputId.startsWith('dir')) {
+        calculateDirect();
+      } else {
+        calculateInverse();
+      }
+    }
+  }
+
   function checkComboValid(tipo, adults, ninos, bebes) {
     let isValid = false;
     const comboKey = `${adults}+${ninos}`;
@@ -352,7 +410,6 @@
     else calculateInverse();
   }
 
-  /* LÒGICA DE CÀLCUL DIRECTE */
   function calculateDirect() {
     const basePrice = parseFloat(document.getElementById('dir-base-price').value) || 0;
     const tipo = document.getElementById('dir-sel-tipo').value;
@@ -370,6 +427,7 @@
       alertBox.style.display = 'block';
       document.getElementById('dir-res-night').textContent = "0,00 €";
       document.getElementById('dir-res-total').textContent = "0,00 €";
+      document.getElementById('dir-res-disc-val').textContent = "0,00 € (0%)";
       document.getElementById('dir-res-pax').textContent = "0,00 €";
       return;
     } else {
@@ -400,15 +458,14 @@
     if (regimen === 'MP') { regimenAdult = 20; regimenNen = 14; }
     else if (regimen === 'PC') { regimenAdult = 40; regimenNen = 28; }
 
-    let regimenExtra = (numAdults * regimenAdult) + (numNinos * regimenNen);
-    let stayBeforeDiscount = roomBaseTotal + regimenExtra;
+    const regimenExtra = (numAdults * regimenAdult) + (numNinos * regimenNen);
+    const stayBeforeDiscount = roomBaseTotal + regimenExtra;
 
-    if (discount > 0) {
-      stayBeforeDiscount = stayBeforeDiscount * (1 - (discount / 100));
-    }
+    const discountAmount = stayBeforeDiscount * (discount / 100);
+    const stayAfterDiscount = stayBeforeDiscount - discountAmount;
 
     const petExtra = numMascotas * 17;
-    const nightTotal = stayBeforeDiscount + petExtra;
+    const nightTotal = stayAfterDiscount + petExtra;
 
     const grandTotal = nightTotal * nights;
     const totalPax = numAdults + numNinos;
@@ -416,15 +473,16 @@
 
     document.getElementById('dir-res-night').textContent = formatMoney(nightTotal);
     document.getElementById('dir-res-total').textContent = formatMoney(grandTotal);
+    document.getElementById('dir-res-disc-val').textContent = `${formatMoney(discountAmount)} (${discount}%)`;
     document.getElementById('dir-res-pax').textContent = formatMoney(avgPaxNight);
   }
 
-  /* LÒGICA DE CÀLCUL INVERS I COMPARATIVA */
   function calculateInverse() {
     const knownPrice = parseFloat(document.getElementById('inv-known-price').value) || 0;
     const alertBox = document.getElementById('validation-msg');
     
     // Dades Origen
+    const origDisc = parseFloat(document.getElementById('inv-orig-disc').value) || 0;
     const origTipo = document.getElementById('inv-orig-tipo').value;
     const origAdults = parseInt(document.getElementById('inv-orig-adults').value) || 1;
     const origNinos = parseInt(document.getElementById('inv-orig-ninos').value) || 0;
@@ -432,6 +490,7 @@
     const origMascotas = parseInt(document.getElementById('inv-orig-mascotas').value) || 0;
 
     // Dades Target / Comparativa
+    const targetDisc = parseFloat(document.getElementById('inv-target-disc').value) || 0;
     const targetTipo = document.getElementById('inv-target-tipo').value;
     const targetAdults = parseInt(document.getElementById('inv-target-adults').value) || 1;
     const targetNinos = parseInt(document.getElementById('inv-target-ninos').value) || 0;
@@ -446,7 +505,12 @@
       alertBox.style.display = 'block';
       document.getElementById('inv-res-new-night').textContent = "0,00 €";
       document.getElementById('inv-res-diff').textContent = "0,00 €";
+      document.getElementById('inv-res-calc-base').textContent = "0,00 €";
       document.getElementById('inv-bk-orig').textContent = "0,00 €";
+      document.getElementById('inv-bk-orig-gross').textContent = "0,00 €";
+      document.getElementById('inv-bk-orig-disc').textContent = "0,00 € (0%)";
+      document.getElementById('inv-bk-target-gross').textContent = "0,00 €";
+      document.getElementById('inv-bk-target-disc').textContent = "0,00 € (0%)";
       document.getElementById('inv-bk-target').textContent = "0,00 €";
       document.getElementById('inv-bk-total-estada').textContent = "0,00 €";
       return;
@@ -454,14 +518,25 @@
       alertBox.style.display = 'none';
     }
 
+    // 1. ORIGIN CALCULATION
+    const origPetExtra = origMascotas * 17;
+    const roomAndBoardDiscounted = knownPrice - origPetExtra;
+
+    let roomAndBoardBeforeDiscount = 0;
+    if (origDisc > 0 && origDisc < 100) {
+      roomAndBoardBeforeDiscount = roomAndBoardDiscounted / (1 - (origDisc / 100));
+    } else {
+      roomAndBoardBeforeDiscount = roomAndBoardDiscounted;
+    }
+
+    const origDiscountAmount = roomAndBoardBeforeDiscount - roomAndBoardDiscounted;
+
     let origRegimenAdult = 0, origRegimenNen = 0;
     if (origRegimen === 'MP') { origRegimenAdult = 20; origRegimenNen = 14; }
     else if (origRegimen === 'PC') { origRegimenAdult = 40; origRegimenNen = 28; }
 
     const origRegimenExtra = (origAdults * origRegimenAdult) + (origNinos * origRegimenNen);
-    const origPetExtra = origMascotas * 17;
-    
-    const roomOnlyTarget = knownPrice - origRegimenExtra - origPetExtra;
+    const origRoomOnlyBeforeDiscount = roomAndBoardBeforeDiscount - origRegimenExtra;
 
     let origMultiplier = 1.0;
     if (origTipo === 'jardi') origMultiplier = 1.10;
@@ -469,20 +544,21 @@
     else if (origTipo === 'confort_quad' || origTipo === 'baby_quad') origMultiplier = 1.20;
     else if (origTipo === 'suite') origMultiplier = 1.30;
 
-    let factorUnits = 0;
+    let origFactorUnits = 0;
     if (origAdults === 1) {
-      if (origNinos === 0) factorUnits = 1.80;
+      if (origNinos === 0) origFactorUnits = 1.80;
       else {
-        factorUnits = 2.0;
-        for (let i = 2; i <= origNinos; i++) factorUnits += (i === 2) ? 0.60 : 0.50;
+        origFactorUnits = 2.0;
+        for (let i = 2; i <= origNinos; i++) origFactorUnits += (i === 2) ? 0.60 : 0.50;
       }
     } else {
-      for (let i = 1; i <= origAdults; i++) factorUnits += (i <= 2) ? 1.0 : 0.70;
-      for (let i = 1; i <= origNinos; i++) factorUnits += (i <= 2) ? 0.60 : 0.50;
+      for (let i = 1; i <= origAdults; i++) origFactorUnits += (i <= 2) ? 1.0 : 0.70;
+      for (let i = 1; i <= origNinos; i++) origFactorUnits += (i <= 2) ? 0.60 : 0.50;
     }
 
-    const calculatedBaseAdult = roomOnlyTarget / (origMultiplier * factorUnits);
+    const calculatedBaseAdult = origRoomOnlyBeforeDiscount / (origMultiplier * origFactorUnits);
 
+    // 2. TARGET CALCULATION
     let targetMultiplier = 1.0;
     if (targetTipo === 'jardi') targetMultiplier = 1.10;
     else if (targetTipo === 'baby_room') targetMultiplier = 1.15;
@@ -510,24 +586,34 @@
     const targetRegimenExtra = (targetAdults * targetRegimenAdult) + (targetNinos * targetRegimenNen);
     const targetPetExtra = targetMascotas * 17;
 
-    const targetNightTotal = targetRoomBaseTotal + targetRegimenExtra + targetPetExtra;
+    const targetStayBeforeDiscount = targetRoomBaseTotal + targetRegimenExtra;
+    const targetDiscountAmount = targetStayBeforeDiscount * (targetDisc / 100);
+    const targetStayAfterDiscount = targetStayBeforeDiscount - targetDiscountAmount;
+
+    const targetNightTotal = targetStayAfterDiscount + targetPetExtra;
+    const targetGrossNightTotal = targetStayBeforeDiscount + targetPetExtra;
     const diffNight = targetNightTotal - knownPrice;
 
+    // 3. UPDATE DOM UI
     document.getElementById('inv-res-new-night').textContent = formatMoney(targetNightTotal);
     document.getElementById('inv-res-diff').textContent = (diffNight >= 0 ? '+' : '') + formatMoney(diffNight);
+    document.getElementById('inv-res-calc-base').textContent = formatMoney(calculatedBaseAdult);
 
     document.getElementById('inv-bk-orig').textContent = formatMoney(knownPrice);
+    document.getElementById('inv-bk-orig-gross').textContent = formatMoney(roomAndBoardBeforeDiscount + origPetExtra);
+    document.getElementById('inv-bk-orig-disc').textContent = `${formatMoney(origDiscountAmount)} (${origDisc}%)`;
+    document.getElementById('inv-bk-target-gross').textContent = formatMoney(targetGrossNightTotal);
+    document.getElementById('inv-bk-target-disc').textContent = `${formatMoney(targetDiscountAmount)} (${targetDisc}%)`;
     document.getElementById('inv-bk-target').textContent = formatMoney(targetNightTotal);
     document.getElementById('inv-bk-total-estada').textContent = formatMoney(targetNightTotal * nights);
   }
 
-  // EVENT LISTENERS
   ['dir-base-price', 'dir-sel-tipo', 'dir-adults', 'dir-ninos', 'dir-bebes', 'dir-sel-regimen', 'dir-mascotas', 'dir-nights', 'dir-disc'].forEach(id => {
     document.getElementById(id).addEventListener('input', calculateDirect);
     document.getElementById(id).addEventListener('change', calculateDirect);
   });
 
-  ['inv-known-price', 'inv-orig-tipo', 'inv-orig-adults', 'inv-orig-ninos', 'inv-orig-regimen', 'inv-orig-mascotas', 'inv-target-tipo', 'inv-target-adults', 'inv-target-ninos', 'inv-target-regimen', 'inv-target-mascotas', 'inv-nights'].forEach(id => {
+  ['inv-known-price', 'inv-orig-disc', 'inv-orig-tipo', 'inv-orig-adults', 'inv-orig-ninos', 'inv-orig-regimen', 'inv-orig-mascotas', 'inv-target-disc', 'inv-target-tipo', 'inv-target-adults', 'inv-target-ninos', 'inv-target-regimen', 'inv-target-mascotas', 'inv-nights'].forEach(id => {
     document.getElementById(id).addEventListener('input', calculateInverse);
     document.getElementById(id).addEventListener('change', calculateInverse);
   });
