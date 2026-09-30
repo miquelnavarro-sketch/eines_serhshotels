@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal d'Eines d'Hoteleria — SERHS Hotels & Vilar Rural</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e5631;
+      --primary-light: #3a7d4f;
+      --accent: #b5c934;
+      --accent-hover: #9eaf27;
+      --dark: #1f2937;
+      --light: #f4f6f0;
+      --white: #ffffff;
+      --gray-100: #f9fafb;
+      --gray-200: #e5e7eb;
+      --gray-600: #4b5563;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      border-bottom: 5px solid var(--accent);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-logo {
+      max-height: 65px;
+      background: white;
+      padding: 8px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      font-size: 14px;
+      color: #d1e2c4;
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 40px auto;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .grid-tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card-tool {
+      background: var(--white);
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-tool::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 6px;
+      background: var(--primary);
+    }
+
+    .card-tool:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 25px rgba(30, 86, 49, 0.15);
+      border-color: var(--accent);
+    }
+
+    .tool-tag {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+      background: #e8f5e9;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 12px;
+      align-self: flex-start;
+    }
+
+    .tool-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .tool-desc {
+      font-size: 13px;
+      color: var(--gray-600);
+      line-height: 1.5;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .btn-open {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 13px;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-align: center;
+      text-transform: uppercase;
+      transition: background 0.2s;
+    }
+
+    .btn-open:hover {
+      background: var(--accent-hover);
+    }
+
+    footer {
+      background: var(--dark);
+      color: white;
+      text-align: center;
+      padding: 20px 12px;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .footer-author {
+      color: var(--accent);
+      font-weight: 700;
+      margin-top: 4px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <img src="img/logovshbyshnofons.png" alt="SERHS Hotels & Vilar Rural Logo" class="header-logo" onerror="this.style.display='none'">
+      <div>
+        <h1>Portal d'Eines i Cotitzadors</h1>
+        <p>SERHS Hotels & Vilar Rural de Sant Hilari Sacalm</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid-tools">
+
+      <!-- EINA 1: CALCULADORA RÀPIDA VILARS -->
+      <article class="card-tool">
+        <div>
+          <span class="tool-tag">Vilar Rural</span>
+          <h2 class="tool-title">🧮 Calculadora Ràpida</h2>
+          <p class="tool-desc">Eina ràpida per al càlcul estimat de tarifes, suplements de règim i descomptes de l'hotel.</p>
+        </div>
+        <a href="calculadora_vilars.html" class="btn-open">Obrir Calculadora ➔</a>
+      </article>
+
+      <!-- EINA 2: COTITZADOR INDIVIDUALS VILARS -->
+      <article class="card-tool">
+        <div>
+          <span class="tool-tag">Vilar Rural — Individuals</span>
+          <h2 class="tool-title">👤 Cotitzador de Reserves Individuals</h2>
+          <p class="tool-desc">Gestor de pressupostos i confirmacions oficials per a clients individuals amb generador de fitxa per a Gmail i PDF.</p>
+        </div>
+        <a href="individuals_vilars.html" class="btn-open">Obrir Cotitzador ➔</a>
+      </article>
+
+      <!-- EINA 3: GRUPS SERHS HOTELS -->
+      <article class="card-tool">
+        <div>
+          <span class="tool-tag">SERHS Hotels — Grups</span>
+          <h2 class="tool-title">👥 Cotitzador de Grups</h2>
+          <p class="tool-desc">Plataforma per al càlcul i gestió de propostes per a grups, esdeveniments i estades col·lectives.</p>
+        </div>
+        <a href="grups_sh.html" class="btn-open">Obrir Cotitzador Grups ➔</a>
+      </article>
+
+    </div>
+  </main>
+
+  <footer>
+    SERHS Hotels & Vilar Rural de Sant Hilari Sacalm ****<br>
+    Atenció al client: reserves@vilarrural.com | Tel. 93 511 03 00<br>
+    <span class="footer-author">Eina desenvolupada per Miquel Navarro per a SERHS Hotels</span>
+  </footer>
+
+</body>
+</html>
