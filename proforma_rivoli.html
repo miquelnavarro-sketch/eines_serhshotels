@@ -250,7 +250,7 @@
         .canc-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 11px; white-space: nowrap; }
         .canc-row input[type="number"] { width: 45px; text-align: center; }
 
-        /* Dades Bancàries i Observacions */
+        /* Dades Bancàries / TPV i Observacions */
         .bank-card {
             background: #f4f6fa;
             border: 1px solid #d0d7de;
@@ -266,7 +266,7 @@
             letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: space-between;
             font-weight: bold;
         }
         .bank-details-grid {
@@ -282,6 +282,27 @@
         .bank-item { font-size: 11px; }
         .bank-item .label { color: #666; font-size: 10px; display: block; margin-bottom: 2px; }
         .bank-item .value { font-weight: bold; color: var(--primary); font-family: monospace, monospace; font-size: 12px; }
+        
+        .tpv-details-box {
+            background: #fff;
+            padding: 12px 14px;
+            border-radius: 5px;
+            border: 1px solid #e1e4e8;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .tpv-details-box label { font-size: 10px; color: #666; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 4px; }
+        .tpv-details-box input[type="url"] { font-size: 12px; padding: 6px; border: 1px solid var(--border); border-radius: 4px; width: 100%; color: var(--primary); font-weight: bold; }
+        
+        .tpv-print-link {
+            display: none;
+            word-break: break-all;
+            font-size: 12px;
+            font-weight: bold;
+            color: #007bff;
+            text-decoration: underline;
+        }
+
         .bank-notice { font-size: 11px; color: #555; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .tax-disclaimer { font-size: 11px; color: #555; margin-bottom: 8px; }
         .bank-card textarea { width: 100%; height: 50px; border: 1px solid var(--border); border-radius: 4px; padding: 6px; font-size: 11px; background: #fff; }
@@ -347,7 +368,7 @@
             #pin-lock-overlay { display: none !important; }
             body { background: #fff; padding: 0; }
             .container { box-shadow: none; padding: 0; max-width: 100%; }
-            .toolbar, .btn-remove, .btn-add, .chk-paid-wrap, .edit-days, .no-print, .control-bar { display: none !important; }
+            .toolbar, .btn-remove, .btn-add, .chk-paid-wrap, .edit-days, .no-print, .control-bar, .payment-type-select { display: none !important; }
             input, select, textarea { border: none !important; background: transparent !important; appearance: none; -webkit-appearance: none; padding: 0 !important; }
             .field-group label { width: 120px; }
             
@@ -396,6 +417,10 @@
 
             .tax-card:not(.has-tax-active) { display: none !important; }
             .sec-wrapper:has(tbody:empty) { display: none !important; }
+
+            /* Impressió de TPV */
+            .tpv-details-box input[type="url"] { display: none !important; }
+            .tpv-print-link { display: inline !important; }
         }
 
         .print-pay-text { display: none; }
@@ -640,10 +665,20 @@
         <div id="canc-rows-container"></div>
     </div>
 
-    <!-- Dades Bancàries i Observacions -->
+    <!-- Dades Bancàries / TPV Virtual i Observacions -->
     <div class="bank-card">
-        <h4 data-i18n="bank_title">💳 Dades Bancàries i Transferència</h4>
-        <div class="bank-details-grid">
+        <h4>
+            <span id="bank-card-title-text" data-i18n="bank_title">💳 Dades Bancàries i Transferència</span>
+            <span class="no-print">
+                <select id="payment-type-toggle" onchange="canviarTipusModalitatPagament(this.value)" class="payment-type-select" style="font-size: 11px; padding: 3px 6px;">
+                    <option value="BANK" selected>🏦 Transferència Bancària</option>
+                    <option value="TPV">💳 TPV Virtual / Targeta de Crèdit</option>
+                </select>
+            </span>
+        </h4>
+        
+        <!-- Bloc de dades bancàries estàndard -->
+        <div id="bank-details-grid-block" class="bank-details-grid">
             <div class="bank-item">
                 <span class="label" data-i18n="bank_label_bank">Entitat Bancària</span>
                 <span class="value">CAIXABANK</span>
@@ -657,8 +692,16 @@
                 <span class="value">CAIXESBBXXX</span>
             </div>
         </div>
-        <div class="bank-notice">
-            📌 <span data-i18n="bank_concept_text">Cal indicar el número de proforma o nom del grup en el concepte de la transferència.</span>
+
+        <!-- Bloc de TPV Virtual amb enllaç de pagament -->
+        <div id="tpv-details-box-block" class="tpv-details-box">
+            <label data-i18n="tpv_url_label">🔗 Enllaç de Pagament Directe per Targeta (TPV Virtual / PayGold):</label>
+            <input type="url" id="tpv-url-input" placeholder="https://tpv.redsys.es/..." oninput="sincronitzarUrlTpv(this.value)">
+            <a id="tpv-print-link-elem" href="#" target="_blank" class="tpv-print-link">-</a>
+        </div>
+
+        <div id="bank-notice-block" class="bank-notice">
+            📌 <span id="bank-notice-text-elem" data-i18n="bank_concept_text">Cal indicar el número de proforma o nom del grup en el concepte de la transferència.</span>
         </div>
         
         <div id="tax-disclaimer-text" class="tax-disclaimer" data-i18n="notes_tax_disclaimer">
@@ -799,8 +842,11 @@
             title_cancellation: "Terminis i Condicions de Cancel·lació de Grups",
             btn_add_cancellation: "+ Afegir Tram Intermedi",
             bank_title: "💳 Dades Bancàries i Transferència",
+            bank_title_tpv: "💳 Pagament en Línia per Targeta (TPV Virtual)",
             bank_label_bank: "Entitat Bancària",
             bank_concept_text: "Cal indicar el número de proforma o nom del grup en el concepte de la transferència.",
+            tpv_concept_text: "Podeu realitzar el pagament directament amb targeta de crèdit/dèbit mitjançant la nostra plataforma segura TPV Virtual.",
+            tpv_url_label: "🔗 Enllaç de Pagament Directe per Targeta (TPV Virtual / PayGold):",
             notes_tax_disclaimer: "• Si no està inclosa a la proforma, la taxa turística de Barcelona es liquidarà directament al check-in segons la normativa vigent.",
             notes_placeholder: "Observacions i comentaris addicionals...",
             client_signature_title: "Conformitat i Acceptació del Client",
@@ -872,8 +918,11 @@
             title_cancellation: "Términos y Condiciones de Cancelación de Grupos",
             btn_add_cancellation: "+ Añadir Tramo Intermedio",
             bank_title: "💳 Datos Bancarios y Transferencia",
+            bank_title_tpv: "💳 Pago en Línea por Tarjeta (TPV Virtual)",
             bank_label_bank: "Entidad Bancaria",
             bank_concept_text: "Es necesario indicar el número de proforma o nombre del grupo en el concepto de la transferencia.",
+            tpv_concept_text: "Puede realizar el pago directamente con tarjeta de crédito/débito a través de nuestra plataforma segura TPV Virtual.",
+            tpv_url_label: "🔗 Enlace de Pago Directo por Tarjeta (TPV Virtual / PayGold):",
             notes_tax_disclaimer: "• Si no está incluida en la proforma, la tasa turística de Barcelona se liquidará directamente en el check-in según la normativa vigente.",
             notes_placeholder: "Observaciones y comentarios adicionales...",
             client_signature_title: "Conformidad y Aceptación del Cliente",
@@ -945,8 +994,11 @@
             title_cancellation: "Group Cancellation Policy & Terms",
             btn_add_cancellation: "+ Add Term",
             bank_title: "💳 Bank Details & Wire Transfer",
+            bank_title_tpv: "💳 Online Credit Card Payment (Virtual POS)",
             bank_label_bank: "Bank Entity",
             bank_concept_text: "Please indicate the proforma number or group name in the transfer reference.",
+            tpv_concept_text: "You can make the payment directly by credit/debit card via our secure POS platform.",
+            tpv_url_label: "🔗 Direct Payment Link (Virtual POS / PayGold):",
             notes_tax_disclaimer: "• If not included in the proforma invoice, Barcelona city tax will be settled directly upon check-in according to regulations.",
             notes_placeholder: "Additional comments and remarks...",
             client_signature_title: "Client Approval & Acceptance",
@@ -1007,7 +1059,7 @@
             tax_total_label: "Total Taxe de Séjour (10% TVA incl.):",
             title_payments: "Échéancier de Dépôts et Paiements",
             btn_add_deposit: "+ Dépôt Intermédiaire",
-            pct_alert_msg: "⚠️️ Les dépôts intermédiaires dépassent 100% de la proforma!",
+            pct_alert_msg: "⚠️ Les dépôts intermédiaires dépassent 100% de la proforma!",
             base_10_label: "Base Imposable Héb./Rest. (10%):",
             vat_10_label: "Montant TVA Héb./Rest. (10%):",
             base_21_label: "Base Imposable Salles/Éq. (21%):",
@@ -1018,8 +1070,11 @@
             title_cancellation: "Conditions d'Annulation pour Groupes",
             btn_add_cancellation: "+ Ajouter Tranche Intermédiaire",
             bank_title: "💳 Coordonnées Bancaires et Virement",
+            bank_title_tpv: "💳 Paiement en Ligne par Carte (TPE Virtuel)",
             bank_label_bank: "Établissement Bancaire",
             bank_concept_text: "Veuillez indiquer le numéro de proforma ou nom du groupe dans le libellé du virement.",
+            tpv_concept_text: "Vous pouvez effectuer le paiement directement par carte bancaire via notre plateforme sécurisée TPE Virtuel.",
+            tpv_url_label: "🔗 Lien de Paiement Direct par Carte (TPE Virtuel / PayGold):",
             notes_tax_disclaimer: "• Si elle n'est pas incluse dans la facture proforma, la taxe de séjour de Barcelone sera réglée directement lors du check-in conformément à la réglementation.",
             notes_placeholder: "Remarques et observations supplémentaires...",
             client_signature_title: "Accord et Acceptation du Client",
@@ -1149,6 +1204,34 @@
         }
     };
 
+    function canviarTipusModalitatPagament(type) {
+        const titleElem = document.getElementById('bank-card-title-text');
+        const gridBlock = document.getElementById('bank-details-grid-block');
+        const tpvBoxBlock = document.getElementById('tpv-details-box-block');
+        const noticeTextElem = document.getElementById('bank-notice-text-elem');
+        const t = translations[currentLang];
+
+        if (type === 'TPV') {
+            titleElem.textContent = t.bank_title_tpv || '💳 Pagament en Línia per Targeta (TPV Virtual)';
+            gridBlock.style.display = 'none';
+            tpvBoxBlock.style.display = 'block';
+            noticeTextElem.textContent = t.tpv_concept_text || 'Podeu realitzar el pagament directament amb targeta de crèdit/dèbit mitjançant la nostra plataforma segura TPV Virtual.';
+        } else {
+            titleElem.textContent = t.bank_title || '💳 Dades Bancàries i Transferència';
+            gridBlock.style.display = 'grid';
+            tpvBoxBlock.style.display = 'none';
+            noticeTextElem.textContent = t.bank_concept_text || 'Cal indicar el número de proforma o nom del grup en el concepte de la transferència.';
+        }
+    }
+
+    function sincronitzarUrlTpv(val) {
+        const printLinkElem = document.getElementById('tpv-print-link-elem');
+        if (printLinkElem) {
+            printLinkElem.href = val || '#';
+            printLinkElem.textContent = val || '-';
+        }
+    }
+
     function canviarIdioma(lang) {
         currentLang = lang;
         const t = translations[lang];
@@ -1164,6 +1247,9 @@
 
         const sigSpace = document.getElementById('sig-space');
         if (sigSpace) sigSpace.setAttribute('data-sign-label', t.sign_seal_label);
+
+        const pType = document.getElementById('payment-type-toggle') ? document.getElementById('payment-type-toggle').value : 'BANK';
+        canviarTipusModalitatPagament(pType);
 
         ['body-allotjament', 'body-sales', 'body-restauracio'].forEach(bodyId => {
             const catKey = (bodyId === 'body-allotjament') ? 'ALLOTJAMENT' : (bodyId === 'body-sales') ? 'SALES' : 'RESTAURACIO';
@@ -1734,106 +1820,84 @@
         return `PRO-${year}-${nextSeq}`;
     }
 
-    /* ENVIAMENT SEGUR I ROBUST PER A GOOGLE SHEETS */
+    /* ENVIAMENT QUE HA FUNCIONAT CORRECTAMENT */
     async function guardarProformaActual() {
+        const num = document.getElementById('proforma-num-input').value.trim();
+        if (!num) {
+            alert("S'ha d'indicar un número de proforma!");
+            return;
+        }
+
+        const data = {
+            num: num,
+            docDate: document.getElementById('data-doc').value,
+            lang: currentLang,
+            clientCompany: document.getElementById('client-company-input').value,
+            clientNif: document.getElementById('client-nif-input').value,
+            clientName: document.getElementById('client-name-input').value,
+            clientEmail: document.getElementById('client-email-input').value,
+            groupName: document.getElementById('group-name-input').value,
+            pmsRef: document.getElementById('pms-ref-input').value,
+            inDate: document.getElementById('in-date').value,
+            outDate: document.getElementById('out-date').value,
+            notes: document.getElementById('notes-textarea').value,
+            taxEnable: document.getElementById('tax-enable').checked,
+            taxPax: document.getElementById('tax-pax').value,
+            taxNits: document.getElementById('tax-nits').value,
+            paymentType: document.getElementById('payment-type-toggle') ? document.getElementById('payment-type-toggle').value : 'BANK',
+            tpvUrl: document.getElementById('tpv-url-input') ? document.getElementById('tpv-url-input').value : '',
+            
+            items: Array.from(document.querySelectorAll('tbody tr')).map(row => {
+                const select = row.querySelector('.concept-select');
+                const custom = row.querySelector('.custom-input');
+                return {
+                    bodyId: row.closest('tbody').id,
+                    concept: custom ? custom.value : (select ? select.value : ''),
+                    isCustom: !!custom,
+                    startDate: row.querySelector('.item-date-start') ? row.querySelector('.item-date-start').value : '',
+                    endDate: row.querySelector('.item-date-end') ? row.querySelector('.item-date-end').value : '',
+                    qty: row.querySelector('.qty').value,
+                    nits: row.querySelector('.nits').value,
+                    preu: row.querySelector('.preu').value,
+                    desc: row.querySelector('.desc').value,
+                    iva: row.querySelector('.iva').value
+                };
+            }),
+
+            payments: Array.from(document.querySelectorAll('.payment-row')).map(row => ({
+                isFinal: row.classList.contains('final-row'),
+                pct: row.querySelector('.pay-pct') ? row.querySelector('.pay-pct').value : 0,
+                mode: row.querySelector('.pay-mode-select') ? row.querySelector('.pay-mode-select').value : 'FIXED',
+                days: row.querySelector('.pay-days-input') ? row.querySelector('.pay-days-input').value : 0,
+                date: row.querySelector('.pay-date').value,
+                isPaid: row.classList.contains('is-paid')
+            })),
+
+            cancellations: Array.from(document.querySelectorAll('.canc-row')).map(row => ({
+                type: row.getAttribute('data-type'),
+                d1: row.querySelector('.canc-d1') ? row.querySelector('.canc-d1').value : 0,
+                d2: row.querySelector('.canc-d2') ? row.querySelector('.canc-d2').value : 0,
+                pct: row.querySelector('.canc-pct') ? row.querySelector('.canc-pct').value : 0
+            }))
+        };
+
         try {
-            const numInput = document.getElementById('proforma-num-input');
-            const num = numInput ? numInput.value.trim() : '';
-
-            if (!num) {
-                alert("S'ha d'indicar un número de proforma!");
-                return;
-            }
-
-            const data = {
-                num: num,
-                docDate: document.getElementById('data-doc') ? document.getElementById('data-doc').value : '',
-                lang: currentLang,
-                clientCompany: document.getElementById('client-company-input') ? document.getElementById('client-company-input').value : '',
-                clientNif: document.getElementById('client-nif-input') ? document.getElementById('client-nif-input').value : '',
-                clientName: document.getElementById('client-name-input') ? document.getElementById('client-name-input').value : '',
-                clientEmail: document.getElementById('client-email-input') ? document.getElementById('client-email-input').value : '',
-                groupName: document.getElementById('group-name-input') ? document.getElementById('group-name-input').value : '',
-                pmsRef: document.getElementById('pms-ref-input') ? document.getElementById('pms-ref-input').value : '',
-                inDate: document.getElementById('in-date') ? document.getElementById('in-date').value : '',
-                outDate: document.getElementById('out-date') ? document.getElementById('out-date').value : '',
-                notes: document.getElementById('notes-textarea') ? document.getElementById('notes-textarea').value : '',
-                taxEnable: document.getElementById('tax-enable') ? document.getElementById('tax-enable').checked : false,
-                taxPax: document.getElementById('tax-pax') ? document.getElementById('tax-pax').value : 0,
-                taxNits: document.getElementById('tax-nits') ? document.getElementById('tax-nits').value : 0,
-                
-                items: Array.from(document.querySelectorAll('tbody tr')).map(row => {
-                    const select = row.querySelector('.concept-select');
-                    const custom = row.querySelector('.custom-input');
-                    const startDateInput = row.querySelector('.item-date-start');
-                    const endDateInput = row.querySelector('.item-date-end');
-                    const qtyInput = row.querySelector('.qty');
-                    const nitsInput = row.querySelector('.nits');
-                    const preuInput = row.querySelector('.preu');
-                    const descInput = row.querySelector('.desc');
-                    const ivaSelect = row.querySelector('.iva');
-
-                    return {
-                        bodyId: row.closest('tbody') ? row.closest('tbody').id : '',
-                        concept: custom ? custom.value : (select ? select.value : ''),
-                        isCustom: !!custom,
-                        startDate: startDateInput ? startDateInput.value : '',
-                        endDate: endDateInput ? endDateInput.value : '',
-                        qty: qtyInput ? qtyInput.value : 0,
-                        nits: nitsInput ? nitsInput.value : 0,
-                        preu: preuInput ? preuInput.value : 0,
-                        desc: descInput ? descInput.value : 0,
-                        iva: ivaSelect ? ivaSelect.value : 10
-                    };
-                }),
-
-                payments: Array.from(document.querySelectorAll('.payment-row')).map(row => {
-                    const pctInput = row.querySelector('.pay-pct');
-                    const modeSelect = row.querySelector('.pay-mode-select');
-                    const daysInput = row.querySelector('.pay-days-input');
-                    const dateInput = row.querySelector('.pay-date');
-
-                    return {
-                        isFinal: row.classList.contains('final-row'),
-                        pct: pctInput ? pctInput.value : 0,
-                        mode: modeSelect ? modeSelect.value : 'FIXED',
-                        days: daysInput ? daysInput.value : 0,
-                        date: dateInput ? dateInput.value : '',
-                        isPaid: row.classList.contains('is-paid')
-                    };
-                }),
-
-                cancellations: Array.from(document.querySelectorAll('.canc-row')).map(row => {
-                    const d1Input = row.querySelector('.canc-d1');
-                    const d2Input = row.querySelector('.canc-d2');
-                    const pctInput = row.querySelector('.canc-pct');
-
-                    return {
-                        type: row.getAttribute('data-type'),
-                        d1: d1Input ? d1Input.value : 0,
-                        d2: d2Input ? d2Input.value : 0,
-                        pct: pctInput ? pctInput.value : 0
-                    };
-                })
-            };
-
-            const jsonString = JSON.stringify(data);
-
+            const payload = encodeURIComponent(JSON.stringify(data));
+            
             await fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
                 headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
+                    "Content-Type": "application/x-www-form-urlencoded"
                 },
-                body: jsonString
+                body: "data=" + payload
             });
 
-            alert(`Proforma ${num} enviada correctament a Google Sheets!`);
+            alert(`Proforma ${num} enviada a desar a Google Sheets!`);
             setTimeout(actualitzarDesplegableProformes, 1500);
-
         } catch (error) {
-            console.error("Error en desar:", error);
-            alert("S'ha produït un error en intentar desar: " + error.message);
+            console.error(error);
+            alert("Error en l'enviament a Google Sheets.");
         }
     }
 
@@ -1864,6 +1928,15 @@
         document.getElementById('tax-enable').checked = !!p.taxEnable;
         document.getElementById('tax-pax').value = p.taxPax || 0;
         document.getElementById('tax-nits').value = p.taxNits || 0;
+
+        if (p.paymentType) {
+            document.getElementById('payment-type-toggle').value = p.paymentType;
+            canviarTipusModalitatPagament(p.paymentType);
+        }
+        if (p.tpvUrl) {
+            document.getElementById('tpv-url-input').value = p.tpvUrl;
+            sincronitzarUrlTpv(p.tpvUrl);
+        }
 
         sincronitzarDadesClient();
 
@@ -1937,6 +2010,15 @@
         document.getElementById('tax-enable').checked = false;
         document.getElementById('tax-pax').value = 0;
         document.getElementById('tax-nits').value = 0;
+
+        if (document.getElementById('payment-type-toggle')) {
+            document.getElementById('payment-type-toggle').value = 'BANK';
+            canviarTipusModalitatPagament('BANK');
+        }
+        if (document.getElementById('tpv-url-input')) {
+            document.getElementById('tpv-url-input').value = '';
+            sincronitzarUrlTpv('');
+        }
 
         sincronitzarDadesClient();
 
