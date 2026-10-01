@@ -18,6 +18,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { overflow-y: scroll; } /* Evita tremolor per aparició/desaparició de barra de desplaçament */
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--light); color: var(--dark); line-height: 1.5; padding: 20px; }
 
     /* PANTALLA DE SEGURETAT */
@@ -39,9 +40,28 @@
 
     .container { max-width: 980px; margin: 0 auto; background: var(--white); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(30, 86, 49, 0.15); overflow: hidden; display: none; }
 
-    .toolbar { background: var(--dark); color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .toolbar { background: var(--dark); color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
     .toolbar-title { font-size: 14px; font-weight: 600; color: var(--accent); }
+    .toolbar-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-help-toggle { background: rgba(255,255,255,0.15); color: white; border: 1px solid var(--accent); padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .btn-help-toggle:hover { background: rgba(181, 201, 52, 0.3); }
     .select-lang { background: var(--primary); color: white; border: 1px solid var(--accent); padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+    /* QUADRE INSTRUCCIONS DESPLEGABLE */
+    .instructions-box {
+      background: #f0fdf4;
+      border: 2px solid #86efac;
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      margin: 20px 30px 0 30px;
+      font-size: 12px;
+      color: #166534;
+      display: none;
+    }
+    .instructions-title { font-size: 13px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: var(--primary); display: flex; align-items: center; justify-content: space-between; }
+    .instructions-box ol { padding-left: 20px; margin-top: 6px; line-height: 1.6; }
+    .instructions-box ol li { margin-bottom: 4px; }
+    .instructions-box ol li strong { color: var(--primary); }
 
     .header {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -90,7 +110,7 @@
     .btn-add-stay:disabled { background: var(--gray-300); color: var(--gray-700); cursor: not-allowed; }
 
     .client-info-display { background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; align-items: start; }
-    .client-info-item { font-size: 12px; color: var(--gray-700); }
+    .client-info-item { font-size: 12px; color: var(--gray-700); min-height: 42px; }
     .client-info-item strong { color: var(--primary); font-weight: 800; text-transform: uppercase; display: block; font-size: 10px; margin-bottom: 2px; }
 
     .group-panel { background: #f8fafc; border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
@@ -108,7 +128,7 @@
 
     .table-totals tr.grand-total td { border-bottom: none; font-weight: 800; font-size: 15px; color: var(--primary); padding-top: 14px; }
 
-    .policy-box { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; }
+    .policy-box { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; min-height: 180px; }
     .policy-title { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid var(--gray-200); padding-bottom: 6px; }
     .policy-content { font-size: 12px; color: var(--gray-700); line-height: 1.6; }
     .policy-content strong { color: var(--primary); }
@@ -143,7 +163,7 @@
     @media print {
       @page { size: A4 portrait; margin: 12mm 15mm; }
       body { background: white; padding: 0; font-size: 11pt; }
-      .login-overlay, .storage-card, .mode-selector-card, .grid-form, .stay-builder, .action-bar, .toast-msg, .btn-icon-del, .col-del, .toolbar, .footer-author { display: none !important; }
+      .login-overlay, .storage-card, .mode-selector-card, .grid-form, .stay-builder, .action-bar, .toast-msg, .btn-icon-del, .col-del, .toolbar, .instructions-box, .footer-author { display: none !important; }
       .container { display: block !important; box-shadow: none; border-radius: 0; max-width: 100% !important; padding: 0; }
       .content { padding: 10px 0; }
       .header { padding: 16px; }
@@ -153,7 +173,7 @@
     }
   </style></head><body>
 
-<div id="toast" class="toast-msg">✉️ <span id="toast-txt">Document HTML copiat! Enganxa'l directament a Gmail (Ctrl + V).</span></div>
+<div id="toast" class="toast-msg">✉ <span id="toast-txt">Document HTML copiat! Enganxa'l directament a Gmail (Ctrl + V).</span></div>
 
 <!-- PANTALLA DE SEGURETAT -->
 <div id="login-overlay" class="login-overlay">
@@ -172,12 +192,28 @@
 <div class="container" id="app-main">
   <div class="toolbar">
     <div class="toolbar-title">Vilar Rural de Sant Hilari Sacalm — Gestió de Reserves Individuals</div>
-    <div>
+    <div class="toolbar-actions">
+      <button class="btn-help-toggle no-print" onclick="toggleInstructions()" id="btn-help">ℹ️ Instruccions d'ús</button>
       <select id="sel-lang" class="select-lang">
         <option value="ca" selected>🌐 Català</option>
         <option value="es">🌐 Español</option>
       </select>
     </div>
+  </div>
+
+  <!-- INSTRUCCIONS D'ÚS DESPLEGABLES -->
+  <div class="instructions-box no-print" id="instructions-box">
+    <div class="instructions-title">
+      <span id="lbl-help-title">ℹ️ Guia Ràpida d'Ús del Cotitzador</span>
+      <button onclick="toggleInstructions()" style="background:none; border:none; color:#166534; font-weight:800; cursor:pointer;">✕</button>
+    </div>
+    <ol id="lbl-help-list">
+      <li><strong>Modes de treball:</strong> Tria entre <strong>Pressupost</strong> (proposta informativa) o <strong>Confirmació</strong> (per afegir localitzador i data límit de pagament).</li>
+      <li><strong>Tarifes Excel:</strong> Si disposeu del fitxer <code>.xlsx</code> de tarifes, carregueu-lo per calcular automàticament els preus.</li>
+      <li><strong>Configuració de l'estada:</strong> Selecciona dates, tipus d'habitació, ocupació i règim. Clica <strong>"┼ Afegir Habitació"</strong> per incorporar-la a la taula.</li>
+      <li><strong>Dades obligatòries:</strong> Assegura't d'introduir el <strong>Nom i Cognoms de l'Emissor / Agent</strong> abans de generar el document.</li>
+      <li><strong>Exportació:</strong> Utilitza el botó <strong>"Copiar per a Gmail"</strong> per enganxar la proposta maquetada al correu (<code>Ctrl + V</code>) o <strong>"Imprimir / PDF"</strong> per descarregar-la.</li>
+    </ol>
   </div>
 
   <div class="header">
@@ -402,7 +438,7 @@
 
       <!-- CONDICIONS GENERALS I POLÍTICA DE CANCEL·LACIÓ -->
       <div class="policy-box">
-        <div class="policy-title" id="disp-policy-title">ℹ️ Condicions de Reserva, Pagament i Cancel·lació</div>
+        <div class="policy-title" id="disp-policy-title">ℹ️️ Condicions de Reserva, Pagament i Cancel·lació</div>
         <div class="policy-content" id="policy-content-area">
           <!-- Es construeix segons el mode i l'idioma -->
         </div>
@@ -435,6 +471,7 @@
   let currentLang = "ca";
   let excelRatesMap = {};
   let cloudBudgetsList = [];
+  let updateDebounceTimer = null;
 
   const SANT_HILARI_BANK = {
     hotelName: "Vilar Rural de Sant Hilari Sacalm****",
@@ -525,7 +562,16 @@
       specialNYTag: " [Gala Cap d'Any]",
       footerHotelTitle: "Vilar Rural de Sant Hilari Sacalm **** — Allotjaments Rurals amb Encant",
       footerCustomerService: "Atenció al client:",
-      agentRequiredAlert: "⚠️ Cal introduir el Nom de l'Emissor / Agent (Nom i Cognoms) abans de continuar."
+      agentRequiredAlert: "⚠️ Cal introduir el Nom de l'Emissor / Agent (Nom i Cognoms) abans de continuar.",
+      btnHelp: "ℹ️ Instruccions d'ús",
+      helpTitle: "ℹ️ Guia Ràpida d'Ús del Cotitzador",
+      helpList: `
+        <li><strong>Modes de treball:</strong> Tria entre <strong>Pressupost</strong> (proposta informativa) o <strong>Confirmació</strong> (per afegir localitzador i data límit de pagament).</li>
+        <li><strong>Tarifes Excel:</strong> Si disposeu del fitxer <code>.xlsx</code> de tarifes, carregueu-lo per calcular automàticament els preus.</li>
+        <li><strong>Configuració de l'estada:</strong> Selecciona dates, tipus d'habitació, ocupació i règim. Clica <strong>"┼ Afegir Habitació"</strong> per incorporar-la a la taula.</li>
+        <li><strong>Dades obligatòries:</strong> Assegura't d'introduir el <strong>Nom i Cognoms de l'Emissor / Agent</strong> abans de generar el document.</li>
+        <li><strong>Exportació:</strong> Utilitza el botó <strong>"Copiar per a Gmail"</strong> per enganxar la proposta maquetada al correu (<code>Ctrl + V</code>) o <strong>"Imprimir / PDF"</strong> per descarregar-la.</li>
+      `
     },
     es: {
       subBudget: "Presupuesto y Propuesta de Estancia",
@@ -598,9 +644,23 @@
       specialNYTag: " [Gala Fin de Año]",
       footerHotelTitle: "Vilar Rural de Sant Hilari Sacalm **** — Alojamientos Rurales con Encanto",
       footerCustomerService: "Atención al cliente:",
-      agentRequiredAlert: "⚠️ Debe introducir el Nombre del Emisor / Agente (Nombre y Apellidos) antes de continuar."
+      agentRequiredAlert: "⚠️ Debe introducir el Nombre del Emisor / Agente (Nombre y Apellidos) antes de continuar.",
+      btnHelp: "ℹ️ Instrucciones de uso",
+      helpTitle: "ℹ️️ Guía Rápida de Uso del Cotizador",
+      helpList: `
+        <li><strong>Modos de trabajo:</strong> Elige entre <strong>Presupuesto</strong> (propuesta informativa) o <strong>Confirmación</strong> (para añadir localizador y fecha límite de pago).</li>
+        <li><strong>Tarifas Excel:</strong> Si dispones del archivo <code>.xlsx</code> de tarifas, cárgalo para calcular automáticamente los precios.</li>
+        <li><strong>Configuración de la estancia:</strong> Selecciona fechas, tipo de habitación, ocupación y régimen. Haz clic en <strong>"┼ Añadir Habitación"</strong> para incorporarla a la tabla.</li>
+        <li><strong>Datos obligatorios:</strong> Asegúrate de introducir el <strong>Nombre y Apellidos del Emisor / Agente</strong> antes de generar el documento.</li>
+        <li><strong>Exportación:</strong> Utiliza el botón <strong>"Copiar para Gmail"</strong> para pegar la propuesta maquetada en el correo (<code>Ctrl + V</code>) o <strong>"Imprimir / PDF"</strong> para descargarla.</li>
+      `
     }
   };
+
+  function toggleInstructions() {
+    const box = document.getElementById('instructions-box');
+    box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+  }
 
   document.getElementById('btn-login').addEventListener('click', checkPin);
   document.getElementById('input-pass').addEventListener('keypress', function(e) {
@@ -903,6 +963,10 @@
     document.getElementById('lbl-calc-price').textContent = t.calcPrice;
     document.getElementById('btn-add-stay').textContent = t.btnAddStay;
 
+    document.getElementById('btn-help').textContent = t.btnHelp;
+    document.getElementById('lbl-help-title').textContent = t.helpTitle;
+    document.getElementById('lbl-help-list').innerHTML = t.helpList;
+
     document.getElementById('disp-lbl-doc-date').textContent = t.dispDocDate;
     document.getElementById('disp-lbl-titular').textContent = t.dispTitular;
     document.getElementById('disp-lbl-email').textContent = t.dispEmail;
@@ -950,7 +1014,7 @@
       fpDeadline = flatpickr("#info-pay-deadline-picker", {
         dateFormat: "d/m/Y",
         locale: flatpickr.l10ns[lang],
-        onChange: function() { triggerUpdateDisplay(); }
+        onChange: function() { triggerUpdateDisplayDebounced(); }
       });
     }
 
@@ -959,7 +1023,7 @@
       fpCancelDeadline = flatpickr("#info-cancel-deadline-picker", {
         dateFormat: "d/m/Y",
         locale: flatpickr.l10ns[lang],
-        onChange: function() { triggerUpdateDisplay(); }
+        onChange: function() { triggerUpdateDisplayDebounced(); }
       });
     }
 
@@ -1912,18 +1976,21 @@
     });
   }
 
-  function triggerUpdateDisplay() {
-    let totalFirst = 0, totalStay = 0, hasPC = false, hasMP = false, arrDate = '';
-    addedRoomsList.forEach((r, index) => {
-      totalStay += r.totalPriceStay;
-      if (r.isFirstNightDeposit || index === 0) {
-        totalFirst += r.priceNight;
-      }
-      if (!arrDate && r.firstDateFormatted) arrDate = r.firstDateFormatted;
-      if (r.regimen === 'PC') hasPC = true;
-      if (r.regimen === 'MP') hasMP = true;
-    });
-    updatePolicyAndPaymentDisplay(totalFirst, Math.max(0, totalStay - totalFirst), hasPC, hasMP, arrDate);
+  function triggerUpdateDisplayDebounced() {
+    clearTimeout(updateDebounceTimer);
+    updateDebounceTimer = setTimeout(() => {
+      let totalFirst = 0, totalStay = 0, hasPC = false, hasMP = false, arrDate = '';
+      addedRoomsList.forEach((r, index) => {
+        totalStay += r.totalPriceStay;
+        if (r.isFirstNightDeposit || index === 0) {
+          totalFirst += r.priceNight;
+        }
+        if (!arrDate && r.firstDateFormatted) arrDate = r.firstDateFormatted;
+        if (r.regimen === 'PC') hasPC = true;
+        if (r.regimen === 'MP') hasMP = true;
+      });
+      updatePolicyAndPaymentDisplay(totalFirst, Math.max(0, totalStay - totalFirst), hasPC, hasMP, arrDate);
+    }, 150);
   }
 
   // INICIALITZAR CALENDARIS
@@ -1947,13 +2014,13 @@
   fpDeadline = flatpickr("#info-pay-deadline-picker", {
     dateFormat: "d/m/Y",
     locale: flatpickr.l10ns.cat,
-    onChange: function() { triggerUpdateDisplay(); }
+    onChange: function() { triggerUpdateDisplayDebounced(); }
   });
 
   fpCancelDeadline = flatpickr("#info-cancel-deadline-picker", {
     dateFormat: "d/m/Y",
     locale: flatpickr.l10ns.cat,
-    onChange: function() { triggerUpdateDisplay(); }
+    onChange: function() { triggerUpdateDisplayDebounced(); }
   });
 
   ['base-price-adult', 'sel-tipo', 'num-adultos', 'num-ninos', 'num-bebes', 'sel-regimen', 'sel-begudes', 'disc-cat-1'].forEach(id => {
@@ -1962,8 +2029,8 @@
   });
 
   ['info-client-name', 'info-client-email', 'info-client-phone', 'info-agent-name', 'info-loc-code', 'info-pay-deadline-picker', 'info-cancel-deadline-picker', 'info-budget-validity', 'sel-pay-method', 'inp-tpv-url', 'info-obs'].forEach(id => {
-    document.getElementById(id).addEventListener('input', triggerUpdateDisplay);
-    document.getElementById(id).addEventListener('change', triggerUpdateDisplay);
+    document.getElementById(id).addEventListener('input', triggerUpdateDisplayDebounced);
+    document.getElementById(id).addEventListener('change', triggerUpdateDisplayDebounced);
   });
 
   setLanguage("ca");
