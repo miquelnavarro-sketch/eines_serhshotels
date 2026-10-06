@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proforma Grups - Hotel SERHS Rivoli Rambla - Barcelona</title>
+    <title>Proforma Grups - Hotel SERHS del Port - Barcelona</title>
     <style>
         :root {
             --primary: #1b2a4a;
@@ -125,7 +125,7 @@
         /* Capçalera i Logo */
         .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 25px; }
         .brand { max-width: 58%; }
-        .logo-hotel { width: 260px; height: auto; max-height: 60px; object-fit: contain; display: block; margin-bottom: 8px; }
+        .logo-hotel { width: 320px; height: auto; max-height: 95px; object-fit: contain; display: block; margin-bottom: 12px; }
         .brand p { margin: 2px 0; color: #555; font-size: 11px; line-height: 1.35; }
         
         .doc-meta { text-align: right; }
@@ -332,7 +332,7 @@
         .tax-disclaimer { font-size: 11px; color: #555; margin-bottom: 8px; }
         .bank-card textarea { width: 100%; height: 50px; border: 1px solid var(--border); border-radius: 4px; padding: 6px; font-size: 11px; background: #fff; }
 
-        /* Secció Doble de Signatures */
+        /* Secció Doble de Signatures amb Nom i Cognom Editable del Responsable */
         .signatures-wrapper { 
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -382,11 +382,28 @@
             padding: 12px;
             background: #fafafa;
         }
-        .contact-person { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-        .avatar-ma { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+        .contact-person { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 10px; width: 100%; text-align: center; }
         .contact-info p { margin: 2px 0; font-size: 11px; }
         .contact-info .name { font-weight: bold; color: var(--primary); font-size: 13px; }
-        .img-sign { height: 85px; width: auto; object-fit: contain; display: block; margin: 0 auto; }
+        
+        .staff-name-input {
+            width: 80%;
+            padding: 5px 8px;
+            font-size: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .staff-name-display {
+            display: none;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 13px;
+        }
 
         /* Formats d'impressió i PDF amb Evitació de Talls de Pàgina */
         @media print {
@@ -451,6 +468,9 @@
 
             .tpv-details-box input[type="url"] { display: none !important; }
             .tpv-print-link { display: inline !important; }
+
+            .staff-name-input { display: none !important; }
+            .staff-name-display { display: block !important; }
         }
 
         .print-pay-text { display: none; }
@@ -463,7 +483,7 @@
 <div id="pin-lock-overlay">
     <div class="pin-card">
         <h3>🔒 Accés Restringit</h3>
-        <p>Hotel SERHS Rivoli Rambla - Barcelona</p>
+        <p>Hotel SERHS del Port - Barcelona</p>
         <form id="pin-form" onsubmit="event.preventDefault(); validarPin();">
             <input type="password" id="pin-input" placeholder="Introdueix la clau d'accés" autofocus required>
             <button type="submit">Entrar</button>
@@ -499,12 +519,12 @@
     <!-- Capçalera amb Logo i Dades Socials / Fiscals / Contacte -->
     <div class="header">
         <div class="brand">
-            <img src="img/SHRivoli_RamblaH.jpg" alt="Hotel SERHS Rivoli Rambla Barcelona" class="logo-hotel">
-            <p><strong data-i18n="establiment">Establiment:</strong> La Rambla, 128 - 08002 Barcelona</p>
+            <img src="img/Logo Serhs del Port Horitzontal.png" alt="Hotel SERHS del Port Barcelona" class="logo-hotel">
+            <p><strong data-i18n="establiment">Establiment:</strong> Avinguda del Paral·lel, 40 - 08001 Barcelona</p>
             <p><strong data-i18n="rao_social">Raó Social:</strong> PASTUIRASER, S.L.U. | <strong>NIF:</strong> B64337827</p>
             <p><strong data-i18n="dom_social">Dom. Social:</strong> C/ Garbí, 88-90 - 08397 Pineda de Mar (Barcelona)</p>
-            <p><strong data-i18n="tel_hotel">Tel. Hotel:</strong> +34 93 481 76 76 | <strong data-i18n="tel_reserves">Tel. Reserves:</strong> +34 93 481 76 53</p>
-            <p><strong>Email Hotel:</strong> info.rivolirambla@grupserhs.com | <strong data-i18n="email_grups">Grups:</strong> grups.rivolirambla@grupserhs.com</p>
+            <p><strong data-i18n="tel_hotel">Tel. Hotel:</strong> +34 93 230 85 00</p>
+            <p><strong>Email Hotel:</strong> info.delport@grupserhs.com</p>
         </div>
         <div class="doc-meta">
             <h2>PROFORMA</h2>
@@ -613,7 +633,7 @@
         </table>
     </div>
 
-    <!-- CALCULADOR DE TAXA TURÍSTICA -->
+    <!-- CALCULADOR DE TAXA TURÍSTICA (HOTEL 3 ESTRELLES: 7.70 € / 8.80 €) -->
     <div class="tax-card" id="tax-card-block">
         <h4>
             <input type="checkbox" id="tax-enable" onchange="recalcular()" style="width:16px; height:16px;">
@@ -741,7 +761,7 @@
         <textarea id="notes-textarea" placeholder="Observacions i comentaris addicionals..."></textarea>
     </div>
 
-    <!-- Secció Doble de Signatures -->
+    <!-- Secció Doble de Signatures amb Nom i Cognom Editable del Responsable -->
     <div class="signatures-wrapper">
         <div class="client-signature-box">
             <h4 data-i18n="client_signature_title">Conformitat i Acceptació del Client</h4>
@@ -755,15 +775,17 @@
 
         <div class="hotel-signature-box">
             <div class="contact-person">
-                <img src="img/MA.jpg" alt="Maite Ayora" class="avatar-ma">
+                <input type="text" id="staff-name-input" class="staff-name-input" placeholder="Nom i Cognom del Responsable" oninput="sincronitzarNomResponsable(this.value)">
+                <span id="staff-name-display" class="staff-name-display">-</span>
                 <div class="contact-info">
-                    <p class="name">Maite Ayora</p>
                     <p data-i18n="hotel_dept">Departament de reserves, grups i esdeveniments</p>
-                    <p>Hotel SERHS Rivoli Rambla - Barcelona</p>
+                    <p>Hotel SERHS del Port - Barcelona</p>
                 </div>
             </div>
-            <div class="signature-box">
-                <img src="img/signamn.png" alt="Signatura i Segell" class="img-sign">
+            <div class="signature-box" style="margin-top: 15px;">
+                <div style="height: 60px; border-bottom: 1px dashed #ccc; width: 220px; margin: 0 auto; position: relative;">
+                    <span style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: #999;" data-i18n="hotel_seal_label">Signatura i Segell Hotel</span>
+                </div>
             </div>
         </div>
     </div>
@@ -775,17 +797,17 @@
 
 <script>
     // IDENTIFICADOR PESTAÑA GOOGLE SHEETS
-    const HOTEL_CODE = "Rivoli";
+    const HOTEL_CODE = "DelPort";
 
-    // CLAU D'ACCÉS AL SISTEMA PER AL RIVOLI RAMBLA
-    const CORRECT_PIN = "Rivoli2026@";
+    // CLAU D'ACCÉS AL SISTEMA PER AL SERHS DEL PORT
+    const CORRECT_PIN = "Delport2026@";
 
     function validarPin() {
         const pinInput = document.getElementById('pin-input');
         const errorMsg = document.getElementById('pin-error-msg');
         
         if (pinInput && pinInput.value === CORRECT_PIN) {
-            sessionStorage.setItem('proforma_authenticated', 'true');
+            sessionStorage.setItem('proforma_delport_auth', 'true');
             const overlay = document.getElementById('pin-lock-overlay');
             if (overlay) overlay.style.display = 'none';
             if (errorMsg) errorMsg.style.display = 'none';
@@ -800,7 +822,7 @@
 
     // Comprovació de la sessió i límit de dates al carregar la pàgina
     window.addEventListener('DOMContentLoaded', () => {
-        const isAuth = sessionStorage.getItem('proforma_authenticated') === 'true';
+        const isAuth = sessionStorage.getItem('proforma_delport_auth') === 'true';
         const overlay = document.getElementById('pin-lock-overlay');
         if (overlay) {
             overlay.style.display = isAuth ? 'none' : 'flex';
@@ -826,7 +848,27 @@
         recalcular();
     }
 
+    function sincronitzarNomResponsable(val) {
+        const disp = document.getElementById('staff-name-display');
+        if (disp) {
+            disp.textContent = val.trim() || '-';
+        }
+    }
+
+    function validarNomIComgnomResponsable() {
+        const val = (document.getElementById('staff-name-input').value || '').trim();
+        const mots = val.split(/\s+/).filter(m => m.length > 0);
+        if (mots.length < 2) {
+            alert("⚠️ Cal indicar el NOM i COGNOM complet del responsable de l'hotel a la secció de signatura!");
+            document.getElementById('staff-name-input').focus();
+            return false;
+        }
+        return true;
+    }
+
     function prepararNomIImprimir() {
+        if (!validarNomIComgnomResponsable()) return;
+
         const loc = (document.getElementById('pms-ref-input').value || 'RESERVA').replace(/[^a-zA-Z0-9]/g, '');
         const grup = (document.getElementById('group-name-input').value || 'GRUP').replace(/[^a-zA-Z0-9]/g, '');
         const num = (document.getElementById('proforma-num-input').value || 'PROFORMA').replace(/[^a-zA-Z0-9\-]/g, '');
@@ -848,8 +890,6 @@
             rao_social: "Raó Social:",
             dom_social: "Dom. Social:",
             tel_hotel: "Tel. Hotel:",
-            tel_reserves: "Tel. Reserves:",
-            email_grups: "Grups:",
             num_proforma: "Núm:",
             data_doc: "Data:",
             title_client: "Dades del Client / Agència",
@@ -906,13 +946,14 @@
             client_nif_label: "NIF / CIF:",
             client_rep_label: "Representant:",
             sign_seal_label: "Signatura i Segell del Client",
+            hotel_seal_label: "Signatura i Segell Hotel",
             hotel_dept: "Departament de reserves, grups i esdeveniments",
             btn_print: "Imprimir / Generar PDF",
             deposit_label: "• Dipòsit:",
             rest_label: "Resta Pendent:",
             before_text: "abans del:",
             paid_text: "Pagat",
-            paid_tag: "(PAGATED)",
+            paid_tag: "(PAGAT)",
             canc_free_1: "• Sense despeses de cancel·lació fins al",
             canc_between: "• Entre el",
             canc_and_the: "i el",
@@ -924,8 +965,6 @@
             rao_social: "Razón Social:",
             dom_social: "Dom. Social:",
             tel_hotel: "Tel. Hotel:",
-            tel_reserves: "Tel. Reservas:",
-            email_grups: "Grupos:",
             num_proforma: "Nº:",
             data_doc: "Fecha:",
             title_client: "Datos del Cliente / Agencia",
@@ -982,6 +1021,7 @@
             client_nif_label: "NIF / CIF:",
             client_rep_label: "Representante:",
             sign_seal_label: "Firma y Sello del Cliente",
+            hotel_seal_label: "Firma y Sello Hotel",
             hotel_dept: "Departamento de reservas, grupos y eventos",
             btn_print: "Imprimir / Generar PDF",
             deposit_label: "• Depósito:",
@@ -1000,8 +1040,6 @@
             rao_social: "Company Name:",
             dom_social: "Reg. Address:",
             tel_hotel: "Hotel Tel:",
-            tel_reserves: "Reservations Tel:",
-            email_grups: "Groups:",
             num_proforma: "No:",
             data_doc: "Date:",
             title_client: "Client / Agency Details",
@@ -1058,6 +1096,7 @@
             client_nif_label: "VAT / ID:",
             client_rep_label: "Representative:",
             sign_seal_label: "Client Signature & Stamp",
+            hotel_seal_label: "Hotel Signature & Stamp",
             hotel_dept: "Reservations, groups and events department",
             btn_print: "Print / Save as PDF",
             deposit_label: "• Deposit:",
@@ -1076,8 +1115,6 @@
             rao_social: "Raison Sociale:",
             dom_social: "Siège Social:",
             tel_hotel: "Tél. Hôtel:",
-            tel_reserves: "Tél. Réservations:",
-            email_grups: "Groupes:",
             num_proforma: "N°:",
             data_doc: "Date:",
             title_client: "Coordonnées du Client / Agence",
@@ -1150,17 +1187,14 @@
         }
     };
 
+    /* OPCIONS D'ALLOTJAMENT SIMPLIFICADES PER AL DEL PORT */
     const opcionsCategoriesMultilang = {
         ca: {
             'ALLOTJAMENT': [
-                { val: 'DOBLE/TWIN ÚS DOBLE', text: 'DOBLE/TWIN ÚS DOBLE' },
-                { val: 'DOBLE/TWIN ÚS INDIVIDUAL', text: 'DOBLE/TWIN ÚS INDIVIDUAL' },
+                { val: 'DOBLE/TWIN', text: 'DOBLE/TWIN' },
+                { val: 'SINGLE/DUI', text: 'SINGLE/DUI' },
                 { val: 'TRIPLE', text: 'TRIPLE' },
-                { val: 'SUPERIOR', text: 'SUPERIOR' },
-                { val: 'SUITE', text: 'SUITE' },
                 { val: 'SUPLEMENT HABITACIÓ', text: 'SUPLEMENT HABITACIÓ' },
-                { val: 'SUPLEMENT MITJA PENSIÓ', text: 'SUPLEMENT MITJA PENSIÓ' },
-                { val: 'SUPLEMENT PENSIÓ COMPLETA', text: 'SUPLEMENT PENSIÓ COMPLETA' },
                 { val: 'SUPLEMENT ESMORZAR PICNIC', text: 'SUPLEMENT ESMORZAR PICNIC' },
                 { val: 'CUSTOM', text: 'ALTRE (Escriure concepte...)' }
             ],
@@ -1179,14 +1213,10 @@
         },
         es: {
             'ALLOTJAMENT': [
-                { val: 'DOBLE/TWIN USO DOBLE', text: 'DOBLE/TWIN USO DOBLE' },
-                { val: 'DOBLE/TWIN USO INDIVIDUAL', text: 'DOBLE/TWIN USO INDIVIDUAL' },
+                { val: 'DOBLE/TWIN', text: 'DOBLE/TWIN' },
+                { val: 'SINGLE/DUI', text: 'SINGLE/DUI' },
                 { val: 'TRIPLE', text: 'TRIPLE' },
-                { val: 'SUPERIOR', text: 'SUPERIOR' },
-                { val: 'SUITE', text: 'SUITE' },
                 { val: 'SUPLEMENTO HABITACIÓN', text: 'SUPLEMENTO HABITACIÓN' },
-                { val: 'SUPLEMENTO MEDIA PENSIÓN', text: 'SUPLEMENTO MEDIA PENSIÓN' },
-                { val: 'SUPLEMENTO PENSIÓN COMPLETA', text: 'SUPLEMENTO PENSIÓN COMPLETA' },
                 { val: 'SUPLEMENTO DESAYUNO PICNIC', text: 'SUPLEMENTO DESAYUNO PICNIC' },
                 { val: 'CUSTOM', text: 'OTRO (Escribir concepto...)' }
             ],
@@ -1205,14 +1235,10 @@
         },
         en: {
             'ALLOTJAMENT': [
-                { val: 'DOUBLE/TWIN DOUBLE USE', text: 'DOUBLE/TWIN DOUBLE USE' },
-                { val: 'DOUBLE/TWIN SINGLE USE', text: 'DOUBLE/TWIN SINGLE USE' },
+                { val: 'DOUBLE/TWIN', text: 'DOUBLE/TWIN' },
+                { val: 'SINGLE/DUI', text: 'SINGLE/DUI' },
                 { val: 'TRIPLE ROOM', text: 'TRIPLE ROOM' },
-                { val: 'SUPERIOR ROOM', text: 'SUPERIOR ROOM' },
-                { val: 'SUITE', text: 'SUITE' },
                 { val: 'ROOM SUPPLEMENT', text: 'ROOM SUPPLEMENT' },
-                { val: 'HALF BOARD SUPPLEMENT', text: 'HALF BOARD SUPPLEMENT' },
-                { val: 'FULL BOARD SUPPLEMENT', text: 'FULL BOARD SUPPLEMENT' },
                 { val: 'PICNIC BREAKFAST SUPPLEMENT', text: 'PICNIC BREAKFAST SUPPLEMENT' },
                 { val: 'CUSTOM', text: 'OTHER (Custom concept...)' }
             ],
@@ -1231,14 +1257,10 @@
         },
         fr: {
             'ALLOTJAMENT': [
-                { val: 'DOUBLE/TWIN USAGE DOUBLE', text: 'DOUBLE/TWIN USAGE DOUBLE' },
-                { val: 'DOUBLE/TWIN USAGE INDIVIDUEL', text: 'DOUBLE/TWIN USAGE INDIVIDUEL' },
+                { val: 'DOUBLE/TWIN', text: 'DOUBLE/TWIN' },
+                { val: 'SINGLE/DUI', text: 'SINGLE/DUI' },
                 { val: 'CHAMBRE TRIPLE', text: 'CHAMBRE TRIPLE' },
-                { val: 'CHAMBRE SUPÉRIEURE', text: 'CHAMBRE SUPÉRIEURE' },
-                { val: 'SUITE', text: 'SUITE' },
                 { val: 'SUPPLÉMENT CHAMBRE', text: 'SUPPLÉMENT CHAMBRE' },
-                { val: 'SUPPLÉMENT DEMI-PENSION', text: 'SUPPLÉMENT DEMI-PENSION' },
-                { val: 'SUPPLÉMENT PENSION COMPLÈTE', text: 'SUPPLÉMENT PENSION COMPLÈTE' },
                 { val: 'SUPPLÉMENT PETIT-DÉJEUNER PIC-NIC', text: 'SUPPLÉMENT PETIT-DÉJEUNER PIC-NIC' },
                 { val: 'CUSTOM', text: 'AUTRE (Saisir concept...)' }
             ],
@@ -1674,7 +1696,7 @@
             }
         });
 
-        /* CÀLCUL DE TAXA TURÍSTICA AMB IVA DEL 10% */
+        /* CÀLCUL DE TAXA TURÍSTICA AMB IVA DEL 10% (HOTEL 3 ESTRELLES: 7.70 € / 8.80 €) */
         const isTaxEnabled = document.getElementById('tax-enable').checked;
         const taxCardBlock = document.getElementById('tax-card-block');
         const taxDisclaimerText = document.getElementById('tax-disclaimer-text');
@@ -1692,11 +1714,12 @@
         const docDateVal = document.getElementById('data-doc').value;
         const docDate = docDateVal ? new Date(docDateVal) : new Date();
 
-        let taxRateIvaIncl = 9.24;
+        // Tarifa actual per 3 estrelles: 7.70 €. A partir de l'1/4/2027: 8.80 €
+        let taxRateIvaIncl = 7.70;
         if (checkInDate) {
             const apr1_2027 = new Date('2027-04-01');
             if (checkInDate >= apr1_2027) {
-                taxRateIvaIncl = 10.34;
+                taxRateIvaIncl = 8.80;
             }
         }
 
@@ -1882,6 +1905,8 @@
 
     /* FUNCIÓ DE DESAR BLINDADA CONTRA ERRORS DE NULL I AMB FILTRE DE FILES BUIDES */
     async function guardarProformaActual() {
+        if (!validarNomIComgnomResponsable()) return;
+
         const numInput = document.getElementById('proforma-num-input');
         const num = numInput ? numInput.value.trim() : '';
         if (!num) {
@@ -1890,7 +1915,7 @@
         }
 
         const data = {
-            hotelCode: typeof HOTEL_CODE !== 'undefined' ? HOTEL_CODE : 'Rivoli',
+            hotelCode: typeof HOTEL_CODE !== 'undefined' ? HOTEL_CODE : 'DelPort',
             num: num,
             docDate: document.getElementById('data-doc') ? document.getElementById('data-doc').value : '',
             lang: currentLang,
@@ -2018,6 +2043,11 @@
         document.getElementById('tax-pax').value = p.taxPax || 0;
         document.getElementById('tax-nits').value = p.taxNits || 0;
 
+        if (p.staffName) {
+            document.getElementById('staff-name-input').value = p.staffName;
+            sincronitzarNomResponsable(p.staffName);
+        }
+
         if (p.paymentType) {
             document.getElementById('payment-type-toggle').value = p.paymentType;
             canviarTipusModalitatPagament(p.paymentType);
@@ -2123,6 +2153,11 @@
         document.getElementById('tax-enable').checked = false;
         document.getElementById('tax-pax').value = 0;
         document.getElementById('tax-nits').value = 0;
+
+        if (document.getElementById('staff-name-input')) {
+            document.getElementById('staff-name-input').value = '';
+            sincronitzarNomResponsable('');
+        }
 
         if (document.getElementById('payment-type-toggle')) {
             document.getElementById('payment-type-toggle').value = 'BANK';

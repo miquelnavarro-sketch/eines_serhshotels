@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Proformes Grups - SERHS Hotels Barcelona</title>
+    <style>
+        :root {
+            --primary: #1b2a4a;
+            --accent: #c5a059;
+            --bg: #f4f6f8;
+            --border: #dcdfe6;
+            --text: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .landing-container {
+            max-width: 1050px;
+            width: 100%;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .landing-header {
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 20px;
+            margin-bottom: 35px;
+        }
+
+        .landing-header h1 {
+            color: var(--primary);
+            font-size: 26px;
+            margin: 0 0 10px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .landing-header p {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .hotels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .hotel-card {
+            background: #fafafa;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+        }
+
+        .logo-wrapper {
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .logo-wrapper img {
+            max-width: 100%;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .hotel-card h3 {
+            color: var(--primary);
+            font-size: 16px;
+            margin: 0 0 6px 0;
+            font-weight: bold;
+        }
+
+        .hotel-card p {
+            color: #777;
+            font-size: 12px;
+            margin: 0 0 20px 0;
+        }
+
+        .btn-access {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 13px;
+            transition: background 0.2s;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-access:hover {
+            background: #283c66;
+        }
+
+        .landing-footer {
+            margin-top: 30px;
+            font-size: 11px;
+            color: #888;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="landing-container">
+    <div class="landing-header">
+        <h1>GESTOR DE PROFORMES DE GRUPS</h1>
+        <p>Selecciona l'establiment per accedir al formulari de gestió</p>
+    </div>
+
+    <div class="hotels-grid">
+        <!-- HOTEL RIVOLI RAMBLA -->
+        <div class="hotel-card">
+            <div class="logo-wrapper">
+                <img src="img/SHRivoli_RamblaH.jpg" alt="Hotel SERHS Rivoli Rambla">
+            </div>
+            <h3>SERHS Rivoli Rambla</h3>
+            <p>La Rambla, 128 - Barcelona</p>
+            <a href="proforma_rivoli.html" class="btn-access">Obrir Proforma</a>
+        </div>
+
+        <!-- HOTEL SERHS DEL PORT -->
+        <div class="hotel-card">
+            <div class="logo-wrapper">
+                <img src="img/Logo Serhs del Port Horitzontal.png" alt="Hotel SERHS del Port">
+            </div>
+            <h3>SERHS del Port</h3>
+            <p>Av. Paral·lel, 40 - Barcelona</p>
+            <a href="proforma_delport.html" class="btn-access">Obrir Proforma</a>
+        </div>
+
+        <!-- HOTEL SERHS CARLIT -->
+        <div class="hotel-card">
+            <div class="logo-wrapper">
+                <img src="img/Serhs_Boutique_Hotel_Carlit_2480x827.jpg" alt="Hotel SERHS Carlit">
+            </div>
+            <h3>SERHS Carlit</h3>
+            <p>C/ Diputació, 383 - Barcelona</p>
+            <a href="proforma_carlit.html" class="btn-access">Obrir Proforma</a>
+        </div>
+    </div>
+
+    <div class="landing-footer">
+        © SERHS Hotels - Sistema Intern de Gestió de Proformes i Reserves de Grups
+    </div>
+</div>
+
+</body>
+</html>
