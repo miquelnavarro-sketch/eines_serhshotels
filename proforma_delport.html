@@ -251,15 +251,22 @@
         .payment-row input[type="number"].pay-days-input { width: 55px !important; text-align: center; padding: 4px; font-size: 12px; font-weight: bold; }
         .payment-row input[type="date"] { width: 115px; }
         .payment-row select { width: auto; font-size: 10px; padding: 2px 4px; }
-        .payment-row .val-amount { font-weight: bold; text-align: right; min-width: 80px; margin-left: 8px; }
         .payment-row .paid-tag { color: #28a745; font-weight: bold; font-size: 11px; display: none; }
         
+        /* REGLES QUAN UN TRAM ESTÀ MARCAT COM A PAGAT */
         .payment-row.is-paid .pay-pct, 
         .payment-row.is-paid .pct-symbol, 
         .payment-row.is-paid .before-text, 
         .payment-row.is-paid .pay-date,
         .payment-row.is-paid .pay-mode-select,
         .payment-row.is-paid .pay-days-input { display: none !important; }
+        
+        .payment-row.is-paid .pay-amount-input {
+            border: none !important;
+            background: transparent !important;
+            font-weight: bold;
+            color: #28a745;
+        }
         .payment-row.is-paid .paid-tag { display: inline; }
 
         .pct-alert { color: #dc3545; font-size: 11px; font-weight: bold; margin-top: 8px; display: none; background: #f8d7da; padding: 6px; border-radius: 4px; border: 1px solid #f5c6cb; }
@@ -471,6 +478,8 @@
 
             .staff-name-input { display: none !important; }
             .staff-name-display { display: block !important; }
+
+            .pay-amount-input { border: none !important; background: transparent !important; text-align: right !important; }
         }
 
         .print-pay-text { display: none; }
@@ -1504,7 +1513,7 @@
         recalcular();
     }
 
-    /* GESTIÓ DE DIPÒSITS I CÀLCUL AUTOMÀTIC DE DATES DE PAGAMENT */
+    /* GESTIÓ DE DIPÒSITS AMB ENTRADA MANUAL D'IMPORTS EN EUROS */
     function afegirTramPagament(pct = 25, dataLimit = '', isFinal = false, mode = 'FIXED', daysVal = 14) {
         const container = document.getElementById('payment-rows-container');
         const div = document.createElement('div');
@@ -1534,14 +1543,14 @@
                     <span class="chk-paid-wrap" style="margin-left:4px;"><input type="checkbox" onchange="marcarPagat(this)"> ${t.paid_text}</span>
                     <span class="paid-tag">${t.paid_tag}</span>
                 </div>
-                <span class="val-amount">0.00 €</span>
+                <span class="val-amount final-amount" style="font-weight:bold; min-width:80px; text-align:right;">0.00 €</span>
             `;
             container.appendChild(div);
         } else {
             div.innerHTML = `
                 <div class="payment-left-group">
                     <span class="label-dep">${t.deposit_label}</span>
-                    <input type="number" class="pay-pct" value="${pct}" min="0" max="100" oninput="recalcular()"><span class="pct-symbol">%</span>
+                    <input type="number" class="pay-pct" value="${pct}" min="0" max="100" step="any" oninput="canviPctManual(this)"><span class="pct-symbol">%</span>
                     <span class="before-text">${t.before_text}</span>
                     <select class="pay-mode-select" onchange="canviModePagament(this)">
                         ${modeOptions}
@@ -1553,7 +1562,7 @@
                     <span class="paid-tag">${t.paid_tag}</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <span class="val-amount">0.00 €</span>
+                    <input type="number" class="pay-amount-input" placeholder="0.00" step="any" style="width:75px; text-align:right; font-weight:bold;" oninput="canviImportManual(this)" onchange="formatarDecimals(this)"> <span class="no-print">€</span>
                     <button class="btn-remove" onclick="treureTramPagament(this)">X</button>
                 </div>
             `;
@@ -1564,6 +1573,18 @@
                 container.appendChild(div);
             }
         }
+        recalcular();
+    }
+
+    function canviPctManual(inputPct) {
+        const row = inputPct.closest('.payment-row');
+        row.setAttribute('data-last-edited', 'pct');
+        recalcular();
+    }
+
+    function canviImportManual(inputAmount) {
+        const row = inputAmount.closest('.payment-row');
+        row.setAttribute('data-last-edited', 'amount');
         recalcular();
     }
 
@@ -1755,13 +1776,33 @@
         document.getElementById('iva-21').textContent = i21.toFixed(2) + ' €';
         document.getElementById('total-final').innerHTML = '<strong>' + totalFinal.toFixed(2) + ' €</strong>';
 
-        /* CÀLCUL DIPÒSITS I RECALCUL DE DATES (AMB VALIDACIÓ CRONOLÒGICA) */
-        const normalPayRows = document.querySelectorAll('.payment-row:not(.final-row)');
-        const finalRow = document.querySelector('.payment-row.final-row');
-        let sumPct = 0;
+        /* CÀLCUL I SINCRO A DOS SENTITS D'IMPORTS EN EUROS I PERCENTATGES */
+        let sumEurosDeposits = 0;
         let lastPayDateObj = null;
 
-        document.querySelectorAll('.payment-row').forEach(row => {
+        document.querySelectorAll('.payment-row:not(.final-row)').forEach(row => {
+            const pctInput = row.querySelector('.pay-pct');
+            const amountInput = row.querySelector('.pay-amount-input');
+            const lastEdited = row.getAttribute('data-last-edited') || 'pct';
+
+            let pctVal = parseFloat(pctInput ? pctInput.value : 0) || 0;
+            let amountVal = parseFloat(amountInput ? amountInput.value.replace(',', '.') : 0) || 0;
+
+            if (lastEdited === 'amount') {
+                if (totalFinal > 0) {
+                    pctVal = (amountVal / totalFinal) * 100;
+                    if (pctInput) pctInput.value = pctVal.toFixed(2);
+                }
+            } else {
+                amountVal = totalFinal * (pctVal / 100);
+                if (amountInput && document.activeElement !== amountInput) {
+                    amountInput.value = amountVal.toFixed(2);
+                }
+            }
+
+            sumEurosDeposits += amountVal;
+
+            // Ajust de dates
             const modeSelect = row.querySelector('.pay-mode-select');
             const mode = modeSelect ? modeSelect.value : 'FIXED';
             const daysInput = row.querySelector('.pay-days-input');
@@ -1770,7 +1811,6 @@
             const printPaySpan = row.querySelector('.print-pay-text');
 
             let calcDateObj = null;
-
             if (mode === 'AFTER_CONF') {
                 calcDateObj = new Date(docDate);
                 calcDateObj.setDate(calcDateObj.getDate() + days);
@@ -1787,35 +1827,41 @@
             if (lastPayDateObj && calcDateObj && calcDateObj < lastPayDateObj) {
                 calcDateObj = new Date(lastPayDateObj);
             }
-            if (calcDateObj) {
-                lastPayDateObj = new Date(calcDateObj);
-            }
+            if (calcDateObj) lastPayDateObj = new Date(calcDateObj);
 
-            let calcDateStr = calcDateObj ? formatDate(calcDateObj) : 'dd/mm/aaaa';
-
-            if (printPaySpan) {
-                printPaySpan.textContent = calcDateStr;
-            }
-
-            if (!row.classList.contains('final-row')) {
-                const pctInput = row.querySelector('.pay-pct');
-                const pct = parseFloat(pctInput ? pctInput.value : 0) || 0;
-                sumPct += pct;
-                const amount = totalFinal * (pct / 100);
-                row.querySelector('.val-amount').textContent = amount.toFixed(2) + ' €';
-            }
+            if (printPaySpan) printPaySpan.textContent = calcDateObj ? formatDate(calcDateObj) : 'dd/mm/aaaa';
         });
 
-        const pctResta = Math.max(0, 100 - sumPct);
+        // RECALCULAR LA FILA FINAL ("RESTA PENDENT")
+        const finalRow = document.querySelector('.payment-row.final-row');
         if (finalRow) {
-            const amountResta = totalFinal * (pctResta / 100);
-            finalRow.querySelector('.val-amount').textContent = amountResta.toFixed(2) + ' €';
+            const eurosResta = Math.max(0, totalFinal - sumEurosDeposits);
+            const finalAmountSpan = finalRow.querySelector('.final-amount');
+            if (finalAmountSpan) finalAmountSpan.textContent = eurosResta.toFixed(2) + ' €';
+
+            // Ajust de data per a la fila final
+            const modeSelect = finalRow.querySelector('.pay-mode-select');
+            const mode = modeSelect ? modeSelect.value : 'FIXED';
+            const daysInput = finalRow.querySelector('.pay-days-input');
+            const days = daysInput ? (parseInt(daysInput.value) || 0) : 0;
+            const dateInput = finalRow.querySelector('.pay-date');
+            const printPaySpan = finalRow.querySelector('.print-pay-text');
+
+            let calcDateObj = null;
+            if (mode === 'BEFORE_ARR' && checkInDate) {
+                calcDateObj = new Date(checkInDate);
+                calcDateObj.setDate(calcDateObj.getDate() - days);
+            } else {
+                const valDate = dateInput ? dateInput.value : '';
+                calcDateObj = valDate ? new Date(valDate) : null;
+            }
+            if (printPaySpan) printPaySpan.textContent = calcDateObj ? formatDate(calcDateObj) : 'dd/mm/aaaa';
         }
 
         const pctAlert = document.getElementById('pct-alert');
         const printBtn = document.getElementById('btn-print');
 
-        if (sumPct > 100) {
+        if (sumEurosDeposits > totalFinal + 0.01) {
             pctAlert.style.display = 'block';
             printBtn.disabled = true;
         } else {
@@ -1966,10 +2012,13 @@
                 const modeSelect = row.querySelector('.pay-mode-select');
                 const daysInput = row.querySelector('.pay-days-input');
                 const dateInput = row.querySelector('.pay-date');
+                const amountInput = row.querySelector('.pay-amount-input');
 
                 return {
                     isFinal: row.classList.contains('final-row'),
                     pct: pctInput ? pctInput.value : 0,
+                    amount: amountInput ? amountInput.value : 0,
+                    lastEdited: row.getAttribute('data-last-edited') || 'pct',
                     mode: modeSelect ? modeSelect.value : 'FIXED',
                     days: daysInput ? daysInput.value : 0,
                     date: dateInput ? dateInput.value : '',
@@ -2105,10 +2154,15 @@
                     parseInt(pm.days) || 14
                 );
                 
-                if (pm.isPaid) {
-                    const rows = document.querySelectorAll('#payment-rows-container .payment-row');
-                    const lastPay = rows[rows.length - 1];
-                    if (lastPay) {
+                const rows = document.querySelectorAll('#payment-rows-container .payment-row');
+                const lastPay = rows[rows.length - 1];
+                if (lastPay) {
+                    if (pm.lastEdited) lastPay.setAttribute('data-last-edited', pm.lastEdited);
+                    if (pm.amount) {
+                        const amountInput = lastPay.querySelector('.pay-amount-input');
+                        if (amountInput) amountInput.value = parseFloat(pm.amount).toFixed(2);
+                    }
+                    if (pm.isPaid) {
                         const chk = lastPay.querySelector('input[type="checkbox"]');
                         if (chk) { 
                             chk.checked = true; 
