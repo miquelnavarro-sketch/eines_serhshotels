@@ -332,7 +332,7 @@
         .bank-notice { font-size: 11px; color: #555; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .tax-disclaimer { font-size: 11px; color: #555; margin-bottom: 8px; }
         
-        /* TEXTAREA DE LES OBSERVACIONS ADAPTATIU */
+        /* TEXTAREA DE LES OBSERVACIONS EN PANTALLA */
         .bank-card textarea { 
             width: 100%; 
             min-height: 50px; 
@@ -344,6 +344,22 @@
             background: #fff; 
             resize: vertical;
             overflow: hidden;
+            display: block;
+        }
+
+        /* ELEMENT PER SERRAT NOMÉS PER IMPRESSIÓ */
+        .print-notes-box {
+            display: none;
+            width: 100%;
+            font-size: 11px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-word;
+            padding: 6px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: #fff;
+            margin-top: 5px;
         }
 
         /* Secció Doble de Signatures amb Elecció de Gestor/a */
@@ -506,16 +522,13 @@
             .tpv-details-box input[type="url"] { display: none !important; }
             .tpv-print-link { display: inline !important; }
 
-            /* AJUST DE LES OBSERVACIONS EN IMPRESSIÓ */
+            /* SOLUCIÓ DEFINITIVA EN IMPRESSIÓ: OCULTAR TEXTAREA I MOSTRAR EL DIV EXPANDIBLE */
             .bank-card textarea {
-                height: auto !important;
-                max-height: none !important;
-                overflow: visible !important;
-                border: none !important;
-                padding: 0 !important;
-                resize: none !important;
+                display: none !important;
+            }
+            .print-notes-box {
                 display: block !important;
-                white-space: pre-wrap !important;
+                border: 1px solid #ccc !important;
             }
         }
 
@@ -812,7 +825,9 @@
             • Si no està inclosa a la proforma, la taxa turística de Sant Hilari Sacalm es liquidarà directament al check-in segons la normativa vigent.
         </div>
 
-        <textarea id="notes-textarea" placeholder="Observacions i comentaris addicionals..."></textarea>
+        <!-- CAMPS D'OBSERVACIONS DUPLICATS PER PANTALLA / IMPRESSIÓ -->
+        <textarea id="notes-textarea" placeholder="Observacions i comentaris addicionals..." oninput="sincronitzarNotes(this.value)"></textarea>
+        <div id="notes-print-box" class="print-notes-box"></div>
     </div>
 
     <!-- Secció Doble de Signatures Dinàmica segons el Gestor/a Triat -->
@@ -853,7 +868,6 @@
         const pinInput = document.getElementById('pin-input');
         const errorMsg = document.getElementById('pin-error-msg');
         
-        // Utilitzem .trim() per evitar errors si s'introdueix un espai accidentalment
         if (pinInput && pinInput.value.trim() === CORRECT_PIN) {
             sessionStorage.setItem('proforma_santhilari_auth', 'true');
             const overlay = document.getElementById('pin-lock-overlay');
@@ -868,11 +882,17 @@
         }
     }
 
-    // FUNCIÓ D'AUTO-AJUST DE L'ALÇADA DEL TEXTAREA
-    function autoAjustarTextarea(elem) {
-        if (!elem) return;
-        elem.style.height = 'auto';
-        elem.style.height = elem.scrollHeight + 'px';
+    // FUNCIÓ PER SINCRONITZAR OBSERVACIONS PER A IMPRESSIÓ
+    function sincronitzarNotes(val) {
+        const printBox = document.getElementById('notes-print-box');
+        if (printBox) {
+            printBox.textContent = val;
+        }
+        const notesArea = document.getElementById('notes-textarea');
+        if (notesArea) {
+            notesArea.style.height = 'auto';
+            notesArea.style.height = notesArea.scrollHeight + 'px';
+        }
     }
 
     // Comprovació de la sessió i listeners al carregar la pàgina
@@ -887,14 +907,6 @@
         document.querySelectorAll('input[type="date"]').forEach(input => {
             input.setAttribute('max', '2050-12-31');
         });
-
-        // Eventlistener per ajustar l'alçada del textarea en escriure
-        const notesArea = document.getElementById('notes-textarea');
-        if (notesArea) {
-            notesArea.addEventListener('input', function() {
-                autoAjustarTextarea(this);
-            });
-        }
     });
 
     // URL DEL GOOGLE APPS SCRIPT
@@ -975,11 +987,9 @@
         const num = (document.getElementById('proforma-num-input').value || 'PROFORMA').replace(/[^a-zA-Z0-9\-]/g, '');
         const inDate = document.getElementById('in-date').value || 'DATA';
 
-        // Auto-ajusta l'alçada del textarea abans d'imprimir
-        const notesArea = document.getElementById('notes-textarea');
-        if (notesArea) {
-            autoAjustarTextarea(notesArea);
-        }
+        // Sincronització de seguretat abans d'imprimir
+        const notesText = document.getElementById('notes-textarea') ? document.getElementById('notes-textarea').value : '';
+        sincronitzarNotes(notesText);
 
         const originalTitle = document.title;
         const nouTitol = `${loc}_${grup}_${num}_${inDate}`;
@@ -2138,7 +2148,11 @@
         document.getElementById('pms-ref-input').value = p.pmsRef || '';
         document.getElementById('in-date').value = p.inDate || '';
         document.getElementById('out-date').value = p.outDate || '';
-        document.getElementById('notes-textarea').value = p.notes || '';
+        
+        const notesVal = p.notes || '';
+        document.getElementById('notes-textarea').value = notesVal;
+        sincronitzarNotes(notesVal);
+
         document.getElementById('tax-enable').checked = !!p.taxEnable;
         document.getElementById('tax-pax').value = p.taxPax || 0;
         document.getElementById('tax-nits').value = p.taxNits || 0;
@@ -2231,9 +2245,6 @@
 
         calcNoptes();
         canviarIdioma(currentLang);
-        
-        // Auto-ajusta les observacions carregades
-        autoAjustarTextarea(document.getElementById('notes-textarea'));
     }
 
     function crearNovaProforma() {
@@ -2255,7 +2266,10 @@
         document.getElementById('in-date').value = '';
         document.getElementById('out-date').value = '';
         document.getElementById('nits-num').value = '0';
+        
         document.getElementById('notes-textarea').value = '';
+        sincronitzarNotes('');
+
         document.getElementById('tax-enable').checked = false;
         document.getElementById('tax-pax').value = 0;
         document.getElementById('tax-nits').value = 0;
@@ -2287,9 +2301,6 @@
         afegirFila('body-allotjament', 'ALLOTJAMENT', 0, 0, 0);
 
         canviarIdioma(currentLang);
-        
-        // Auto-ajusta el textarea de nou
-        autoAjustarTextarea(document.getElementById('notes-textarea'));
     }
 
     // Inicialització
