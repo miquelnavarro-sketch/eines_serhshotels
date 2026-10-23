@@ -584,4 +584,100 @@
   calculateStayPrice();
   carregarTarifesBase();
   setLanguage('ca');
+/* ─────────── EXPORTAR PRESSUPOST A EXCEL ─────────── */
+const _numES = s => parseFloat(String(s || '').replace(/\./g, '').replace(',', '.').replace(/[^\d.\-]/g, '')) || 0;
+
+function exportarPressupostExcel() {
+  const num = document.getElementById('num-pressupost').value.trim() || 'Pressupost';
+  const aoa = [];
+
+  aoa.push(['Vilar Rural de Sant Hilari Sacalm']);
+  aoa.push(['Pressupost Nº', num]);
+  aoa.push(['Data', document.getElementById('fecha').value, 'Vàlid fins', document.getElementById('validez').value]);
+  aoa.push([]);
+  aoa.push(['Client', document.getElementById('client-nom').value]);
+  aoa.push(['Persona de contacte', document.getElementById('client-contacte-person').value]);
+  aoa.push(['Email', document.getElementById('client-email').value]);
+  aoa.push(['Telèfon', document.getElementById('client-telefon').value]);
+  aoa.push([]);
+
+  const cats = [
+    { tbody: 'tbody-cat-1', titol: '1. Allotjament i Règim (IVA 10%)', sub: 'subtotal-cat-1' },
+    { tbody: 'tbody-cat-2', titol: '2. Gastronomia i Restauració (IVA 10%)', sub: 'subtotal-cat-2' },
+    { tbody: 'tbody-cat-3', titol: '3. Activitats, Espais i Altres Serveis (IVA 21%)', sub: 'subtotal-cat-3' }
+  ];
+
+  cats.forEach(c => {
+    const rows = document.querySelectorAll('#' + c.tbody + ' tr');
+    if (!rows.length) return;
+    aoa.push([c.titol]);
+    aoa.push(['Concepte', 'Unitats', 'Preu Un. (€)', 'Total (€)']);
+    rows.forEach(tr => {
+      const desc = tr.querySelector('.desc') ? tr.querySelector('.desc').value : '';
+      const cant = parseFloat(tr.querySelector('.cant').value) || 0;
+      const preu = parseFloat(tr.querySelector('.precio').value) || 0;
+      aoa.push([desc, cant, preu, +(cant * preu).toFixed(2)]);
+    });
+    aoa.push(['Subtotal (IVA inc.)', '', '', _numES(document.getElementById(c.sub).textContent)]);
+    aoa.push([]);
+  });
+
+  aoa.push(['Base Imposable (10%)', _numES(document.getElementById('base-10').textContent)]);
+  aoa.push(['Quota IVA (10%)', _numES(document.getElementById('iva-10').textContent)]);
+  aoa.push(['Base Imposable (21%)', _numES(document.getElementById('base-21').textContent)]);
+  aoa.push(['Quota IVA (21%)', _numES(document.getElementById('iva-21').textContent)]);
+  aoa.push(['TOTAL PRESSUPOST', _numES(document.getElementById('total').textContent)]);
+
+  const nomFitxer = 'Pressupost_' + num.replace(/[^\w\-]/g, '_');
+
+  if (typeof XLSX !== 'undefined') {
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols'] = [{ wch: 52 }, { wch: 10 }, { wch: 14 }, { wch: 14 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Pressupost');
+    XLSX.writeFile(wb, nomFitxer + '.xlsx');
+  } else {
+    const csv = aoa.map(r => r.map(c => {
+      const s = (c === undefined || c === null) ? '' : String(c);
+      return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }).join(';')).join('\r\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = nomFitxer + '.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+}
+
+/* ─────────── DESCARREGAR PDF ─────────── */
+function descarregarPdf() {
+  const el = document.getElementById('quotation-doc');
+  const num = document.getElementById('num-pressupost').value.trim() || 'Pressupost';
+
+  const st = document.createElement('style');
+  st.id = '_pdf_tmp';
+  st.textContent = `
+    .no-print, .toolbar, .stay-builder, .btn-icon, .logo-upload-btn,
+    .gestor-upload-badge, .btn-add-concept, .btn-refresh-num, .btn-upload-sig { display: none !important; }
+    input, textarea, select { border: none !important; background: transparent !important; padding: 0 !important; }
+    .table-container { overflow: visible !important; }
+  `;
+  document.head.appendChild(st);
+  const neteja = () => { const s = document.getElementById('_pdf_tmp'); if (s) s.remove(); };
+
+  if (typeof html2pdf === 'undefined') { neteja(); window.print(); return; }
+
+  html2pdf().set({
+    margin: [8, 8, 10, 8],
+    filename: 'Pressupost_' + num.replace(/[^\w\-]/g, '_') + '.pdf',
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', '.condition-block', '.summary-card'] }
+  }).from(el).save().then(neteja).catch(neteja);
+}
+
+document.getElementById('btn-excel').addEventListener('click', exportarPressupostExcel);
+document.getElementById('btn-pdf').addEventListener('click', descarregarPdf);
 </script></body></html>
