@@ -1333,6 +1333,15 @@ function generarSeguentNumProforma() {
     const m = (globalProformasDB[id].num || "").match(/PRO-(\d{4})-(\d+)/);
     if (m && parseInt(m[1]) === any) max = Math.max(max, parseInt(m[2]));
   });
+
+  fetch(GOOGLE_SCRIPT_URL + "?action=nextnum&hotel=" + encodeURIComponent(HOTEL_CODE) + "&clau=" + encodeURIComponent(cfg().clau))
+    .then(r => r.json())
+    .then(j => {
+      const inp = document.getElementById("proforma-num-input");
+      if (j && j.ok && j.num && inp && /^PRO-\d{4}-\d{3}$/.test(inp.value)) inp.value = j.num;
+    })
+    .catch(() => {});
+
   return `PRO-${any}-${String(max + 1).padStart(3, "0")}`;
 }
 
