@@ -1439,8 +1439,10 @@ function crearNovaProforma() {
    13) ESBORRANY LOCAL
    ===================================================================== */
 let timerEsborrany = null;
+let arrencat = false;
 function clauEsborrany() { return "proforma_esborrany_" + currentHotelKey; }
 function programarEsborrany() {
+  if (!arrencat) return;
   clearTimeout(timerEsborrany);
   timerEsborrany = setTimeout(() => {
     try { localStorage.setItem(clauEsborrany(), JSON.stringify(serialitzarFormulari())); } catch (e) {}
