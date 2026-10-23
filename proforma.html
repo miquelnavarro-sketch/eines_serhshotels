@@ -921,64 +921,57 @@ function marcarCampInvalid(el, invalid) {
   el.classList.toggle('camp-data-invalid', !!invalid);
 }
 
-function mostrarAvisDates(msg) {
+function mostrarAvisDates(msg, anchor) {
   _estilAvisDates();
   var avis = document.getElementById('avis-dates');
   if (!avis) {
-    var ref = document.querySelector('.data-entrada') || document.querySelector('input[type="date"]');
+    var ref = anchor || document.getElementById('out-date') || document.querySelector('input[type="date"]');
     if (!ref) return;
     avis = document.createElement('div');
     avis.id = 'avis-dates';
-    var bloc = ref.closest('.dates') || ref.parentElement;
+    var bloc = ref.closest('.dates, .date-row, .grid, .field-row, .row') || ref.parentElement;
     if (bloc && bloc.parentElement) bloc.parentElement.insertBefore(avis, bloc.nextSibling);
     else ref.parentElement.appendChild(avis);
   }
   if (msg) { avis.textContent = '⚠ ' + msg; avis.classList.add('visible'); }
   else { avis.textContent = ''; avis.classList.remove('visible'); }
 }
-  function calcNoptes() {
+function calcNoptes() {
   _estilAvisDates();
 
-  var inE = document.querySelector('.data-entrada') || document.getElementById('data-entrada');
-  var inS = document.querySelector('.data-sortida') || document.getElementById('data-sortida');
-  var inN = document.querySelector('.nits') || document.getElementById('nits');
+  var inE  = document.getElementById('in-date');
+  var inS  = document.getElementById('out-date');
+  var inN  = document.getElementById('nits');
+  var inNt = document.getElementById('nits-num');
   if (!inE || !inS) return;
 
   var vE = inE.value, vS = inS.value;
 
-  // Encara falta alguna data → netegem tot
   if (!vE || !vS) {
     marcarCampInvalid(inE, false);
     marcarCampInvalid(inS, false);
-    if (inN) marcarCampInvalid(inN, false);
+    if (inN)  marcarCampInvalid(inN, false);
+    if (inNt) marcarCampInvalid(inNt, false);
     mostrarAvisDates('');
     return;
   }
 
-  var dE = new Date(vE + 'T00:00:00');
-  var dS = new Date(vS + 'T00:00:00');
-  var dies = Math.round((dS - dE) / 86400000);
+  var dies = Math.round((new Date(vS + 'T00:00:00') - new Date(vE + 'T00:00:00')) / 86400000);
   var invalid = dies < 0;   // sortida abans d'entrada
 
   marcarCampInvalid(inE, invalid);
   marcarCampInvalid(inS, invalid);
 
   if (invalid) {
-    if (inN) { inN.value = 0; marcarCampInvalid(inN, true); inN.title = "Sortida anterior a l'entrada"; }
-    mostrarAvisDates("La sortida (" + vS + ") és ANTERIOR a l'entrada (" + vE + "). Corregeix les dates.");
+    if (inN)  { inN.value = 0;  marcarCampInvalid(inN, true);  inN.title = "Sortida anterior a l'entrada"; }
+    if (inNt) { inNt.value = 0; marcarCampInvalid(inNt, true); }
+    mostrarAvisDates("La sortida (" + vS + ") és ANTERIOR a l'entrada (" + vE + "). Corregeix les dates.", inS);
   } else {
-    if (inN) { inN.value = dies; marcarCampInvalid(inN, false); inN.title = ''; }
+    if (inN)  { inN.value = dies;  marcarCampInvalid(inN, false);  inN.title = ''; }
+    if (inNt) { inNt.value = dies; marcarCampInvalid(inNt, false); }
     mostrarAvisDates('');
   }
-
-  // Propaga el nombre de nits al primer row (0 inclòs)
-  var primerRow = document.querySelector('#items .row, .item-row');
-  if (primerRow) {
-    var camp = primerRow.querySelector('.nits, .item-nits, input[data-field="nits"]');
-    if (camp) camp.value = invalid ? 0 : dies;
-  }
 }
-
 function sincronitzarCapcaleraAmbAllotjament() {
   calcNoptes();
   const d1 = document.getElementById("in-date").value;
