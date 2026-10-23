@@ -937,20 +937,46 @@ function mostrarAvisDates(msg) {
   else { avis.textContent = ''; avis.classList.remove('visible'); }
 }
   function calcNoptes() {
-  const inEl = document.getElementById("in-date"), outEl = document.getElementById("out-date");
-  const nitsEl = document.getElementById("nits-num");
-  const d1v = inEl.value, d2v = outEl.value;
-  let nits = 0;
-  outEl.style.borderColor = ""; outEl.title = "";
-  if (d1v && d2v) {
-    const d1 = new Date(d1v), d2 = new Date(d2v);
-    if (d2 > d1) { nits = Math.round((d2 - d1) / 86400000); }
-    else { outEl.style.borderColor = "#dc3545"; outEl.title = "La data de sortida ha de ser posterior a la d'entrada"; }
+  _estilAvisDates();
+
+  var inE = document.querySelector('.data-entrada') || document.getElementById('data-entrada');
+  var inS = document.querySelector('.data-sortida') || document.getElementById('data-sortida');
+  var inN = document.querySelector('.nits') || document.getElementById('nits');
+  if (!inE || !inS) return;
+
+  var vE = inE.value, vS = inS.value;
+
+  // Encara falta alguna data → netegem tot
+  if (!vE || !vS) {
+    marcarCampInvalid(inE, false);
+    marcarCampInvalid(inS, false);
+    if (inN) marcarCampInvalid(inN, false);
+    mostrarAvisDates('');
+    return;
   }
-  nitsEl.value = nits;
-  const tn = document.getElementById("tax-nits");
-  if (tn && nits > 0) tn.value = Math.min(nits, 7);
-  recalcular();
+
+  var dE = new Date(vE + 'T00:00:00');
+  var dS = new Date(vS + 'T00:00:00');
+  var dies = Math.round((dS - dE) / 86400000);
+  var invalid = dies < 0;   // sortida abans d'entrada
+
+  marcarCampInvalid(inE, invalid);
+  marcarCampInvalid(inS, invalid);
+
+  if (invalid) {
+    if (inN) { inN.value = 0; marcarCampInvalid(inN, true); inN.title = "Sortida anterior a l'entrada"; }
+    mostrarAvisDates("La sortida (" + vS + ") és ANTERIOR a l'entrada (" + vE + "). Corregeix les dates.");
+  } else {
+    if (inN) { inN.value = dies; marcarCampInvalid(inN, false); inN.title = ''; }
+    mostrarAvisDates('');
+  }
+
+  // Propaga el nombre de nits al primer row (0 inclòs)
+  var primerRow = document.querySelector('#items .row, .item-row');
+  if (primerRow) {
+    var camp = primerRow.querySelector('.nits, .item-nits, input[data-field="nits"]');
+    if (camp) camp.value = invalid ? 0 : dies;
+  }
 }
 
 function sincronitzarCapcaleraAmbAllotjament() {
