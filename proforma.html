@@ -1455,17 +1455,26 @@ async function guardarProformaActual() {
   if (!validarResponsable()) return;
   const data = serialitzarFormulari();
   if (!data.num) { alert("S'ha d'indicar un número de proforma!"); return; }
-  try {
-    await fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST", mode: "no-cors",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "data=" + encodeURIComponent(JSON.stringify(data))
-    });
-    alert(`Proforma ${data.num} enviada a desar a Google Sheets!`);
-    setTimeout(actualitzarDesplegableProformes, 1500);
-  } catch (e) { console.error(e); alert("Error en l'enviament a Google Sheets."); }
-}
+  data.clau = cfg().clau;
+  data.nou = !globalProformasDB[data.num];   // si no és a la llista, és nova
 
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(data)
+    });
+    const j = await res.json();
+    if (!j || j.ok !== true) throw new Error((j && j.error) || "resposta no vàlida");
+
+    if (j.num && j.num !== data.num) document.getElementById("proforma-num-input").value = j.num;
+    alert("✅ Proforma " + (j.num || data.num) + " desada a Google Sheets.");
+    setTimeout(actualitzarDesplegableProformes, 1200);
+  } catch (e) {
+    console.error(e);
+    alert("⚠️ NO s'ha pogut desar la proforma.\n\n" + e.message + "\n\nComprova la connexió i torna-ho a provar.");
+  }
+}
 function carregarProformaSeleccionada() {
   const id = document.getElementById("proformas-list").value;
   if (!id) return;
