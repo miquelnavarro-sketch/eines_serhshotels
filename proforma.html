@@ -1451,8 +1451,10 @@ function programarEsborrany() {
 function carregarEsborrany() {
   try {
     const raw = localStorage.getItem(clauEsborrany());
-    if (!raw) { crearNovaProforma(); return; }
-    hidratarFormulari(JSON.parse(raw));
+if (!raw) { crearNovaProforma(); return; }
+    const p = JSON.parse(raw);
+    if ((!p.items || !p.items.length) && (!p.payments || !p.payments.length) && !p.num) { crearNovaProforma(); return; }
+    hidratarFormulari(p);
   } catch (e) { crearNovaProforma(); }
 }
 
