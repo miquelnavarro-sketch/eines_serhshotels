@@ -1492,7 +1492,24 @@ function carregarProformaSeleccionada() {
   if (!p) return;
   hidratarFormulari(p);
 }
-
+async function esborrarProformaSeleccionada() {
+  const id = document.getElementById("proformas-list").value;
+  if (!id) { alert("Selecciona una proforma de la llista per esborrar-la."); return; }
+  if (!confirm("Segur que vols esborrar la proforma " + id + "?\n\nNo es pot desfer.")) return;
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "delete", hotelCode: HOTEL_CODE, clau: cfg().clau, num: id })
+    });
+    const j = await res.json();
+    if (!j || j.ok !== true) throw new Error((j && j.error) || "resposta no vàlida");
+    alert("🗑 Proforma " + id + " esborrada.");
+    actualitzarDesplegableProformes();
+  } catch (e) {
+    alert("⚠️ No s'ha pogut esborrar: " + e.message);
+  }
+}
 function duplicarProforma() {
   document.getElementById("proforma-num-input").value = generarSeguentNumProforma();
   alert("Nou número assignat. Revisa les dades i desa.");
