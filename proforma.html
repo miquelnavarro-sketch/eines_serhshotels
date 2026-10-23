@@ -880,7 +880,63 @@ function refrescarSelectsConceptes() {
 /* =====================================================================
    7) CAPÇALERA, NITS, CLIENTS
    ===================================================================== */
-function calcNoptes() {
+// ── Avis de dates invàlides — visible de debò ─────────────────────
+function _estilAvisDates() {
+  if (document.getElementById('_avis_dates_css')) return;
+  var st = document.createElement('style');
+  st.id = '_avis_dates_css';
+  st.textContent = `
+    .camp-data-invalid {
+      background: #f8d7da !important;
+      border: 3px solid #dc3545 !important;
+      color: #7a1420 !important;
+      font-weight: 700 !important;
+      border-radius: 6px !important;
+      box-shadow: 0 0 0 4px rgba(220,53,69,.35) !important;
+      animation: polsInvalid .85s ease-in-out infinite alternate;
+    }
+    @keyframes polsInvalid {
+      from { box-shadow: 0 0 0 2px rgba(220,53,69,.25) !important; }
+      to   { box-shadow: 0 0 0 8px rgba(220,53,69,.60) !important; }
+    }
+    #avis-dates {
+      display: none;
+      margin: 8px 0 4px;
+      padding: 8px 12px;
+      background: #dc3545;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13.5px;
+      line-height: 1.3;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(220,53,69,.45);
+    }
+    #avis-dates.visible { display: block; }
+  `;
+  document.head.appendChild(st);
+}
+
+function marcarCampInvalid(el, invalid) {
+  if (!el) return;
+  el.classList.toggle('camp-data-invalid', !!invalid);
+}
+
+function mostrarAvisDates(msg) {
+  _estilAvisDates();
+  var avis = document.getElementById('avis-dates');
+  if (!avis) {
+    var ref = document.querySelector('.data-entrada') || document.querySelector('input[type="date"]');
+    if (!ref) return;
+    avis = document.createElement('div');
+    avis.id = 'avis-dates';
+    var bloc = ref.closest('.dates') || ref.parentElement;
+    if (bloc && bloc.parentElement) bloc.parentElement.insertBefore(avis, bloc.nextSibling);
+    else ref.parentElement.appendChild(avis);
+  }
+  if (msg) { avis.textContent = '⚠ ' + msg; avis.classList.add('visible'); }
+  else { avis.textContent = ''; avis.classList.remove('visible'); }
+}
+  function calcNoptes() {
   const inEl = document.getElementById("in-date"), outEl = document.getElementById("out-date");
   const nitsEl = document.getElementById("nits-num");
   const d1v = inEl.value, d2v = outEl.value;
