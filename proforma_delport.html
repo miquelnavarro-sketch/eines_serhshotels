@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8">
-<meta http-equiv="refresh" content="0;url=proforma.html?h=delport">
-<script>location.replace("proforma.html?h=rivoli");</script>
+<title>Proforma</title>
+<script>
+(function(){
+  var f = location.pathname.split("/").pop().replace(/^proforma_/,"").replace(/\.html$/,"");
+  var permesos = ["rivoli","delport","carlit","santhilari"];
+  location.replace("proforma.html?h=" + (permesos.indexOf(f) !== -1 ? f : "rivoli"));
+})();
+</script>
 </head><body>Redirigint…</body></html>
