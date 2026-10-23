@@ -1502,7 +1502,8 @@ function arrencar() {
   sel.innerHTML = HOTEL_KEYS.map(k => `<option value="${k}">${esc(CONFIG.hotels[k].name)}</option>`).join("");
   aplicarHotel(currentHotelKey);
   document.getElementById("data-doc").value = avuiISO();
-  document.addEventListener("input", programarEsborrany);
+document.addEventListener("input", programarEsborrany);
+  arrencat = true;
   actualitzarDesplegableProformes().then(carregarEsborrany);
 }
 
