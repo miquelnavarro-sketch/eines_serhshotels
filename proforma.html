@@ -1287,11 +1287,15 @@ function recalcular() {
     lastDate = pintarDataPagament(row, docDate, checkInDate, lastDate);
   });
 
-  const fr = document.querySelector(".payment-row.final-row");
+const fr = document.querySelector(".payment-row.final-row");
   if (fr) {
     const resta = Math.max(0, totalFinal - sumDip);
     const fa = fr.querySelector(".final-amount");
     if (fa) fa.textContent = resta.toFixed(2) + " €";
+    const ldF = fr.querySelector(".label-dep");
+    if (ldF) ldF.textContent = (sumDip <= 0.01)
+      ? translations[currentLang].deposit_100
+      : translations[currentLang].rest_label;
     pintarDataPagament(fr, docDate, checkInDate, null);
   }
 
