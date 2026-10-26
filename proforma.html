@@ -1198,7 +1198,7 @@ function afegirTramCancelacio(type = "RANGE", d1 = 30, d2 = 15, pct = 50) {
       <span class="edit-days"><input type="number" class="canc-d1" value="${d1}" min="1" oninput="recalcular()"> <span data-canc-label="andThe"></span></span>
       <span class="edit-days"><input type="number" class="canc-d2" value="${d2}" min="0" oninput="recalcular()"> <span data-canc-label="daysBefore"></span></span>
       <span class="print-text"></span>
-      <span class="edit-days"><input type="number" class="canc-pct" value="${pct}" min="0" max="100" oninput="recalcular()">% <span data-canc-label="expenses"></span></span>
+      <span class="edit-days"><input type="number" class="canc-pct" value="${pct}" min="0" max="100" oninput="recalcular()"> <span data-canc-label="expenses"></span></span>
       <button class="btn-remove" onclick="treureTramCancelacio(this)">X</button>`;
   }
   container.appendChild(div);
