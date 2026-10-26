@@ -1129,7 +1129,7 @@ function afegirTramPagament(pct = 25, dataLimit = "", isFinal = false, mode = "F
   if (isFinal) {
     div.innerHTML = `
       <div class="payment-left-group">
-        <span class="label-dep" style="min-width:90px; font-weight:bold;">${t.rest_label}</span>
+    <span class="label-dep" style="min-width:108px; font-weight:bold;">${t.rest_label}</span>
         <span class="before-text">${t.before_text}</span>
         <select class="pay-mode-select" onchange="canviModePagament(this)">${modeOptions}</select>
         <input type="number" class="pay-days-input" value="${daysVal}" min="0" style="${mode === "FIXED" ? "display:none;" : ""}" oninput="recalcular()">
