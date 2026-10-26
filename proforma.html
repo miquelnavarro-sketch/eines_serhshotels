@@ -188,7 +188,26 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
 }
 .print-pay-text { display:none; }
 .print-text { display:none; }
-</style>
+/* ── Cel·la de dates: omple la columna i els camps s'hi reparteixen ── */
+@media screen {
+  td.date-range-cell {
+    display:table-cell !important;
+    vertical-align:middle !important;
+    padding:8px 6px !important;
+    text-align:center;
+    overflow:hidden;
+  }
+  .date-range-cell input[type="date"] {
+    display:inline-block !important;
+    width:calc(50% - 14px) !important;
+    min-width:0 !important;
+    max-width:none !important;
+    vertical-align:middle;
+    font-size:10.5px !important;
+    padding:2px 1px !important;
+  }
+  .date-range-cell span { vertical-align:middle; }
+}</style>
 </head>
 <body>
 
