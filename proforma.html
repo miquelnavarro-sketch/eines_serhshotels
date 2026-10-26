@@ -330,7 +330,13 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
       <span data-i18n="sec_rooms">2. SALES I EQUIPAMENTS (IVA 21%)</span>
       <button class="btn btn-add" onclick="afegirFila('body-sales','SALES')" data-i18n="btn_add_room_eq">+ Afegir Sala / Equip</button>
     </div>
-<table class="tbl-concepts"><tbody id="body-sales"></tbody></table>
+<table class="tbl-concepts"><tbody id="body-sales"></tbody>
+      <tfoot><tr class="sec-total">
+        <td colspan="7" class="sec-total-label">TOTAL <span data-i18n="sec_rooms">2. SALES I EQUIPAMENTS (IVA 21%)</span></td>
+        <td class="sec-total-val" id="sec-total-2">0,00 €</td>
+        <td></td>
+      </tr></tfoot>
+    </table>
   </div>
 
   <div class="sec-wrapper">
