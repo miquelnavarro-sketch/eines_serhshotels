@@ -173,7 +173,8 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
   .canc-row .edit-days { display:none !important; }
   .pay-mode-select, .pay-days-input, .pay-date { display:none !important; }
   .payment-row .print-pay-text { display:inline !important; font-weight:normal; }
-  .date-range-cell { border:none !important; padding:0 !important; display:table-cell !important; vertical-align:middle !important; line-height:1.2 !important; }
+  .date-range-cell { border:none !important; padding:0 !important; display:table-cell !important; vertical-align:middle !important; line-height:1.2 !important; min-width:0 !important; overflow:hidden !important; }
+  .date-range-cell::after { white-space:nowrap !important; }
   .date-range-cell input[type="date"], .date-range-cell span { display:none !important; }
   .date-range-cell::after { content:attr(data-date-formatted); font-size:10px !important; color:#333; text-align:center; display:block; width:100%; }
   .desc-cell[data-desc-zero="true"] input { display:none !important; }
