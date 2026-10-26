@@ -65,7 +65,10 @@ table.tbl-concepts th:nth-child(6), table.tbl-concepts td:nth-child(6) { width:0
 table.tbl-concepts th:nth-child(7), table.tbl-concepts td:nth-child(7) { width:10% !important; }
 table.tbl-concepts th:nth-child(8), table.tbl-concepts td:nth-child(8) { width:13% !important; }
 table.tbl-concepts th:nth-child(9), table.tbl-concepts td:nth-child(9) { width:2%  !important; }
-th { background:var(--primary); color:#fff; padding:10px 8px; text-align:left; font-size:11.5px; font-weight:bold; letter-spacing:.2px; vertical-align:middle; }
+th { background:var(--primary); color:#fff; padding:10px 8px; text-align:left; font-size:11.5px; font-weight:bold; letter-spacing:.2px; vertical-align:middle; }table.tbl-concepts th { overflow:hidden; }
+tfoot .sec-total td { border-top:2px solid var(--accent); font-weight:bold; color:var(--primary); font-size:13px; padding-top:8px; -webkit-print-color-adjust:exact; }
+tfoot .sec-total .sec-total-label { text-align:right; letter-spacing:.5px; }
+tfoot .sec-total .sec-total-val { text-align:right; font-size:15px; white-space:nowrap; }
 td { padding:8px 6px; border-bottom:1px solid #eee; vertical-align:middle; }
 input[type="text"], input[type="number"], input[type="date"], select { width:100%; padding:6px; border:1px solid var(--border); border-radius:4px; font-size:12px; }
 
