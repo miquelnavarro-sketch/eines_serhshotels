@@ -1314,8 +1314,8 @@ function recalcular() {
     const ps = row.querySelector(".print-text");
     if (!ps) return;
     if (type === "FREE") ps.innerHTML = `${t.canc_free_1} <strong>${s1}</strong>`;
-    else if (type === "ARRIVAL") ps.innerHTML = `${t.canc_between} <strong>${s1}</strong> ${t.canc_arrival} <strong>${pct}%</strong> ${t.canc_expenses}`;
-    else ps.innerHTML = `${t.canc_between} <strong>${s1}</strong> ${t.canc_and_the} <strong>${s2}</strong>: <strong>${pct}%</strong> ${t.canc_expenses}`;
+else if (type === "ARRIVAL") ps.innerHTML = `${t.canc_between} <strong>${s1}</strong> ${t.canc_arrival} <strong>${pct}</strong> ${t.canc_expenses}`;
+else ps.innerHTML = `${t.canc_between} <strong>${s1}</strong> ${t.canc_and_the} <strong>${s2}</strong>: <strong>${pct}</strong> ${t.canc_expenses}`;
   });
 
   programarEsborrany();
