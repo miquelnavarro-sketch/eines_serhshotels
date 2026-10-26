@@ -1574,10 +1574,10 @@ function crearNovaProforma() {
   afegirTramPagament(50, "", false, "BEFORE_ARR", 30);
   afegirTramPagament(0, "", true, "BEFORE_ARR", 14);
   afegirTramCancelacio("FREE", 61);
-  afegirTramCancelacio("RANGE", 60, 22, 25);
-  afegirTramCancelacio("RANGE", 21, 15, 50);
-  afegirTramCancelacio("RANGE", 14, 8, 75);
-  afegirTramCancelacio("ARRIVAL", 7, 0, 100);
+  afegirTramCancelacio("RANGE", 60, 15, 25);
+  afegirTramCancelacio("RANGE", 14, 8, 50);
+  afegirTramCancelacio("RANGE", 7, 4, 75);
+  afegirTramCancelacio("ARRIVAL", 3, 0, 100);
   afegirFila("body-allotjament", "ALLOTJAMENT", 0, 0, 0);
   canviarIdioma(currentLang);
   programarEsborrany();
