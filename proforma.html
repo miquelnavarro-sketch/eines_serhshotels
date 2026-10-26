@@ -343,8 +343,13 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
     <div class="section-header">
       <span data-i18n="sec_catering">3. RESTAURACIÓ I CÀTERING (IVA 10%)</span>
       <button class="btn btn-add" onclick="afegirFila('body-restauracio','RESTAURACIO')" data-i18n="btn_add_catering">+ Afegir Servei Càtering</button>
-    </div>
- <table class="tbl-concepts"><tbody id="body-restauracio"></tbody></table>
+    </div><table class="tbl-concepts"><tbody id="body-restauracio"></tbody>
+      <tfoot><tr class="sec-total">
+        <td colspan="7" class="sec-total-label">TOTAL <span data-i18n="sec_catering">3. RESTAURACIÓ I CÀTERING (IVA 10%)</span></td>
+        <td class="sec-total-val" id="sec-total-3">0,00 €</td>
+        <td></td>
+      </tr></tfoot>
+    </table>
   </div>
 
   <div class="tax-card" id="tax-card-block">
