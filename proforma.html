@@ -65,10 +65,11 @@ table.tbl-concepts th:nth-child(6), table.tbl-concepts td:nth-child(6) { width:0
 table.tbl-concepts th:nth-child(7), table.tbl-concepts td:nth-child(7) { width:10% !important; }
 table.tbl-concepts th:nth-child(8), table.tbl-concepts td:nth-child(8) { width:13% !important; }
 table.tbl-concepts th:nth-child(9), table.tbl-concepts td:nth-child(9) { width:2%  !important; }
-th { background:var(--primary); color:#fff; padding:10px 8px; text-align:left; font-size:11.5px; font-weight:bold; letter-spacing:.2px; vertical-align:middle; }table.tbl-concepts th { overflow:hidden; }
+table.tbl-concepts th { overflow:hidden; }
 tfoot .sec-total td { border-top:2px solid var(--accent); font-weight:bold; color:var(--primary); font-size:13px; padding-top:8px; -webkit-print-color-adjust:exact; }
 tfoot .sec-total .sec-total-label { text-align:right; letter-spacing:.5px; }
 tfoot .sec-total .sec-total-val { text-align:right; font-size:15px; white-space:nowrap; }
+th { background:var(--primary); color:#fff; padding:10px 8px; text-align:left; font-size:11.5px; font-weight:bold; letter-spacing:.2px; vertical-align:middle; }
 td { padding:8px 6px; border-bottom:1px solid #eee; vertical-align:middle; }
 input[type="text"], input[type="number"], input[type="date"], select { width:100%; padding:6px; border:1px solid var(--border); border-radius:4px; font-size:12px; }
 
@@ -159,9 +160,6 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
   .container { box-shadow:none; padding:0; max-width:100%; }
   .toolbar, .btn-remove, .btn-revert, .btn-add, .chk-paid-wrap, .edit-days, .no-print, .control-bar, .payment-type-select { display:none !important; }
   th.toolbar, td.toolbar { display:table-cell !important; }
-  table.tbl-concepts th { font-size:9.5px !important; line-height:1.12 !important; padding:6px 3px !important; }
-  table.tbl-concepts td { padding:6px 3px !important; }
-  .date-range-cell::after { font-size:10px !important; }
   input, select, textarea { border:none !important; background:transparent !important; appearance:none; -webkit-appearance:none; padding:0 !important; }
   .field-group label { width:120px; }
   .header, .grid, .sec-wrapper, .summary-block, .tax-card, .cancellation-section, .bank-card, .signatures-wrapper { page-break-inside:avoid !important; break-inside:avoid !important; }
@@ -177,7 +175,7 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
   .payment-row .print-pay-text { display:inline !important; font-weight:normal; }
   .date-range-cell { border:none !important; padding:0 !important; justify-content:center !important; display:block !important; line-height:1.2 !important; }
   .date-range-cell input[type="date"], .date-range-cell span { display:none !important; }
-  .date-range-cell::after { content:attr(data-date-formatted); font-size:11px; color:#333; text-align:center; display:block; width:100%; }
+  .date-range-cell::after { content:attr(data-date-formatted); font-size:10px !important; color:#333; text-align:center; display:block; width:100%; }
   .desc-cell[data-desc-zero="true"] input { display:none !important; }
   .tax-card:not(.has-tax-active) { display:none !important; }
   .sec-wrapper:has(tbody:empty) { display:none !important; }
@@ -188,9 +186,13 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
   .staff-name-input { display:none !important; }
   .staff-name-display { display:block !important; }
   .pay-amount-input { border:none !important; background:transparent !important; text-align:right !important; }
+  table.tbl-concepts th { font-size:9px !important; line-height:1.12 !important; padding:6px 3px !important; overflow:hidden !important; }
+  table.tbl-concepts td { padding:6px 3px !important; }
+  tfoot .sec-total td { border-top:1px solid #999 !important; }
 }
 .print-pay-text { display:none; }
 .print-text { display:none; }
+
 /* ── Cel·la de dates: omple la columna i els camps s'hi reparteixen ── */
 @media screen {
   td.date-range-cell {
@@ -210,7 +212,8 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
     padding:2px 1px !important;
   }
   .date-range-cell span { vertical-align:middle; }
-}</style>
+}
+</style>
 </head>
 <body>
 
@@ -298,17 +301,17 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
     </div>
   </div>
 
-<table class="tbl-concepts">
+  <table class="tbl-concepts">
     <thead>
       <tr>
-        <th style="width:26%;" data-i18n="th_concept">Concepte / Servei</th>
-        <th style="width:20%; text-align:center;" data-i18n="th_item_dates">Dates</th>
+        <th style="width:23%;" data-i18n="th_concept">Concepte / Servei</th>
+        <th style="width:25%; text-align:center;" data-i18n="th_item_dates">Dates</th>
         <th style="width:6%; text-align:center;" data-i18n="th_units">Unitats</th>
-        <th style="width:6%; text-align:center;" data-i18n="th_nights">Nits/Dies</th>
-        <th style="width:12%; text-align:right;" data-i18n="th_price">Preu Un. IVA incl. (€)</th>
-        <th style="width:6%; text-align:center;" data-i18n="th_discount">Desc. (%)</th>
-        <th style="width:13%; text-align:center;" data-i18n="th_vat_type">Tipus IVA</th>
-        <th style="width:11%; text-align:right;" data-i18n="th_total">Total IVA incl. (€)</th>
+        <th style="width:8%; text-align:center;" data-i18n="th_nights">Nits/Dies</th>
+        <th style="width:13%; text-align:right;" data-i18n="th_price">Preu Un. IVA incl. (€)</th>
+        <th style="width:0;" data-i18n="th_discount">Desc. (%)</th>
+        <th style="width:10%; text-align:center;" data-i18n="th_vat_type">Tipus IVA</th>
+        <th style="width:13%; text-align:right;" data-i18n="th_total">Total IVA incl. (€)</th>
         <th class="toolbar" style="width:2%;"></th>
       </tr>
     </thead>
@@ -319,9 +322,9 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
       <span data-i18n="sec_accommodation">1. ALLOTJAMENT I SUPLEMENTS (IVA 10%)</span>
       <button class="btn btn-add" onclick="afegirFila('body-allotjament','ALLOTJAMENT')" data-i18n="btn_add_room">+ Afegir Habitació</button>
     </div>
-<table class="tbl-concepts"><tbody id="body-allotjament"></tbody>
+    <table class="tbl-concepts"><tbody id="body-allotjament"></tbody>
       <tfoot><tr class="sec-total">
-        <td colspan="7" class="sec-total-label">TOTAL <span data-i18n="sec_accommodation">1. ALLOTJAMENT I SUpleMENTS (IVA 10%)</span></td>
+        <td colspan="7" class="sec-total-label">TOTAL <span data-i18n="sec_accommodation">1. ALLOTJAMENT I SUPLEMENTS (IVA 10%)</span></td>
         <td class="sec-total-val" id="sec-total-1">0,00 €</td>
         <td></td>
       </tr></tfoot>
@@ -333,7 +336,7 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
       <span data-i18n="sec_rooms">2. SALES I EQUIPAMENTS (IVA 21%)</span>
       <button class="btn btn-add" onclick="afegirFila('body-sales','SALES')" data-i18n="btn_add_room_eq">+ Afegir Sala / Equip</button>
     </div>
-<table class="tbl-concepts"><tbody id="body-sales"></tbody>
+    <table class="tbl-concepts"><tbody id="body-sales"></tbody>
       <tfoot><tr class="sec-total">
         <td colspan="7" class="sec-total-label">TOTAL <span data-i18n="sec_rooms">2. SALES I EQUIPAMENTS (IVA 21%)</span></td>
         <td class="sec-total-val" id="sec-total-2">0,00 €</td>
@@ -346,7 +349,8 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
     <div class="section-header">
       <span data-i18n="sec_catering">3. RESTAURACIÓ I CÀTERING (IVA 10%)</span>
       <button class="btn btn-add" onclick="afegirFila('body-restauracio','RESTAURACIO')" data-i18n="btn_add_catering">+ Afegir Servei Càtering</button>
-    </div><table class="tbl-concepts"><tbody id="body-restauracio"></tbody>
+    </div>
+    <table class="tbl-concepts"><tbody id="body-restauracio"></tbody>
       <tfoot><tr class="sec-total">
         <td colspan="7" class="sec-total-label">TOTAL <span data-i18n="sec_catering">3. RESTAURACIÓ I CÀTERING (IVA 10%)</span></td>
         <td class="sec-total-val" id="sec-total-3">0,00 €</td>
@@ -452,8 +456,7 @@ const CONFIG = {
 
   hotels: {
     rivoli: {
-      code: "Rivoli", pin: "Rivoli2026@",   
-      clau: "rivoli_k7Qd92mX4p",
+      code: "Rivoli", pin: "Rivoli2026@", clau: "rivoli_k7Qd92mX4p",
       name: "Hotel SERHS Rivoli Rambla - Barcelona",
       logo: "img/SHRivoli_RamblaH.jpg", logoWidth: 260, logoMaxHeight: 60,
       palette: { "--primary":"#1b2a4a","--accent":"#c5a059","--tertiary":"#c5a059",
@@ -508,8 +511,7 @@ const CONFIG = {
     },
 
     delport: {
-      code: "DelPort", pin: "Delport2026@",  
-      clau: "delport_t3Bn81vL6z",
+      code: "DelPort", pin: "Delport2026@", clau: "delport_t3Bn81vL6z",
       name: "Hotel SERHS del Port - Barcelona",
       logo: "img/Logo Serhs del Port Horitzontal.png", logoWidth: 320, logoMaxHeight: 95,
       palette: { "--primary":"#1b2a4a","--accent":"#c5a059","--tertiary":"#c5a059",
@@ -544,8 +546,7 @@ const CONFIG = {
     },
 
     carlit: {
-      code: "Carlit", pin: "Carlit2026@",   
-      clau: "carlit_h5Wm47cR2y",
+      code: "Carlit", pin: "Carlit2026@", clau: "carlit_h5Wm47cR2y",
       name: "Hotel SERHS Carlit - Barcelona",
       logo: "img/Serhs_Boutique_Hotel_Carlit_2480x827.jpg", logoWidth: 320, logoMaxHeight: 90,
       palette: { "--primary":"#1b2a4a","--accent":"#c5a059","--tertiary":"#c5a059",
@@ -580,8 +581,7 @@ const CONFIG = {
     },
 
     santhilari: {
-      code: "SantHilari", pin: "Comercial2026@", 
-      clau: "santhilari_p9Zx63nK8w",
+      code: "SantHilari", pin: "Comercial2026@", clau: "santhilari_p9Zx63nK8w",
       name: "Vilar Rural de Sant Hilari Sacalm",
       logo: "img/logovshbyshnofons.png", logoWidth: 320, logoMaxHeight: 95,
       palette: { "--primary":"#3c704c","--accent":"#b5c934","--tertiary":"#e2983d",
@@ -938,7 +938,6 @@ function refrescarSelectsConceptes() {
 /* =====================================================================
    7) CAPÇALERA, NITS, CLIENTS
    ===================================================================== */
-// ── Avis de dates invàlides — visible de debò ─────────────────────
 function _estilAvisDates() {
   if (document.getElementById('_avis_dates_css')) return;
   var st = document.createElement('style');
@@ -994,6 +993,7 @@ function mostrarAvisDates(msg, anchor) {
   if (msg) { avis.textContent = '⚠ ' + msg; avis.classList.add('visible'); }
   else { avis.textContent = ''; avis.classList.remove('visible'); }
 }
+
 function calcNoptes() {
   _estilAvisDates();
 
@@ -1015,7 +1015,7 @@ function calcNoptes() {
   }
 
   var dies = Math.round((new Date(vS + 'T00:00:00') - new Date(vE + 'T00:00:00')) / 86400000);
-  var invalid = dies < 0;   // sortida abans d'entrada
+  var invalid = dies < 0;
 
   marcarCampInvalid(inE, invalid);
   marcarCampInvalid(inS, invalid);
@@ -1030,6 +1030,7 @@ function calcNoptes() {
     mostrarAvisDates('');
   }
 }
+
 function sincronitzarCapcaleraAmbAllotjament() {
   calcNoptes();
   const d1 = document.getElementById("in-date").value;
@@ -1086,21 +1087,21 @@ function afegirFila(targetBodyId, categoria, initialQty = 0, initialNits = 0, in
   const defaultIva = categoria === "SALES" ? "21" : "10";
 
   tr.innerHTML = `
-    <td style="width:26%;" class="concept-cell">${selectHtml}</td>
-    <td style="width:20%;" class="date-range-cell" data-date-formatted="">
+    <td style="width:23%;" class="concept-cell">${selectHtml}</td>
+    <td style="width:25%;" class="date-range-cell" data-date-formatted="">
       <input type="date" class="item-date-start" value="${d1}" max="2050-12-31" onchange="actualitzarFormatDataFila(this.closest('tr'))">
       <span>-</span>
       <input type="date" class="item-date-end" value="${d2}" max="2050-12-31" onchange="actualitzarFormatDataFila(this.closest('tr'))">
     </td>
     <td style="width:6%;"><input type="number" value="${initialQty}" class="qty" min="0" style="text-align:center;" oninput="recalcular()"></td>
-    <td style="width:6%;"><input type="number" value="${initialNits}" class="nits" min="0" style="text-align:center;" oninput="recalcular()"></td>
-    <td style="width:12%;"><input type="number" value="${initialPrice ? initialPrice.toFixed(2) : ""}" class="preu" step="any" placeholder="0.00" style="text-align:right;" oninput="recalcular()" onchange="formatarDecimals(this)"></td>
-    <td style="width:6%;" class="desc-cell" data-desc-zero="true"><input type="number" value="0" class="desc" min="0" max="100" style="text-align:center;" oninput="recalcular()"></td>
-    <td style="width:13%;"><select class="iva" onchange="recalcular()">
+    <td style="width:8%;"><input type="number" value="${initialNits}" class="nits" min="0" style="text-align:center;" oninput="recalcular()"></td>
+    <td style="width:13%;"><input type="number" value="${initialPrice ? initialPrice.toFixed(2) : ""}" class="preu" step="any" placeholder="0.00" style="text-align:right;" oninput="recalcular()" onchange="formatarDecimals(this)"></td>
+    <td style="width:0;" class="desc-cell" data-desc-zero="true"><input type="number" value="0" class="desc" min="0" max="100" style="text-align:center;" oninput="recalcular()"></td>
+    <td style="width:10%;"><select class="iva" onchange="recalcular()">
       <option value="10" ${defaultIva === "10" ? "selected" : ""}>10% IVA</option>
       <option value="21" ${defaultIva === "21" ? "selected" : ""}>21% IVA</option>
       <option value="0">0% IVA</option></select></td>
-    <td class="subtotal" style="width:11%; text-align:right; font-weight:600;">0.00 €</td>
+    <td class="subtotal" style="width:13%; text-align:right; font-weight:600;">0.00 €</td>
     <td class="toolbar" style="width:2%;"><button class="btn-remove" onclick="treureFila(this)">X</button></td>`;
   tbody.appendChild(tr);
   actualitzarFormatDataFila(tr);
@@ -1149,7 +1150,7 @@ function afegirTramPagament(pct = 25, dataLimit = "", isFinal = false, mode = "F
   if (isFinal) {
     div.innerHTML = `
       <div class="payment-left-group">
-    <span class="label-dep" style="min-width:108px; font-weight:bold;">${t.rest_label}</span>
+        <span class="label-dep" style="min-width:108px; font-weight:bold;">${t.rest_label}</span>
         <span class="before-text">${t.before_text}</span>
         <select class="pay-mode-select" onchange="canviModePagament(this)">${modeOptions}</select>
         <input type="number" class="pay-days-input" value="${daysVal}" min="0" style="${mode === "FIXED" ? "display:none;" : ""}" oninput="recalcular()">
@@ -1255,6 +1256,23 @@ function recalcular() {
     else if (iva === 21) { const b = net / 1.21; b21 += b; i21 += net - b; }
   });
 
+  ["body-allotjament:sec-total-1", "body-sales:sec-total-2", "body-restauracio:sec-total-3"].forEach(par => {
+    const parts = par.split(":");
+    const tbId = parts[0], outId = parts[1];
+    let suma = 0;
+    document.querySelectorAll("#" + tbId + " tr").forEach(row => {
+      const q = row.querySelector(".qty"), n = row.querySelector(".nits"), p = row.querySelector(".preu"), d = row.querySelector(".desc");
+      const qty = parseFloat(q ? q.value : 0) || 0;
+      const nitsRaw = n ? n.value : "";
+      const nits = nitsRaw === "" ? 1 : (parseFloat(nitsRaw) || 0);
+      const preu = parseFloat(String(p ? p.value : "").replace(",", ".")) || 0;
+      const desc = parseFloat(d ? d.value : 0) || 0;
+      suma += qty * nits * preu * (1 - desc / 100);
+    });
+    const out = document.getElementById(outId);
+    if (out) out.textContent = suma.toFixed(2) + " €";
+  });
+
   const isTax = document.getElementById("tax-enable").checked;
   document.getElementById("tax-card-block").classList.toggle("has-tax-active", isTax);
   document.getElementById("tax-disclaimer-text").style.display = isTax ? "none" : "block";
@@ -1307,14 +1325,14 @@ function recalcular() {
     lastDate = pintarDataPagament(row, docDate, checkInDate, lastDate);
   });
 
-const fr = document.querySelector(".payment-row.final-row");
+  const fr = document.querySelector(".payment-row.final-row");
   if (fr) {
     const resta = Math.max(0, totalFinal - sumDip);
     const fa = fr.querySelector(".final-amount");
     if (fa) fa.textContent = resta.toFixed(2) + " €";
     const ldF = fr.querySelector(".label-dep");
     if (ldF) ldF.textContent = (sumDip <= 0.01)
-      ? translations[currentLang].deposit_100
+      ? (translations[currentLang].deposit_100 || translations[currentLang].deposit_label)
       : translations[currentLang].rest_label;
     pintarDataPagament(fr, docDate, checkInDate, null);
   }
@@ -1338,8 +1356,8 @@ const fr = document.querySelector(".payment-row.final-row");
     const ps = row.querySelector(".print-text");
     if (!ps) return;
     if (type === "FREE") ps.innerHTML = `${t.canc_free_1} <strong>${s1}</strong>`;
-else if (type === "ARRIVAL") ps.innerHTML = `${t.canc_between} <strong>${s1}</strong> ${t.canc_arrival} <strong>${pct}</strong> ${t.canc_expenses}`;
-else ps.innerHTML = `${t.canc_between} <strong>${s1}</strong> ${t.canc_and_the} <strong>${s2}</strong>: <strong>${pct}</strong> ${t.canc_expenses}`;
+    else if (type === "ARRIVAL") ps.innerHTML = `${t.canc_between} <strong>${s1}</strong> ${t.canc_arrival} <strong>${pct}</strong> ${t.canc_expenses}`;
+    else ps.innerHTML = `${t.canc_between} <strong>${s1}</strong> ${t.canc_and_the} <strong>${s2}</strong>: <strong>${pct}</strong> ${t.canc_expenses}`;
   });
 
   programarEsborrany();
@@ -1523,7 +1541,7 @@ async function guardarProformaActual() {
   const data = serialitzarFormulari();
   if (!data.num) { alert("S'ha d'indicar un número de proforma!"); return; }
   data.clau = cfg().clau;
-  data.nou = !globalProformasDB[data.num];   // si no és a la llista, és nova
+  data.nou = !globalProformasDB[data.num];
 
   try {
     const res = await fetch(GOOGLE_SCRIPT_URL, {
@@ -1623,7 +1641,7 @@ function programarEsborrany() {
 function carregarEsborrany() {
   try {
     const raw = localStorage.getItem(clauEsborrany());
-if (!raw) { crearNovaProforma(); return; }
+    if (!raw) { crearNovaProforma(); return; }
     const p = JSON.parse(raw);
     if ((!p.items || !p.items.length) && (!p.payments || !p.payments.length) && !p.num) { crearNovaProforma(); return; }
     hidratarFormulari(p);
@@ -1674,7 +1692,7 @@ function arrencar() {
   sel.innerHTML = HOTEL_KEYS.map(k => `<option value="${k}">${esc(CONFIG.hotels[k].name)}</option>`).join("");
   aplicarHotel(currentHotelKey);
   document.getElementById("data-doc").value = avuiISO();
-document.addEventListener("input", programarEsborrany);
+  document.addEventListener("input", programarEsborrany);
   arrencat = true;
   actualitzarDesplegableProformes().then(carregarEsborrany);
 }
