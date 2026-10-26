@@ -316,7 +316,13 @@ td.date-range-cell { vertical-align:middle !important; padding:8px 6px !importan
       <span data-i18n="sec_accommodation">1. ALLOTJAMENT I SUPLEMENTS (IVA 10%)</span>
       <button class="btn btn-add" onclick="afegirFila('body-allotjament','ALLOTJAMENT')" data-i18n="btn_add_room">+ Afegir Habitació</button>
     </div>
-<table class="tbl-concepts"><tbody id="body-allotjament"></tbody></table>
+<table class="tbl-concepts"><tbody id="body-allotjament"></tbody>
+      <tfoot><tr class="sec-total">
+        <td colspan="7" class="sec-total-label">TOTAL <span data-i18n="sec_accommodation">1. ALLOTJAMENT I SUpleMENTS (IVA 10%)</span></td>
+        <td class="sec-total-val" id="sec-total-1">0,00 €</td>
+        <td></td>
+      </tr></tfoot>
+    </table>
   </div>
 
   <div class="sec-wrapper">
