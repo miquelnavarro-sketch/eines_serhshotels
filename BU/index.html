@@ -1,0 +1,2246 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <title>Panell Revenue & Pricing</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 11px;
+      margin: 0;
+      padding: 8px;
+    }
+
+    .nav-tabs-revenue {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 8px;
+      border-bottom: 2px solid #334155;
+      padding-bottom: 4px;
+    }
+    .tab-btn {
+      background-color: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      border-bottom: none;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease-in-out;
+    }
+    .tab-btn:hover { background-color: #334155; color: #f8fafc; }
+    .tab-btn.tab-activa {
+      background-color: #2563eb;
+      color: #ffffff;
+      border-color: #3b82f6;
+    }
+
+    .panell-control {
+      background-color: #1e293b;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border: 1px solid #334155;
+    }
+    .barra-visibilitat {
+      background-color: #1e293b;
+      border-radius: 8px;
+      padding: 6px 12px;
+      margin-bottom: 8px;
+      border: 1px solid #334155;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-toggle-vis {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      user-select: none;
+      transition: all 0.15s ease-in-out;
+    }
+    .btn-actiu-operativa { background-color: #475569; color: #ffffff; border-color: #64748b; }
+    .btn-actiu-otb       { background-color: #ea580c; color: #ffffff; border-color: #fb923c; }
+    .btn-actiu-pk-act   { background-color: #0f766e; color: #ffffff; border-color: #2dd4bf; }
+    .btn-actiu-stly     { background-color: #1d4ed8; color: #ffffff; border-color: #60a5fa; }
+    .btn-actiu-pk-stly  { background-color: #4338ca; color: #ffffff; border-color: #818cf8; }
+    .btn-actiu-tanc     { background-color: #0f172a; color: #ffffff; border-color: #38bdf8; }
+    .btn-actiu-fn       { background-color: #0369a1; color: #ffffff; border-color: #38bdf8; }
+    .btn-actiu-tipus    { background-color: #7c3aed; color: #ffffff; border-color: #a78bfa; }
+    
+    .btn-inactiu {
+      background-color: #0f172a !important;
+      color: #64748b !important;
+      border-color: #334155 !important;
+      text-decoration: line-through;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow: auto;
+      max-height: calc(100vh - 165px);
+      background: #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      color: #000000;
+    }
+
+    thead tr:nth-child(1) th { position: sticky; top: 0; z-index: 10; }
+    thead tr:nth-child(2) th { position: sticky; top: 26px; z-index: 10; }
+    .thead-3nivells tr:nth-child(3) th { position: sticky; top: 51px; z-index: 10; }
+
+    th {
+      border: 1px solid #475569;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+      padding: 4px 6px;
+    }
+    .th-macro { font-size: 11px; font-weight: 800; }
+    .th-sub   { font-size: 10px; font-weight: 700; }
+    .th-micro { font-size: 9px;  font-weight: 700; text-transform: uppercase; }
+
+    .bg-estada { background-color: #334155 !important; color: #ffffff !important; }
+    .bg-operativa { background-color: #475569 !important; color: #ffffff !important; }
+    .bg-otb { background-color: #ea580c !important; color: #ffffff !important; }
+    .bg-pk-act { background-color: #0f766e !important; color: #ffffff !important; }
+    .bg-stly { background-color: #1d4ed8 !important; color: #ffffff !important; }
+    .bg-pk-stly { background-color: #4338ca !important; color: #ffffff !important; }
+    .bg-tanc { background-color: #0f172a !important; color: #38bdf8 !important; }
+    .bg-fn-tot { background-color: #1e293b !important; color: #ffffff !important; }
+
+    /* ESTILS FITXA MENSUAL EXECUTIVA */
+    .bg-hdr-avui       { background-color: #3b0764 !important; color: #ffffff !important; }
+    .bg-hdr-ly         { background-color: #451a03 !important; color: #ffffff !important; }
+    .bg-hdr-var7d      { background-color: #dc2626 !important; color: #ffffff !important; }
+    .bg-hdr-pressupost { background-color: #166534 !important; color: #ffffff !important; }
+    .bg-hdr-varpress   { background-color: #b91c1c !important; color: #ffffff !important; }
+    .bg-hdr-tancament  { background-color: #0f172a !important; color: #ffffff !important; }
+    .bg-hdr-var-otb    { background-color: #1e3a8a !important; color: #ffffff !important; }
+
+    .taula-mensual-gran th {
+      font-size: 12px !important;
+      padding: 6px 8px !important;
+      font-weight: 800 !important;
+    }
+    .taula-mensual-gran td {
+      font-size: 12px !important;
+      padding: 5px 8px !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+
+    td {
+      border-right: 1px solid #cbd5e1;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 3px 6px;
+      text-align: right;
+      white-space: nowrap;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 11px;
+      color: #000000;
+    }
+
+    .c-rn  { width: 34px !important; min-width: 34px !important; max-width: 44px !important; }
+    .c-rev { width: 52px !important; min-width: 52px !important; max-width: 60px !important; }
+    .c-adr { width: 48px !important; min-width: 48px !important; max-width: 56px !important; }
+
+    .col-fixa-dia {
+      position: sticky !important;
+      left: 0px !important;
+      width: 40px !important;
+      min-width: 40px !important;
+      max-width: 40px !important;
+      z-index: 5;
+      background-color: #f1f5f9;
+      font-weight: 700;
+      text-align: center;
+      border-right: 1px solid #cbd5e1 !important;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    .col-fixa-data {
+      position: sticky !important;
+      left: 40px !important;
+      width: 78px !important;
+      min-width: 78px !important;
+      max-width: 78px !important;
+      z-index: 5;
+      background-color: #f1f5f9;
+      font-weight: 700;
+      text-align: center;
+      border-right: 2px solid #0f172a !important;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    thead th.col-fixa-dia,
+    thead th.col-fixa-data {
+      z-index: 30 !important;
+    }
+
+    .td-otb { background-color: #fff7ed; }
+    .td-pk-act { background-color: #f0fdfa; }
+    .td-stly { background-color: #eff6ff; }
+    .td-pk-stly { background-color: #eef2ff; }
+    .td-tanc { background-color: #f8fafc; border-left: 1px solid #cbd5e1; }
+
+    .disp-critic {
+      background-color: #dc2626 !important;
+      color: #ffffff !important;
+      font-weight: 900 !important;
+    }
+
+    .borda-esquerra-fn { border-left: 1px solid #94a3b8 !important; }
+
+    tr.fila-seleccionada td { background-color: #fef9c3 !important; }
+    tr.fila-seleccionada .col-fixa-data,
+    tr.fila-seleccionada .col-fixa-dia { background-color: #fde047 !important; }
+
+    tr.fila-capsetmana td.col-fixa-dia,
+    tr.fila-capsetmana td.col-fixa-data { background-color: #bae6fd !important; }
+    tr.fila-capsetmana td.grp-operativa { background-color: #e0f2fe !important; }
+    tr.fila-capsetmana td.grp-operativa .input-edit:not(.fons-groc-actiu) { background-color: #f0f9ff; }
+
+    tr.estat-stop_sales td.col-fixa-data { background-color: #dc2626 !important; color: #ffffff !important; font-weight: 900; }
+    tr.estat-grups td.col-fixa-data { background-color: #7c3aed !important; color: #ffffff !important; font-weight: 900; }
+    tr.estat-grups td { background-color: #faf5ff; }
+
+    tr.estat-hotel_tancat td { background-color: #f1f5f9 !important; opacity: 0.55; }
+    tr.estat-hotel_tancat td.col-fixa-data,
+    tr.estat-hotel_tancat td.col-fixa-dia { background-color: #64748b !important; color: #ffffff !important; opacity: 1 !important; }
+
+    tr.fila-passada td { background-color: #F4B084 !important; color: #000000 !important; }
+    tr.fila-passada .col-fixa-dia,
+    tr.fila-passada .col-fixa-data { background-color: #ea9d6e !important; color: #000000 !important; }
+    tr.fila-passada input.input-edit:not(.fons-groc-actiu) {
+      background-color: #f7cbb0 !important;
+      color: #000000 !important;
+    }
+
+    tr.fila-total-mes td {
+      background-color: #BFBFBF !important;
+      color: #000000 !important;
+      font-weight: 800 !important;
+      font-size: 11px !important;
+      border-top: 2px solid #64748b !important;
+      border-bottom: 2px solid #64748b !important;
+    }
+    tr.fila-total-mes .col-fixa-dia { background-color: #a8a8a8 !important; }
+    tr.fila-total-mes .col-fixa-data {
+      background-color: #a8a8a8 !important;
+      text-align: center !important;
+      padding: 2px !important;
+    }
+
+    .pk-positiu { color: #1d4ed8 !important; font-weight: 800 !important; }
+    .pk-negatiu { color: #dc2626 !important; font-weight: 800 !important; }
+
+    .input-edit {
+      border: 1px solid transparent;
+      background: #f8fafc;
+      width: 100%;
+      min-width: 110px;
+      padding: 1px 3px;
+      font-size: 11px;
+      border-radius: 3px;
+    }
+    .input-edit:not([readonly]):focus {
+      background: #ffffff;
+      border-color: #3b82f6;
+      outline: none;
+      box-shadow: 0 0 0 1px #3b82f6;
+    }
+    .input-tarifa { min-width: 55px; text-align: right; font-size: 13px !important; font-weight: 700; }
+    .tarifa-negre { color: #000000 !important; }
+    .tarifa-verd { color: #16a34a !important; }
+    .tarifa-vermell { color: #dc2626 !important; }
+
+    .fons-groc-actiu { background-color: #fef08a !important; border: 1px solid #eab308 !important; }
+
+    .btn-cicle-color {
+      cursor: pointer;
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 1px solid #475569;
+      vertical-align: middle;
+      margin-left: 3px;
+      transition: transform 0.1s;
+    }
+    .btn-cicle-color:hover { transform: scale(1.25); }
+    .dot-negre { background-color: #000000; }
+    .dot-verd { background-color: #16a34a; }
+    .dot-vermell { background-color: #dc2626; }
+
+    .btn-plegar-mes {
+      cursor: pointer;
+      user-select: none;
+      display: inline-block;
+      padding: 1px 4px;
+      font-size: 9px;
+      font-weight: bold;
+      border-radius: 3px;
+      background: #334155;
+      color: #ffffff;
+      border: 1px solid #0f172a;
+    }
+    .col-oculta { display: none !important; }
+
+    /* FRANJA CORPORATIVA COMPACTA (LOGO + HOTEL + WEB SHARE) */
+    .franja-executiva-compacta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 14px;
+      margin: 8px 0;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .bloc-identitat-hotel {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-hotel-fitxa {
+      max-height: 44px;
+      max-width: 170px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+    .separador-vertical-corp {
+      width: 2px;
+      height: 32px;
+      background-color: #cbd5e1;
+    }
+    .bloc-satellits-dreta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .caixa-satellit-inline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background-color: #f8fafc;
+    }
+
+/* ESTILS PER IMPRESSIÓ / PDF EN 1 SOLA PÀGINA A4 APAÏSAT (MAXIMITZAT) */
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .nav-tabs-revenue, .panell-control, .btn-exportar {
+        display: none !important;
+      }
+      #contenidorVistaMensual {
+        display: block !important;
+        width: 100% !important;
+      }
+      #contenidorVistaPricing, #contenidorVistaFonts, #contenidorVistaTipus {
+        display: none !important;
+      }
+      .table-container {
+        box-shadow: none !important;
+        border: 1px solid #94a3b8 !important;
+        overflow: visible !important;
+        max-height: none !important;
+        margin-bottom: 0 !important;
+      }
+      .taula-mensual-gran th {
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+      }
+      .taula-mensual-gran td {
+        font-size: 12.5px !important;
+        padding: 6.5px 8px !important;
+      }
+      .franja-executiva-compacta {
+        margin: 12px 0 !important;
+        padding: 8px 16px !important;
+        box-shadow: none !important;
+        border: 1px solid #94a3b8 !important;
+      }
+      .logo-hotel-fitxa {
+        max-height: 46px !important;
+      }
+      #lblHotelFitxa {
+        font-size: 20px !important;
+      }
+      #lblWebShareAct {
+        font-size: 21px !important;
+      }
+      tr.fila-total-mes td {
+        font-size: 13px !important;
+        padding: 7px 8px !important;
+      }
+      @page {
+        size: A4 landscape;
+        margin: 8mm 10mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVEGACIÓ ENTRE VISTES -->
+  <div class="nav-tabs-revenue">
+    <div id="tabPricing" class="tab-btn tab-activa" onclick="canviarVista('pricing')">🎯 Pricing & Decisió</div>
+    <div id="tabFonts" class="tab-btn" onclick="canviarVista('fonts')">🌐 Fonts de Negoci</div>
+    <div id="tabTipus" class="tab-btn" onclick="canviarVista('tipus')">🛏️ Tipologies d'Habitació</div>
+    <div id="tabMensual" class="tab-btn" onclick="canviarVista('mensual')">📅 Fitxa Mensual Executiva</div>
+  </div>
+
+  <!-- PANELL DE CONTROL PRINCIPAL -->
+  <div class="panell-control">
+    <div class="row align-items-center g-2">
+      <div class="col-auto"><label class="form-label text-warning fw-bold mb-0">HOTEL:</label></div>
+      <div class="col-md-2">
+        <select id="selHotel" class="form-select form-select-sm bg-dark text-light border-secondary" onchange="actualitzarVistaActiva()"></select>
+      </div>
+      <div class="col-auto"><label class="form-label text-warning fw-bold mb-0">DATA CAPTURA:</label></div>
+      <div class="col-md-2">
+        <select id="selCaptura" class="form-select form-select-sm bg-dark text-light border-secondary" onchange="actualitzarVistaActiva()"></select>
+      </div>
+
+      <!-- Controls vista Pricing -->
+      <div class="col-auto zona-ctrl-pricing">
+        <button id="btnCopiarMatinal" class="btn btn-sm btn-outline-info fw-bold" onclick="executarCopiarMatinal()" title="Copia les Tarifes Actuals a Anteriors">📋 Copiar Act a Ant</button>
+      </div>
+      <div class="col-auto zona-ctrl-pricing">
+        <button id="btnModeAdr" class="btn btn-sm btn-outline-warning fw-bold" onclick="toggleModeADR()">
+          🎯 Mode ADR: Δ OTB
+        </button>
+      </div>
+      <div class="col-auto zona-ctrl-pricing">
+        <span class="badge bg-secondary p-2" id="lblCapacitat">Capacitat: -</span>
+      </div>
+      <div class="col-auto zona-ctrl-pricing">
+        <span id="badgeModeLectura" class="badge bg-info text-dark p-2 d-none">🔒 Només lectura</span>
+      </div>
+
+      <!-- Controls exclusius de la Fitxa Mensual -->
+      <div class="col-auto zona-ctrl-mensual d-none">
+        <label class="form-label text-info fw-bold mb-0">MES FITXA:</label>
+      </div>
+      <div class="col-md-2 zona-ctrl-mensual d-none">
+        <select id="selMesFitxa" class="form-select form-select-sm bg-dark text-light border-info" onchange="carregarTaulerMensual()"></select>
+      </div>
+      <div class="col-auto zona-ctrl-mensual d-none">
+        <button class="btn btn-sm btn-outline-success fw-bold me-1" onclick="exportarExcelFitxa()" title="Descarregar com Excel (.csv)">📥 Excel</button>
+        <button class="btn btn-sm btn-outline-light fw-bold" onclick="window.print()" title="Imprimir o desar a PDF en 1 pàgina">🖨️ Imprimir / PDF</button>
+      </div>
+
+      <div class="col text-end">
+        <span id="txtEstat" class="badge bg-warning text-dark p-2">Carregant dades...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- SECCIÓ 1: VISTA DE PRICING & DECISIÓ       -->
+  <!-- ========================================== -->
+  <div id="contenidorVistaPricing">
+    <div class="barra-visibilitat">
+      <span class="text-secondary fw-bold me-2" style="font-size: 11px;">VEURE BLOCS:</span>
+      <span class="btn-toggle-vis btn-actiu-operativa" onclick="alternarBloc('grp-operativa', this, 'btn-actiu-operativa')">Operativa</span>
+      <span class="btn-toggle-vis btn-actiu-otb" onclick="alternarBloc('grp-otb', this, 'btn-actiu-otb')">OTB Actual</span>
+      <span class="btn-toggle-vis btn-actiu-pk-act" onclick="alternarBloc('grp-pk1', this, 'btn-actiu-pk-act')">PK 1D</span>
+      <span class="btn-toggle-vis btn-actiu-pk-act" onclick="alternarBloc('grp-pk3', this, 'btn-actiu-pk-act')">PK 3D</span>
+      <span class="btn-toggle-vis btn-actiu-pk-act" onclick="alternarBloc('grp-pk7', this, 'btn-actiu-pk-act')">PK 7D</span>
+      <span class="btn-toggle-vis btn-actiu-pk-act" onclick="alternarBloc('grp-pk14', this, 'btn-actiu-pk-act')">PK 14D</span>
+      <span class="btn-toggle-vis btn-actiu-pk-act" onclick="alternarBloc('grp-pk28', this, 'btn-actiu-pk-act')">PK 28D</span>
+      <span class="btn-toggle-vis btn-actiu-stly" onclick="alternarBloc('grp-stly', this, 'btn-actiu-stly')">STLY</span>
+      <span class="btn-toggle-vis btn-actiu-pk-stly" onclick="alternarBloc('grp-pkly1', this, 'btn-actiu-pk-stly')">PK 1D LY</span>
+      <span class="btn-toggle-vis btn-actiu-pk-stly" onclick="alternarBloc('grp-pkly3', this, 'btn-actiu-pk-stly')">PK 3D LY</span>
+      <span class="btn-toggle-vis btn-actiu-pk-stly" onclick="alternarBloc('grp-pkly7', this, 'btn-actiu-pk-stly')">PK 7D LY</span>
+      <span class="btn-toggle-vis btn-actiu-pk-stly" onclick="alternarBloc('grp-pkly14', this, 'btn-actiu-pk-stly')">PK 14D LY</span>
+      <span class="btn-toggle-vis btn-actiu-pk-stly" onclick="alternarBloc('grp-pkly28', this, 'btn-actiu-pk-stly')">PK 28D LY</span>
+      <span class="btn-toggle-vis btn-actiu-tanc" onclick="alternarBloc('grp-tanc', this, 'btn-actiu-tanc')">Tancament LY</span>
+    </div>
+
+    <div id="alertaError" class="alert alert-danger d-none p-2 mb-2"></div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th colspan="2" class="th-macro bg-estada col-fixa-dia">ESTADA</th>
+            <th colspan="4" class="th-macro bg-operativa grp-operativa">OPERATIVA & PRICING</th>
+            <th colspan="7" class="th-macro bg-otb grp-otb">BLOC OTB (ACTUAL)</th>
+            <th colspan="5" class="th-macro bg-pk-act grp-pk1">PICKUP 1D</th>
+            <th colspan="5" class="th-macro bg-pk-act grp-pk3">PICKUP 3D</th>
+            <th colspan="5" class="th-macro bg-pk-act grp-pk7">PICKUP 7D</th>
+            <th colspan="5" class="th-macro bg-pk-act grp-pk14">PICKUP 14D</th>
+            <th colspan="5" class="th-macro bg-pk-act grp-pk28">PICKUP 28D</th>
+            <th colspan="6" class="th-macro bg-stly grp-stly">BLOC STLY</th>
+            <th colspan="5" class="th-macro bg-pk-stly grp-pkly1">PICKUP 1D LY</th>
+            <th colspan="5" class="th-macro bg-pk-stly grp-pkly3">PICKUP 3D LY</th>
+            <th colspan="5" class="th-macro bg-pk-stly grp-pkly7">PICKUP 7D LY</th>
+            <th colspan="5" class="th-macro bg-pk-stly grp-pkly14">PICKUP 14D LY</th>
+            <th colspan="5" class="th-macro bg-pk-stly grp-pkly28">PICKUP 28D LY</th>
+            <th colspan="6" class="th-macro bg-tanc grp-tanc">TANCAMENT LY</th>
+          </tr>
+          <tr>
+            <th class="th-sub bg-estada col-fixa-dia">Dia</th>
+            <th class="th-sub bg-estada col-fixa-data">Data</th>
+            <th class="th-sub bg-operativa grp-operativa">Esdeveniment</th>
+            <th class="th-sub bg-operativa grp-operativa">Restriccions</th>
+            <th class="th-sub bg-operativa grp-operativa">Tarifa Ant</th>
+            <th class="th-sub bg-operativa grp-operativa">Tarifa Act</th>
+            
+            <th class="th-sub bg-otb grp-otb">Occ%</th>
+            <th class="th-sub bg-otb grp-otb">RN</th>
+            <th class="th-sub bg-otb grp-otb">ADR</th>
+            <th class="th-sub bg-otb grp-otb">Room Rev</th>
+            <th class="th-sub bg-otb grp-otb">F&B Rev</th>
+            <th class="th-sub bg-otb grp-otb">Total Rev</th>
+            <th class="th-sub bg-otb grp-otb" style="background-color: #c2410c !important; color:#ffffff;">Disp</th>
+
+            <th class="th-sub bg-pk-act grp-pk1">RN</th><th class="th-sub bg-pk-act grp-pk1 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-act grp-pk1">Room Rev</th><th class="th-sub bg-pk-act grp-pk1">F&B Rev</th><th class="th-sub bg-pk-act grp-pk1">Total Rev</th>
+            <th class="th-sub bg-pk-act grp-pk3">RN</th><th class="th-sub bg-pk-act grp-pk3 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-act grp-pk3">Room Rev</th><th class="th-sub bg-pk-act grp-pk3">F&B Rev</th><th class="th-sub bg-pk-act grp-pk3">Total Rev</th>
+            <th class="th-sub bg-pk-act grp-pk7">RN</th><th class="th-sub bg-pk-act grp-pk7 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-act grp-pk7">Room Rev</th><th class="th-sub bg-pk-act grp-pk7">F&B Rev</th><th class="th-sub bg-pk-act grp-pk7">Total Rev</th>
+            <th class="th-sub bg-pk-act grp-pk14">RN</th><th class="th-sub bg-pk-act grp-pk14 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-act grp-pk14">Room Rev</th><th class="th-sub bg-pk-act grp-pk14">F&B Rev</th><th class="th-sub bg-pk-act grp-pk14">Total Rev</th>
+            <th class="th-sub bg-pk-act grp-pk28">RN</th><th class="th-sub bg-pk-act grp-pk28 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-act grp-pk28">Room Rev</th><th class="th-sub bg-pk-act grp-pk28">F&B Rev</th><th class="th-sub bg-pk-act grp-pk28">Total Rev</th>
+            
+            <th class="th-sub bg-stly grp-stly">Occ%</th>
+            <th class="th-sub bg-stly grp-stly">RN</th>
+            <th class="th-sub bg-stly grp-stly">ADR</th>
+            <th class="th-sub bg-stly grp-stly">Room Rev</th>
+            <th class="th-sub bg-stly grp-stly">F&B Rev</th>
+            <th class="th-sub bg-stly grp-stly">Total Rev</th>
+            
+            <th class="th-sub bg-pk-stly grp-pkly1">RN</th><th class="th-sub bg-pk-stly grp-pkly1 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-stly grp-pkly1">Room Rev</th><th class="th-sub bg-pk-stly grp-pkly1">F&B Rev</th><th class="th-sub bg-pk-stly grp-pkly1">Total Rev</th>
+            <th class="th-sub bg-pk-stly grp-pkly3">RN</th><th class="th-sub bg-pk-stly grp-pkly3 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-stly grp-pkly3">Room Rev</th><th class="th-sub bg-pk-stly grp-pkly3">F&B Rev</th><th class="th-sub bg-pk-stly grp-pkly3">Total Rev</th>
+            <th class="th-sub bg-pk-stly grp-pkly7">RN</th><th class="th-sub bg-pk-stly grp-pkly7 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-stly grp-pkly7">Room Rev</th><th class="th-sub bg-pk-stly grp-pkly7">F&B Rev</th><th class="th-sub bg-pk-stly grp-pkly7">Total Rev</th>
+            <th class="th-sub bg-pk-stly grp-pkly14">RN</th><th class="th-sub bg-pk-stly grp-pkly14 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-stly grp-pkly14">Room Rev</th><th class="th-sub bg-pk-stly grp-pkly14">F&B Rev</th><th class="th-sub bg-pk-stly grp-pkly14">Total Rev</th>
+            <th class="th-sub bg-pk-stly grp-pkly28">RN</th><th class="th-sub bg-pk-stly grp-pkly28 th-label-adr">Δ ADR</th><th class="th-sub bg-pk-stly grp-pkly28">Room Rev</th><th class="th-sub bg-pk-stly grp-pkly28">F&B Rev</th><th class="th-sub bg-pk-stly grp-pkly28">Total Rev</th>
+
+            <th class="th-sub bg-tanc grp-tanc">Occ%</th>
+            <th class="th-sub bg-tanc grp-tanc">RN</th>
+            <th class="th-sub bg-tanc grp-tanc">ADR</th>
+            <th class="th-sub bg-tanc grp-tanc">Room Rev</th>
+            <th class="th-sub bg-tanc grp-tanc">F&B Rev</th>
+            <th class="th-sub bg-tanc grp-tanc">Total Rev</th>
+          </tr>
+        </thead>
+        <tbody id="cosTaulaPricing">
+          <tr><td colspan="75" class="text-center py-4">Carregant matriu de dades...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- SECCIÓ 2: VISTA DE FONTS DE NEGOCI                             -->
+  <!-- ============================================================== -->
+  <div id="contenidorVistaFonts" class="d-none">
+    <div class="barra-visibilitat">
+      <span class="text-secondary fw-bold me-2" style="font-size: 11px;">BLOCS TEMPORALS:</span>
+      <span class="btn-toggle-vis btn-actiu-otb" onclick="alternarBlocFN('fn-blk-otb', this, 'btn-actiu-otb')">OTB Actual</span>
+      <span class="btn-toggle-vis btn-actiu-pk-act" onclick="alternarBlocFN('fn-blk-p1', this, 'btn-actiu-pk-act')">Pickup 1D</span>
+      <span class="btn-toggle-vis btn-actiu-pk-act" onclick="alternarBlocFN('fn-blk-p7', this, 'btn-actiu-pk-act')">Pickup 7D</span>
+      <span class="btn-toggle-vis btn-actiu-stly" onclick="alternarBlocFN('fn-blk-stly', this, 'btn-actiu-stly')">STLY</span>
+    </div>
+
+    <div class="barra-visibilitat" style="background-color: #172554; border-color: #1e3a8a;">
+      <span class="text-info fw-bold me-2" style="font-size: 11px;">FONTS DE NEGOCI:</span>
+      <span class="btn-toggle-vis btn-actiu-fn" onclick="alternarFontIndividual('fn-col-web_propia', this)">Web Propia</span>
+      <span class="btn-toggle-vis btn-actiu-particulars" onclick="alternarFontIndividual('fn-col-particulars', this)">Particulars</span>
+      <span class="btn-toggle-vis btn-actiu-fn" onclick="alternarFontIndividual('fn-col-agencies_online', this)">Agencies Online</span>
+      <span class="btn-toggle-vis btn-actiu-fn" onclick="alternarFontIndividual('fn-col-agencies_online_net', this)">Agencies Online Net</span>
+      <span class="btn-toggle-vis btn-actiu-fn" onclick="alternarFontIndividual('fn-col-altres_agencies', this)">Altres Agencies</span>
+      <span class="btn-toggle-vis btn-actiu-fn" onclick="alternarFontIndividual('fn-col-empreses_grups', this)">Empreses Grups</span>
+      <span class="btn-toggle-vis btn-actiu-fn" onclick="alternarFontIndividual('fn-col-empreses_agencia', this)">Empreses Agencia</span>
+      <span class="btn-toggle-vis btn-actiu-fn" onclick="alternarFontIndividual('fn-col-col_lectius', this)">Col.lectius</span>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead class="thead-3nivells">
+          <tr id="trMacroFN">
+            <th colspan="2" rowspan="2" class="th-macro bg-estada col-fixa-dia">ESTADA</th>
+            <th id="thMacroOTB"  class="th-macro bg-otb fn-blk-otb">BLOC OTB (ACTUAL)</th>
+            <th id="thMacroP1"   class="th-macro bg-pk-act fn-blk-p1">PICKUP 1D</th>
+            <th id="thMacroP7"   class="th-macro bg-pk-act fn-blk-p7">PICKUP 7D</th>
+            <th id="thMacroSTLY" class="th-macro bg-stly fn-blk-stly">BLOC STLY</th>
+          </tr>
+          <tr id="trCanalsFN"></tr>
+          <tr id="filaHeadersMicroFN">
+            <th class="th-micro bg-estada col-fixa-dia">Dia</th>
+            <th class="th-micro bg-estada col-fixa-data">Data</th>
+          </tr>
+        </thead>
+        <tbody id="cosTaulaFonts">
+          <tr><td colspan="110" class="text-center py-4">Carregant matriu de fonts de negoci...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- SECCIÓ 3: VISTA DE TIPOLOGIES D'HABITACIÓ                      -->
+  <!-- ============================================================== -->
+  <div id="contenidorVistaTipus" class="d-none">
+    <div class="barra-visibilitat">
+      <span class="text-secondary fw-bold me-2" style="font-size: 11px;">BLOCS TEMPORALS:</span>
+      <span class="btn-toggle-vis btn-actiu-otb" onclick="alternarBlocTipus('tp-blk-otb', this, 'btn-actiu-otb')">OTB Actual</span>
+      <span class="btn-toggle-vis btn-actiu-pk-act" onclick="alternarBlocTipus('tp-blk-p1', this, 'btn-actiu-pk-act')">Pickup 1D</span>
+      <span class="btn-toggle-vis btn-actiu-pk-act" onclick="alternarBlocTipus('tp-blk-p7', this, 'btn-actiu-pk-act')">Pickup 7D</span>
+      <span class="btn-toggle-vis btn-actiu-stly" onclick="alternarBlocTipus('tp-blk-stly', this, 'btn-actiu-stly')">STLY</span>
+    </div>
+
+    <div class="barra-visibilitat" style="background-color: #2e1065; border-color: #5b21b6;">
+      <span class="text-light fw-bold me-2" style="font-size: 11px;">HABITACIONS ACTIVES:</span>
+      <div id="barraBotonsTipusActius" style="display:inline-flex; flex-wrap:wrap; gap:5px;"></div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead class="thead-3nivells">
+          <tr id="trMacroTipus">
+            <th colspan="2" rowspan="2" class="th-macro bg-estada col-fixa-dia">ESTADA</th>
+            <th id="thMacroTipusOTB"  class="th-macro bg-otb tp-blk-otb">BLOC OTB (ACTUAL)</th>
+            <th id="thMacroTipusP1"   class="th-macro bg-pk-act tp-blk-p1">PICKUP 1D</th>
+            <th id="thMacroTipusP7"   class="th-macro bg-pk-act tp-blk-p7">PICKUP 7D</th>
+            <th id="thMacroTipusSTLY" class="th-macro bg-stly tp-blk-stly">BLOC STLY</th>
+          </tr>
+          <tr id="trCanalsTipus"></tr>
+          <tr id="filaHeadersMicroTipus">
+            <th class="th-micro bg-estada col-fixa-dia">Dia</th>
+            <th class="th-micro bg-estada col-fixa-data">Data</th>
+          </tr>
+        </thead>
+        <tbody id="cosTaulaTipus">
+          <tr><td colspan="110" class="text-center py-4">Carregant tipologies d'habitació...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- SECCIÓ 4: VISTA DE FITXA MENSUAL EXECUTIVA (1 SOL FULL A4)     -->
+  <!-- ============================================================== -->
+  <div id="contenidorVistaMensual" class="d-none">
+    
+    <!-- SUBPANEL 1: TARGETA KPIS GLOBALS DEL MES -->
+    <div class="table-container taula-mensual-gran" style="max-height: none;">
+      <table>
+        <thead>
+          <tr>
+            <th id="thTitolMesFitxa" class="bg-estada fw-bold text-center" style="width: 140px;">MES</th>
+            <th class="th-macro bg-hdr-avui" style="width: 95px;">AVUI</th>
+            <th class="th-macro bg-hdr-ly" style="width: 95px;">ANY ANTERIOR</th>
+            <th class="th-macro bg-hdr-var7d" style="width: 90px;">Var 7D</th>
+            <th class="th-macro bg-hdr-var7d" style="width: 90px;">Var 7D STLY</th>
+            <th class="th-macro bg-hdr-pressupost" style="width: 105px;">PRESSUPOST</th>
+            <th class="th-macro bg-hdr-varpress" style="width: 110px;">VAR VS PRESSUPOST</th>
+            <th id="thTancamentAnyTitol" class="th-macro bg-hdr-tancament" style="width: 105px;">Tancament LY</th>
+          </tr>
+        </thead>
+        <tbody id="cosKpisGlobalsMensual">
+          <tr><td colspan="8" class="text-center py-4">Carregant fitxa executiva...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FRANJA CENTRAL COMPACTA EN UNA SOLA LÍNIA (LOGO + HOTEL + SENSE FONT + WEB SHARE) -->
+    <div class="franja-executiva-compacta">
+      
+      <!-- Esquerra: Logo corporatiu + Nom Hotel + Data Captura -->
+      <div class="bloc-identitat-hotel">
+        <img id="imgLogoHotelFitxa" class="logo-hotel-fitxa d-none" src="" alt="Logo Hotel">
+        <div id="sepLogoHotel" class="separador-vertical-corp d-none"></div>
+        <div>
+          <div style="font-size: 9px; font-weight: 800; color: #64748b; letter-spacing: 0.8px; text-transform: uppercase;">
+            FITXA EXECUTIVA &bull; CAPTURA <span id="lblDataCapturaFitxa">-</span>
+          </div>
+          <div id="lblHotelFitxa" class="fw-bold text-uppercase" style="font-size: 18px; line-height: 1.1; color: #0f172a; letter-spacing: 0.5px;">-</div>
+        </div>
+      </div>
+
+      <!-- Dreta: Sense Font (si n'hi ha) + Web Share + Web Share -1 -->
+      <div class="bloc-satellits-dreta">
+        
+        <!-- Avís Sense Font (Només mes en curs) -->
+        <div id="cardSenseFont" class="caixa-satellit-inline d-none" style="background-color: #fef2f2; border-color: #fca5a5;">
+          <div>
+            <div class="fw-bold" style="font-size: 9px; color: #64748b; text-transform: uppercase;">⚠️ Sense Font (Manuals)</div>
+            <div id="lblSenseFontRev" class="fw-bold" style="font-size: 14px; line-height: 1.1;">0 €</div>
+          </div>
+        </div>
+
+        <!-- Targeta Web Share + Web Share -1 -->
+        <div class="caixa-satellit-inline">
+          <div style="padding-right: 6px;">
+            <div class="fw-bold" style="font-size: 9px; color: #64748b; text-transform: uppercase;">Web Share</div>
+            <div id="lblWebShareAct" class="fw-bold" style="font-size: 19px; line-height: 1.1; color: #0f172a;">0,00%</div>
+          </div>
+          <div id="boxWebShareDiff" class="px-2 py-1 rounded fw-bold text-center" style="background: #ffffff; border: 1px solid #cbd5e1; min-width: 72px;">
+            <div id="lblWebShareDiff" style="font-size: 13px; color: #000000; line-height: 1.1;">-</div>
+            <div style="font-size: 8.5px; font-weight: 600; color: #64748b;">Web Share -1</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SUBPANEL 2: DESGLOSSAMENT PER FONT DE NEGOCI DEL MES -->
+    <div class="table-container taula-mensual-gran" style="max-height: none;">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2" class="th-macro bg-estada" style="min-width: 140px; text-align: left; padding-left: 10px;">Font de negoci</th>
+            <th rowspan="2" class="th-sub bg-operativa" style="width: 70px;">pes ocup.</th>
+            <th rowspan="2" class="th-sub bg-operativa" style="width: 70px;">pes prodc.</th>
+            <th colspan="3" class="th-macro bg-otb">OTB ACTUAL</th>
+            <th colspan="3" class="th-macro bg-hdr-var7d">Pickup 7D</th>
+            <th colspan="3" class="th-macro bg-hdr-var-otb">Var OTB vs STLY</th>
+            <th colspan="3" class="th-macro bg-hdr-tancament">Var Pickup 7D vs STLY</th>
+          </tr>
+          <tr>
+            <th class="th-micro bg-otb" style="width: 50px;">RN</th>
+            <th class="th-micro bg-otb" style="width: 65px;">PM</th>
+            <th class="th-micro bg-otb" style="width: 80px;">Room Rev</th>
+
+            <th class="th-micro bg-hdr-var7d" style="width: 50px;">RN</th>
+            <th class="th-micro bg-hdr-var7d" style="width: 65px;">PM</th>
+            <th class="th-micro bg-hdr-var7d" style="width: 80px;">Room Rev</th>
+
+            <th class="th-micro bg-hdr-var-otb" style="width: 50px;">RN</th>
+            <th class="th-micro bg-hdr-var-otb" style="width: 65px;">PM</th>
+            <th class="th-micro bg-hdr-var-otb" style="width: 80px;">Room Rev</th>
+
+            <th class="th-micro bg-hdr-tancament" style="width: 50px;">RN</th>
+            <th class="th-micro bg-hdr-tancament" style="width: 65px;">PM</th>
+            <th class="th-micro bg-hdr-tancament" style="width: 80px;">Room Rev</th>
+          </tr>
+        </thead>
+        <tbody id="cosCanalsFitxaMensual">
+          <tr><td colspan="15" class="text-center py-4">Carregant matriu de fonts...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    var vistaActiva = "pricing";
+    var hotelActual = "";
+    var dataRefActual = "";
+    var dadesPricing = [];
+    var dadesFN = null;
+    var dadesTP = null;
+    var dadesFitxaMensual = null;
+    var estatBlocsOcults = {};
+    var modeADRPickup = "diff";
+    var potEditarPricing = false;
+    
+    var capacitatHotelActiu = 126;
+
+    // Diccionari oficial de Logotips Corporatius (GitHub Raw)
+    var LOGOS_HOTELS = {
+      "Rivoli Rambla": "https://raw.githubusercontent.com/miquelnavarro-sketch/eines_serhshotels/main/img/Rivoli.png",
+      "Del Port":      "https://raw.githubusercontent.com/miquelnavarro-sketch/eines_serhshotels/main/img/Del%20Port.png",
+      "Carlit":        "https://raw.githubusercontent.com/miquelnavarro-sketch/eines_serhshotels/main/img/Carlit.png",
+      "Sant Hilari":   "https://raw.githubusercontent.com/miquelnavarro-sketch/eines_serhshotels/main/img/Santhilari.png"
+    };
+
+    var estatBlocsTemporalsFN = {};
+    var estatFontsIndividualsFN = {};
+
+    var estatBlocsTemporalsTP = {};
+    var estatTipusIndividualsTP = {};
+
+    var mapaClausFonts = {
+      "Web Propia": "web_propia",
+      "Particulars": "particulars",
+      "Agencies Online": "agencies_online",
+      "Agencies Online Net": "agencies_online_net",
+      "Altres Agencies": "altres_agencies",
+      "Empreses Grups": "empreses_grups",
+      "Empreses Agencia": "empreses_agencia",
+      "Col.lectius": "col_lectius"
+    };
+
+    function sanititzarClau(txt) {
+      return "tp_col_" + String(txt).replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+    }
+
+    function canviarVista(novaVista) {
+      vistaActiva = novaVista;
+      document.getElementById("tabPricing").className = "tab-btn" + (novaVista === "pricing" ? " tab-activa" : "");
+      document.getElementById("tabFonts").className = "tab-btn" + (novaVista === "fonts" ? " tab-activa" : "");
+      document.getElementById("tabTipus").className = "tab-btn" + (novaVista === "tipus" ? " tab-activa" : "");
+      document.getElementById("tabMensual").className = "tab-btn" + (novaVista === "mensual" ? " tab-activa" : "");
+
+      document.getElementById("contenidorVistaPricing").classList.toggle("d-none", novaVista !== "pricing");
+      document.getElementById("contenidorVistaFonts").classList.toggle("d-none", novaVista !== "fonts");
+      document.getElementById("contenidorVistaTipus").classList.toggle("d-none", novaVista !== "tipus");
+      document.getElementById("contenidorVistaMensual").classList.toggle("d-none", novaVista !== "mensual");
+
+      document.querySelectorAll(".zona-ctrl-pricing").forEach(function(el) {
+        el.classList.toggle("d-none", novaVista !== "pricing");
+      });
+
+      document.querySelectorAll(".zona-ctrl-mensual").forEach(function(el) {
+        el.classList.toggle("d-none", novaVista !== "mensual");
+      });
+
+      if (novaVista === "fonts" && (!dadesFN || dadesFN.hotelActual !== hotelActual)) {
+        carregarTaulerFonts();
+      } else if (novaVista === "tipus" && (!dadesTP || dadesTP.hotelActual !== hotelActual)) {
+        carregarTaulerTipus();
+      } else if (novaVista === "mensual") {
+        carregarTaulerMensual();
+      }
+    }
+
+    function actualitzarVistaActiva() {
+      if (vistaActiva === "pricing") {
+        carregarTaulerPricing();
+      } else if (vistaActiva === "fonts") {
+        carregarTaulerFonts();
+      } else if (vistaActiva === "tipus") {
+        carregarTaulerTipus();
+      } else {
+        carregarTaulerMensual();
+      }
+    }
+
+    // =========================================================================
+    // 1. TAULER DE PRICING & DECISIÓ
+    // =========================================================================
+    function carregarTaulerPricing() {
+      document.getElementById("txtEstat").className = "badge bg-warning text-dark p-2";
+      document.getElementById("txtEstat").innerText = "Carregant...";
+      document.getElementById("alertaError").classList.add("d-none");
+
+      var hotel = document.getElementById("selHotel").value || "";
+      var snap = document.getElementById("selCaptura").value || "";
+
+      google.script.run
+        .withSuccessHandler(function(resp) {
+          if (!resp) { mostrarError("Sense resposta del servidor."); return; }
+          if (resp.error) { mostrarError(resp.error); return; }
+
+          hotelActual = resp.hotelActual;
+          dadesPricing = resp.filas || [];
+          dataRefActual = resp.dataCapturaRef;
+          capacitatHotelActiu = resp.capacitat || 126;
+          potEditarPricing = !!resp.potEditarPricing;
+          var btnCopiar = document.getElementById("btnCopiarMatinal");
+          if (btnCopiar) btnCopiar.classList.toggle("d-none", !potEditarPricing);
+          var badgeLectura = document.getElementById("badgeModeLectura");
+          if (badgeLectura) badgeLectura.classList.toggle("d-none", potEditarPricing);
+
+          omplirSelect("selHotel", resp.llistaHotels, resp.hotelActual);
+          omplirSelect("selCaptura", resp.llistaSnaps, resp.dataCapturaRef);
+          document.getElementById("lblCapacitat").innerText = "Capacitat: " + capacitatHotelActiu + " hab.";
+
+          dibuixarGraellaPricing(dadesPricing, dataRefActual);
+          aplicarEstatBlocsOcults();
+
+          document.getElementById("txtEstat").className = "badge bg-success p-2";
+          document.getElementById("txtEstat").innerText = "Connectat";
+        })
+        .withFailureHandler(function(err) {
+          mostrarError("Error Apps Script: " + (err.message || err));
+        })
+        .obtenirTaulerDecisioRevenue(hotel, snap);
+    }
+
+    function toggleModeADR() {
+      var btn = document.getElementById("btnModeAdr");
+      if (modeADRPickup === "diff") {
+        modeADRPickup = "nou";
+        btn.innerText = "🎯 Mode ADR: Nou Pickup";
+        btn.className = "btn btn-sm btn-warning text-dark fw-bold";
+        document.querySelectorAll(".th-label-adr").forEach(function(el) { el.innerText = "ADR Nou"; });
+      } else {
+        modeADRPickup = "diff";
+        btn.innerText = "🎯 Mode ADR: Δ OTB";
+        btn.className = "btn btn-sm btn-outline-warning fw-bold";
+        document.querySelectorAll(".th-label-adr").forEach(function(el) { el.innerText = "Δ ADR"; });
+      }
+      dibuixarGraellaPricing(dadesPricing, dataRefActual);
+    }
+
+    function dibuixarGraellaPricing(files, dataRef) {
+      var cos = document.getElementById("cosTaulaPricing");
+      var html = "";
+
+      if (!files || files.length === 0) {
+        cos.innerHTML = '<tr><td colspan="75" class="text-center py-4">No hi ha dades disponibles.</td></tr>';
+        return;
+      }
+
+      function convertirATimestamp(d) {
+        if (!d) return 0;
+        var str = String(d).split("T")[0].trim();
+        var p = str.split(/[\/\-]/);
+        if (p.length === 3) {
+          var a, m, dia;
+          if (p[0].length === 4) {
+            a = parseInt(p[0], 10);
+            m = parseInt(p[1], 10) - 1;
+            dia = parseInt(p[2], 10);
+          } else {
+            dia = parseInt(p[0], 10);
+            m = parseInt(p[1], 10) - 1;
+            a = parseInt(p[2], 10);
+            if (a < 100) a += 2000;
+          }
+          return new Date(a, m, dia).getTime();
+        }
+        return 0;
+      }
+
+      var selSnapEl = document.getElementById("selCaptura");
+      var dataSnapActiva = (selSnapEl && selSnapEl.value) ? selSnapEl.value : dataRef;
+      var tRefCaptura = convertirATimestamp(dataSnapActiva);
+
+      var mesSnapActiu = "";
+      if (dataSnapActiva && dataSnapActiva.indexOf("-") !== -1) {
+        var partsSnap = dataSnapActiva.split("-");
+        if (partsSnap.length >= 2) {
+          mesSnapActiu = partsSnap[0] + "-" + partsSnap[1];
+        }
+      }
+
+      var attrReadOnly = potEditarPricing ? "" : "readonly";
+      var rowIndex = 0;
+      files.forEach(function(f) {
+        var n = f.notes || {};
+        var o = f.otb || { occ: 0, rn: 0, adr: 0, roomRev: 0, fbRev: 0, totRev: 0 };
+        var s = f.stly || { occ: 0, rn: 0, adr: 0, roomRev: 0, fbRev: 0, totRev: 0 };
+        var tanc = f.tancament || { occ: 0, rn: 0, adr: 0, roomRev: 0, fbRev: 0, totRev: 0 };
+        var esTotal = !!f.esTotalMes;
+        
+        var tFila = convertirATimestamp(f.data);
+        var esPassada = (!esTotal && tRefCaptura > 0 && tFila > 0 && tFila < tRefCaptura);
+        var esCapSetmana = !esTotal && (f.dia === "DV" || f.dia === "DS");
+        var estatVenda = n.estatVenda || "obert";
+
+        var mesEsPassat = (f.mesClau && mesSnapActiu && f.mesClau < mesSnapActiu);
+        var estilDisplayFila = (!esTotal && mesEsPassat) ? 'style="display:none;"' : '';
+
+        var colorTarifaAct = n.colorAct || "negre";
+        var colorTarifaAnt = n.colorAnt || "negre";
+        var clsGrocAct = n.grocAct ? "fons-groc-actiu" : "";
+        var clsGrocAnt = n.grocAnt ? "fons-groc-actiu" : "";
+
+        var trClasses = ["fila-dia-mes"];
+        var mesAttr = 'data-mes="' + f.mesClau + '"';
+
+        if (esTotal) {
+          trClasses = ["fila-total-mes"];
+        } else {
+          if (esPassada) trClasses.push("fila-passada");
+          if (esCapSetmana) trClasses.push("fila-capsetmana");
+          if (estatVenda !== "obert") trClasses.push("estat-" + estatVenda);
+        }
+
+        var trCls = 'class="' + trClasses.join(" ") + '" ' + (esTotal ? '' : mesAttr) + ' id="tr_' + f.data + '" ' + estilDisplayFila;
+
+        var capFila = esTotal ? (f.capacitatHotel || (capacitatHotelActiu * 30)) : (f.capacitatHotel || capacitatHotelActiu);
+        var dispHabs = Math.max(0, capFila - (Number(o.rn) || 0));
+        var pctDisp = capFila > 0 ? (dispHabs / capFila) : 1;
+        var esCriticDisp = (!esTotal && pctDisp <= 0.10);
+        var clsDisp = esCriticDisp ? "disp-critic" : "fw-bold";
+
+        function colPickup(pk, cls, grpCls) {
+          if (!pk) {
+            return '<td class="' + cls + ' ' + grpCls + '">0</td>' +
+                   '<td class="' + cls + ' ' + grpCls + '">0,00 €</td>' +
+                   '<td class="' + cls + ' ' + grpCls + '">0 €</td>' +
+                   '<td class="' + cls + ' ' + grpCls + '">0 €</td>' +
+                   '<td class="' + cls + ' ' + grpCls + '">0 €</td>';
+          }
+          var adrRender = (modeADRPickup === "nou") ? fmtAdrNou(pk.adrNou) : fmtDiffStyle(pk.adrDiff, true);
+
+          return '<td class="' + cls + ' ' + grpCls + '">' + fmtDiffStyle(pk.rn, false) + '</td>' +
+                 '<td class="' + cls + ' ' + grpCls + '">' + adrRender + '</td>' +
+                 '<td class="' + cls + ' ' + grpCls + '">' + fmtDiffStyle(pk.roomRev, null) + ' €</td>' +
+                 '<td class="' + cls + ' ' + grpCls + '">' + fmtDiffPlana(pk.fbRev) + '</td>' +
+                 '<td class="' + cls + ' ' + grpCls + '">' + fmtDiffPlana(pk.totRev) + '</td>';
+        }
+
+        var rIdx = !esTotal ? rowIndex++ : -1;
+        var etiquetaBotoMes = mesEsPassat ? "[+] Desplegar" : "[-] Plegar";
+
+        var accioDblClickData = potEditarPricing ? 'ondblclick="ciclarEstatVenda(\'' + f.data + '\')" title="Clic: marcar fila | Doble clic: alternar estat"' : 'title="Clic: marcar fila"';
+        var accioDblClickGroc = potEditarPricing ? 'ondblclick="toggleFonsGroc(\'' + f.data + '\')" title="Doble clic: fons groc"' : '';
+        var accioClickColor   = potEditarPricing ? 'onclick="ciclarColorTarifa(\'' + f.data + '\')" title="Clic: alternar color text"' : 'style="cursor:default;"';
+
+        html += '<tr ' + trCls + '>' +
+          '<td class="col-fixa-dia" onclick="seleccionarFila(\'' + f.data + '\')">' + (f.dia || '') + '</td>' +
+          '<td class="col-fixa-data" onclick="seleccionarFila(\'' + f.data + '\')" ' + accioDblClickData + '>' + 
+            (esTotal ? 
+              '<span class="btn-plegar-mes" onclick="toggleMes(\'' + f.mesClau + '\', this)">' + etiquetaBotoMes + '</span> ' + f.data : 
+              formatarDataDDMMAA(f.data)
+            ) + 
+          '</td>' +
+
+          (esTotal ? 
+            '<td colspan="4" class="text-center grp-operativa" style="font-weight:900;letter-spacing:1px;color:#000000;">TOTAL MES</td>' :
+            '<td class="grp-operativa"><input id="inp_0_' + rIdx + '" ' + attrReadOnly + ' class="input-edit nav-cell" data-col="0" data-row="' + rIdx + '" type="text" value="' + (n.esdeveniment || '') + '" onblur="desarCamp(\'' + f.data + '\', \'esdeveniment\', this.value)"></td>' +
+            '<td class="grp-operativa"><input id="inp_1_' + rIdx + '" ' + attrReadOnly + ' class="input-edit nav-cell" data-col="1" data-row="' + rIdx + '" type="text" value="' + (n.restriccions || '') + '" onblur="desarCamp(\'' + f.data + '\', \'restriccions\', this.value)"></td>' +
+            '<td class="grp-operativa"><input id="inp_2_' + rIdx + '" ' + attrReadOnly + ' class="input-edit input-tarifa nav-cell tarifa-' + colorTarifaAnt + ' ' + clsGrocAnt + '" data-col="2" data-row="' + rIdx + '" type="text" value="' + (n.tarifaAnt || '') + '" onblur="desarCamp(\'' + f.data + '\', \'tarifaAnt\', this.value)"></td>' +
+            '<td class="grp-operativa" style="display:flex;align-items:center;">' +
+              '<input id="inpTar_' + f.data + '" ' + attrReadOnly + ' class="input-edit input-tarifa nav-cell tarifa-' + colorTarifaAct + ' ' + clsGrocAct + '" data-col="3" data-row="' + rIdx + '" type="text" value="' + (n.tarifaAct || '') + '" onblur="desarCamp(\'' + f.data + '\', \'tarifaAct\', this.value)" ' + accioDblClickGroc + '>' +
+              '<span id="dotTar_' + f.data + '" class="btn-cicle-color dot-' + colorTarifaAct + '" ' + accioClickColor + '></span>' +
+            '</td>'
+          ) +
+          '<td class="td-otb fw-bold grp-otb">' + fmtInt(o.rn) + '</td>' +
+          '<td class="td-otb grp-otb">' + fmt2Dec(o.adr, "€") + '</td>' +
+          '<td class="td-otb grp-otb">' + fmtInt(o.roomRev, "€") + '</td>' +
+          '<td class="td-otb grp-otb">' + fmtInt(o.fbRev, "€") + '</td>' +
+          '<td class="td-otb fw-bold grp-otb">' + fmtInt(o.totRev, "€") + '</td>' +
+          '<td class="td-otb grp-otb ' + clsDisp + '">' + (esTotal ? fmtInt(dispHabs) : dispHabs) + '</td>' +
+
+          colPickup(f.pk1, 'td-pk-act', 'grp-pk1') +
+          colPickup(f.pk3, 'td-pk-act', 'grp-pk3') +
+          colPickup(f.pk7, 'td-pk-act', 'grp-pk7') +
+          colPickup(f.pk14, 'td-pk-act', 'grp-pk14') +
+          colPickup(f.pk28, 'td-pk-act', 'grp-pk28') +
+
+          '<td class="td-stly grp-stly">' + ((Number(s.occ) || 0).toFixed(2) + '%') + '</td>' +
+          '<td class="td-stly fw-bold grp-stly">' + fmtInt(s.rn) + '</td>' +
+          '<td class="td-stly grp-stly">' + fmt2Dec(s.adr, "€") + '</td>' +
+          '<td class="td-stly grp-stly">' + fmtInt(s.roomRev, "€") + '</td>' +
+          '<td class="td-stly grp-stly">' + fmtInt(s.fbRev, "€") + '</td>' +
+          '<td class="td-stly fw-bold grp-stly">' + fmtInt(s.totRev, "€") + '</td>' +
+
+          colPickup(f.pkLY1, 'td-pk-stly', 'grp-pkly1') +
+          colPickup(f.pkLY3, 'td-pk-stly', 'grp-pkly3') +
+          colPickup(f.pkLY7, 'td-pk-stly', 'grp-pkly7') +
+          colPickup(f.pkLY14, 'td-pk-stly', 'grp-pkly14') +
+          colPickup(f.pkLY28, 'td-pk-stly', 'grp-pkly28') +
+
+          '<td class="td-tanc grp-tanc">' + ((Number(tanc.occ) || 0).toFixed(2) + '%') + '</td>' +
+          '<td class="td-tanc fw-bold grp-tanc">' + fmtInt(tanc.rn) + '</td>' +
+          '<td class="td-tanc grp-tanc">' + fmt2Dec(tanc.adr, "€") + '</td>' +
+          '<td class="td-tanc grp-tanc">' + fmtInt(tanc.roomRev, "€") + '</td>' +
+          '<td class="td-tanc grp-tanc">' + fmtInt(tanc.fbRev, "€") + '</td>' +
+          '<td class="td-tanc fw-bold grp-tanc">' + fmtInt(tanc.totRev, "€") + '</td>' +
+        '</tr>';
+      });
+
+      cos.innerHTML = html;
+      activarNavegacioTeclat();
+    }
+
+    // =========================================================================
+    // 2. TAULER DE FONTS DE NEGOCI
+    // =========================================================================
+    function carregarTaulerFonts() {
+      document.getElementById("txtEstat").className = "badge bg-warning text-dark p-2";
+      document.getElementById("txtEstat").innerText = "Carregant Fonts...";
+
+      var hotel = document.getElementById("selHotel").value || "";
+      var snap = document.getElementById("selCaptura").value || "";
+
+      google.script.run
+        .withSuccessHandler(function(resp) {
+          if (!resp) { mostrarError("Sense resposta de fonts de negoci."); return; }
+          if (resp.error) { mostrarError(resp.error); return; }
+
+          dadesFN = resp;
+          hotelActual = resp.hotelActual;
+          dataRefActual = resp.dataCapturaRef;
+
+          omplirSelect("selHotel", resp.llistaHotels, resp.hotelActual);
+          omplirSelect("selCaptura", resp.llistaSnaps, resp.dataCapturaRef);
+
+          construirEstructuraCapcaleresFN();
+          dibuixarGraellaFonts3Metriques();
+          aplicarTotsFiltresFN();
+
+          document.getElementById("txtEstat").className = "badge bg-success p-2";
+          document.getElementById("txtEstat").innerText = "Connectat";
+        })
+        .withFailureHandler(function(err) {
+          mostrarError("Error Fonts: " + (err.message || err));
+        })
+        .obtenirTaulerFontsNegoci(hotel, snap);
+    }
+
+    function construirEstructuraCapcaleresFN() {
+      var trCanals = document.getElementById("trCanalsFN");
+      var trMicro = document.getElementById("filaHeadersMicroFN");
+      var fonts = dadesFN.fontsLlista;
+
+      var blocs = [
+        { id: "fn-blk-otb", cls: "bg-otb" },
+        { id: "fn-blk-p1", cls: "bg-pk-act" },
+        { id: "fn-blk-p7", cls: "bg-pk-act" },
+        { id: "fn-blk-stly", cls: "bg-stly" }
+      ];
+
+      var htmlCanals = "";
+      var htmlMicro = '<th class="th-micro bg-estada col-fixa-dia">Dia</th><th class="th-micro bg-estada col-fixa-data">Data</th>';
+
+      blocs.forEach(function(b) {
+        htmlCanals += '<th colspan="3" class="th-sub bg-fn-tot ' + b.id + ' fn-col-total borda-esquerra-fn">TOTAL</th>';
+        htmlMicro += '<th class="th-micro bg-fn-tot ' + b.id + ' fn-col-total c-rn borda-esquerra-fn">RN</th>' +
+                     '<th class="th-micro bg-fn-tot ' + b.id + ' fn-col-total c-rev">Rev</th>' +
+                     '<th class="th-micro bg-fn-tot ' + b.id + ' fn-col-total c-adr">ADR</th>';
+
+        fonts.forEach(function(fn) {
+          var clsF = "fn-col-" + mapaClausFonts[fn];
+          var nomCurt = fn.replace("Agencies", "Ag.").replace("Empreses", "Emp.");
+          htmlCanals += '<th colspan="3" class="th-sub ' + b.cls + ' ' + b.id + ' ' + clsF + ' borda-esquerra-fn">' + nomCurt + '</th>';
+          htmlMicro += '<th class="th-micro ' + b.cls + ' ' + b.id + ' ' + clsF + ' c-rn borda-esquerra-fn">RN</th>' +
+                       '<th class="th-micro ' + b.cls + ' ' + b.id + ' ' + clsF + ' c-rev">Rev</th>' +
+                       '<th class="th-micro ' + b.cls + ' ' + b.id + ' ' + clsF + ' c-adr">ADR</th>';
+        });
+      });
+
+      trCanals.innerHTML = htmlCanals;
+      trMicro.innerHTML = htmlMicro;
+    }
+
+    function alternarBlocFN(classeBloc, btn, clsColorActiu) {
+      var amagant = !btn.classList.contains('btn-inactiu');
+      if (amagant) {
+        btn.classList.remove(clsColorActiu);
+        btn.classList.add('btn-inactiu');
+        estatBlocsTemporalsFN[classeBloc] = true;
+      } else {
+        btn.classList.remove('btn-inactiu');
+        btn.classList.add(clsColorActiu);
+        delete estatBlocsTemporalsFN[classeBloc];
+      }
+      aplicarTotsFiltresFN();
+    }
+
+    function alternarFontIndividual(classeFont, btn) {
+      var amagant = !btn.classList.contains('btn-inactiu');
+      if (amagant) {
+        btn.classList.remove('btn-actiu-fn');
+        btn.classList.add('btn-inactiu');
+        estatFontsIndividualsFN[classeFont] = true;
+      } else {
+        btn.classList.remove('btn-inactiu');
+        btn.classList.add('btn-actiu-fn');
+        delete estatFontsIndividualsFN[classeFont];
+      }
+      aplicarTotsFiltresFN();
+    }
+
+    function aplicarTotsFiltresFN() {
+      document.querySelectorAll('#contenidorVistaFonts th, #contenidorVistaFonts td').forEach(function(el) {
+        if (!el.classList.contains('col-fixa-dia') && !el.classList.contains('col-fixa-data')) {
+          el.classList.remove('col-oculta');
+        }
+      });
+
+      for (var fnt in estatFontsIndividualsFN) {
+        if (estatFontsIndividualsFN[fnt]) {
+          document.querySelectorAll('#contenidorVistaFonts .' + fnt).forEach(function(el) {
+            el.classList.add('col-oculta');
+          });
+        }
+      }
+
+      for (var blk in estatBlocsTemporalsFN) {
+        if (estatBlocsTemporalsFN[blk]) {
+          document.querySelectorAll('#contenidorVistaFonts .' + blk).forEach(function(el) {
+            el.classList.add('col-oculta');
+          });
+        }
+      }
+
+      if (dadesFN && dadesFN.fontsLlista) {
+        var fontsActives = 0;
+        dadesFN.fontsLlista.forEach(function(fn) {
+          var clsF = "fn-col-" + mapaClausFonts[fn];
+          if (!estatFontsIndividualsFN[clsF]) fontsActives++;
+        });
+        var columnesVisiblesPerBloc = (1 + fontsActives) * 3;
+
+        var mapaMacros = {
+          "fn-blk-otb": "thMacroOTB",
+          "fn-blk-p1": "thMacroP1",
+          "fn-blk-p7": "thMacroP7",
+          "fn-blk-stly": "thMacroSTLY"
+        };
+
+        for (var bId in mapaMacros) {
+          var thEl = document.getElementById(mapaMacros[bId]);
+          if (thEl) {
+            if (estatBlocsTemporalsFN[bId] || columnesVisiblesPerBloc === 0) {
+              thEl.classList.add('col-oculta');
+            } else {
+              thEl.classList.remove('col-oculta');
+              thEl.setAttribute('colspan', columnesVisiblesPerBloc);
+            }
+          }
+        }
+      }
+    }
+
+    function dibuixarGraellaFonts3Metriques() {
+      if (!dadesFN || !dadesFN.filas) return;
+      var cos = document.getElementById("cosTaulaFonts");
+      var html = "";
+      var files = dadesFN.filas;
+      var fonts = dadesFN.fontsLlista;
+      var totalsMes = dadesFN.totalsMes || {};
+      var nomsMesos = ["Gener", "Febrer", "Març", "Abril", "Maig", "Juny", "Juliol", "Agost", "Setembre", "Octubre", "Novembre", "Desembre"];
+
+      var selSnapEl = document.getElementById("selCaptura");
+      var dataSnapActiva = (selSnapEl && selSnapEl.value) ? selSnapEl.value : dataRefActual;
+      var mesSnapActiu = "";
+      if (dataSnapActiva && dataSnapActiva.indexOf("-") !== -1) {
+        var pSnap = dataSnapActiva.split("-");
+        if (pSnap.length >= 2) mesSnapActiu = pSnap[0] + "-" + pSnap[1];
+      }
+
+      function celdas3(obj, nomBloc, clsExtra, esPK, fonsColor) {
+        var rnTxt = "-", revTxt = "-", adrTxt = "-";
+        if (obj) {
+          if (esPK) {
+            rnTxt = fmtDiffStyle(obj.rn, false);
+            revTxt = fmtDiffPlana(obj.roomRev);
+            adrTxt = fmtDiffStyle(obj.adr, true);
+          } else {
+            rnTxt = obj.rn === 0 ? "0" : fmtInt(obj.rn);
+            revTxt = obj.roomRev === 0 ? "0" : fmtInt(obj.roomRev);
+            adrTxt = obj.adr === 0 ? "0,00" : fmt2Dec(obj.adr);
+          }
+        }
+        var bgStyle = fonsColor ? 'style="background:' + fonsColor + ' !important;"' : '';
+        return '<td class="' + nomBloc + ' ' + clsExtra + ' c-rn borda-esquerra-fn" ' + bgStyle + '>' + rnTxt + '</td>' +
+               '<td class="' + nomBloc + ' ' + clsExtra + ' c-rev" ' + bgStyle + '>' + revTxt + '</td>' +
+               '<td class="' + nomBloc + ' ' + clsExtra + ' c-adr" ' + bgStyle + '>' + adrTxt + '</td>';
+      }
+
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        var esCapSetmana = (f.dia === "DV" || f.dia === "DS");
+        var esPassada = (f.data < dataRefActual);
+        var mesEsPassat = (f.mesClau && mesSnapActiu && f.mesClau < mesSnapActiu);
+        var estilDisplayFila = mesEsPassat ? 'style="display:none;"' : '';
+
+        var trCls = "fila-dia-mes";
+        if (esPassada) trCls += " fila-passada";
+        if (esCapSetmana) trCls += " fila-capsetmana";
+
+        html += '<tr class="' + trCls + '" data-mes-fn="' + f.mesClau + '" ' + estilDisplayFila + '>' +
+          '<td class="col-fixa-dia">' + f.dia + '</td>' +
+          '<td class="col-fixa-data">' + formatarDataDDMMAA(f.data) + '</td>';
+
+        var blocs = [
+          { data: f.otb, id: "fn-blk-otb", pk: false, bgTot: "#fff7ed" },
+          { data: f.p1,  id: "fn-blk-p1",  pk: true,  bgTot: "#f0fdfa" },
+          { data: f.p7,  id: "fn-blk-p7",  pk: true,  bgTot: "#f0fdfa" },
+          { data: f.stly,id: "fn-blk-stly",pk: false, bgTot: "#eff6ff" }
+        ];
+
+        blocs.forEach(function(b) {
+          html += celdas3(b.data ? b.data.total : null, b.id, "fn-col-total fw-bold", b.pk, b.bgTot);
+          fonts.forEach(function(fn) {
+            var clsF = "fn-col-" + mapaClausFonts[fn];
+            var fObj = b.data && b.data.fonts ? b.data.fonts[fn] : null;
+            html += celdas3(fObj, b.id, clsF, b.pk, "");
+          });
+        });
+
+        html += '</tr>';
+
+        var fSeg = files[i + 1];
+        if (!fSeg || fSeg.mesClau !== f.mesClau) {
+          var mK = f.mesClau;
+          var tM = totalsMes[mK] || {};
+          var pParts = mK.split("-");
+          var nomMes = (nomsMesos[parseInt(pParts[1], 10) - 1] || "").toUpperCase() + " " + pParts[0];
+          var abrMes = (nomsMesos[parseInt(pParts[1], 10) - 1] || "").substring(0,3).toUpperCase();
+          var prefixBoto = mesEsPassat ? "[+] " : "[-] ";
+
+          html += '<tr class="fila-total-mes">' +
+            '<td class="col-fixa-dia" style="font-size:10px; font-weight:800;">TOT</td>' +
+            '<td class="col-fixa-data">' +
+              '<span class="btn-plegar-mes" onclick="toggleMesFN(\'' + mK + '\', this)" title="Plegar / Desplegar ' + nomMes + '">' + prefixBoto + abrMes + '</span>' +
+            '</td>';
+
+          var blocsResum = [
+            { data: tM.otb, id: "fn-blk-otb", pk: false },
+            { data: tM.p1,  id: "fn-blk-p1",  pk: true },
+            { data: tM.p7,  id: "fn-blk-p7",  pk: true },
+            { data: tM.stly,id: "fn-blk-stly",pk: false }
+          ];
+
+          blocsResum.forEach(function(br) {
+            var bObj = br.data;
+            var totCalculat = null;
+            if (bObj && bObj.total) {
+              totCalculat = {
+                rn: bObj.total.rn,
+                roomRev: bObj.total.roomRev,
+                adr: bObj.total.rn !== 0 ? (bObj.total.roomRev / bObj.total.rn) : 0
+              };
+            }
+            html += celdas3(totCalculat, br.id, "fn-col-total fw-bold", br.pk, "#64748b; color:#ffffff;");
+
+            fonts.forEach(function(fn) {
+              var clsF = "fn-col-" + mapaClausFonts[fn];
+              var fnData = bObj && bObj.fonts ? bObj.fonts[fn] : null;
+              var fnCalc = null;
+              if (fnData) {
+                fnCalc = {
+                  rn: fnData.rn,
+                  roomRev: fnData.roomRev,
+                  adr: fnData.rn !== 0 ? (fnData.roomRev / fnData.rn) : 0
+                };
+              }
+              html += celdas3(fnCalc, br.id, clsF + " fw-bold", br.pk, "#cbd5e1;");
+            });
+          });
+
+          html += '</tr>';
+        }
+      }
+
+      cos.innerHTML = html;
+    }
+
+    function toggleMesFN(mesClau, btn) {
+      var filasMes = document.querySelectorAll('tr.fila-dia-mes[data-mes-fn="' + mesClau + '"]');
+      if (filasMes.length === 0) return;
+      var estaOcult = (filasMes[0].style.display === "none");
+      
+      filasMes.forEach(function(tr) {
+        tr.style.display = estaOcult ? "" : "none";
+      });
+      btn.innerText = (estaOcult ? "[-] " : "[+] ") + btn.innerText.slice(4);
+    }
+
+    // =========================================================================
+    // 3. TAULER DE TIPOLOGIES D'HABITACIÓ
+    // =========================================================================
+    function carregarTaulerTipus() {
+      document.getElementById("txtEstat").className = "badge bg-warning text-dark p-2";
+      document.getElementById("txtEstat").innerText = "Carregant Habitacions...";
+
+      var hotel = document.getElementById("selHotel").value || "";
+      var snap = document.getElementById("selCaptura").value || "";
+
+      google.script.run
+        .withSuccessHandler(function(resp) {
+          if (!resp) { mostrarError("Sense resposta de tipologies."); return; }
+          if (resp.error) { mostrarError(resp.error); return; }
+
+          dadesTP = resp;
+          hotelActual = resp.hotelActual;
+          dataRefActual = resp.dataCapturaRef;
+
+          omplirSelect("selHotel", resp.llistaHotels, resp.hotelActual);
+          omplirSelect("selCaptura", resp.llistaSnaps, resp.dataCapturaRef);
+
+          estatTipusIndividualsTP = {};
+          construirEstructuraCapcaleresTipus();
+          dibuixarGraellaTipus3Metriques();
+          aplicarTotsFiltresTipus();
+
+          document.getElementById("txtEstat").className = "badge bg-success p-2";
+          document.getElementById("txtEstat").innerText = "Connectat";
+        })
+        .withFailureHandler(function(err) {
+          mostrarError("Error Tipologies: " + (err.message || err));
+        })
+        .obtenirTaulerTipologies(hotel, snap);
+    }
+
+    function construirEstructuraCapcaleresTipus() {
+      var trCanals = document.getElementById("trCanalsTipus");
+      var trMicro = document.getElementById("filaHeadersMicroTipus");
+      var barraBotons = document.getElementById("barraBotonsTipusActius");
+      var tipus = dadesTP.tipusActius || [];
+      var diccionari = dadesTP.diccionariNoms || {};
+
+      var blocs = [
+        { id: "tp-blk-otb", cls: "bg-otb" },
+        { id: "tp-blk-p1", cls: "bg-pk-act" },
+        { id: "tp-blk-p7", cls: "bg-pk-act" },
+        { id: "tp-blk-stly", cls: "bg-stly" }
+      ];
+
+      var htmlBotons = "";
+      tipus.forEach(function(tNom) {
+        var nomComercial = diccionari[tNom] || tNom;
+        var clsCol = sanititzarClau(tNom);
+        htmlBotons += '<span class="btn-toggle-vis btn-actiu-tipus" onclick="alternarTipusIndividual(\'' + clsCol + '\', this)">' + nomComercial + '</span>';
+      });
+      barraBotons.innerHTML = htmlBotons;
+
+      var htmlCanals = "";
+      var htmlMicro = '<th class="th-micro bg-estada col-fixa-dia">Dia</th><th class="th-micro bg-estada col-fixa-data">Data</th>';
+
+      blocs.forEach(function(b) {
+        htmlCanals += '<th colspan="3" class="th-sub bg-fn-tot ' + b.id + ' tp-col-total borda-esquerra-fn">TOTAL</th>';
+        htmlMicro += '<th class="th-micro bg-fn-tot ' + b.id + ' tp-col-total c-rn borda-esquerra-fn">RN</th>' +
+                     '<th class="th-micro bg-fn-tot ' + b.id + ' tp-col-total c-rev">Rev</th>' +
+                     '<th class="th-micro bg-fn-tot ' + b.id + ' tp-col-total c-adr">ADR</th>';
+
+        tipus.forEach(function(tNom) {
+          var nomComercial = diccionari[tNom] || tNom;
+          var clsCol = sanititzarClau(tNom);
+          htmlCanals += '<th colspan="3" class="th-sub ' + b.cls + ' ' + b.id + ' ' + clsCol + ' borda-esquerra-fn">' + nomComercial + '</th>';
+          htmlMicro += '<th class="th-micro ' + b.cls + ' ' + b.id + ' ' + clsCol + ' c-rn borda-esquerra-fn">RN</th>' +
+                       '<th class="th-micro ' + b.cls + ' ' + b.id + ' ' + clsCol + ' c-rev">Rev</th>' +
+                       '<th class="th-micro ' + b.cls + ' ' + b.id + ' ' + clsCol + ' c-adr">ADR</th>';
+        });
+      });
+
+      trCanals.innerHTML = htmlCanals;
+      trMicro.innerHTML = htmlMicro;
+    }
+
+    function alternarBlocTipus(classeBloc, btn, clsColorActiu) {
+      var amagant = !btn.classList.contains('btn-inactiu');
+      if (amagant) {
+        btn.classList.remove(clsColorActiu);
+        btn.classList.add('btn-inactiu');
+        estatBlocsTemporalsTP[classeBloc] = true;
+      } else {
+        btn.classList.remove('btn-inactiu');
+        btn.classList.add(clsColorActiu);
+        delete estatBlocsTemporalsTP[classeBloc];
+      }
+      aplicarTotsFiltresTipus();
+    }
+
+    function alternarTipusIndividual(classeTipus, btn) {
+      var amagant = !btn.classList.contains('btn-inactiu');
+      if (amagant) {
+        btn.classList.remove('btn-actiu-tipus');
+        btn.classList.add('btn-inactiu');
+        estatTipusIndividualsTP[classeTipus] = true;
+      } else {
+        btn.classList.remove('btn-inactiu');
+        btn.classList.add('btn-actiu-tipus');
+        delete estatTipusIndividualsTP[classeTipus];
+      }
+      aplicarTotsFiltresTipus();
+    }
+
+    function aplicarTotsFiltresTipus() {
+      document.querySelectorAll('#contenidorVistaTipus th, #contenidorVistaTipus td').forEach(function(el) {
+        if (!el.classList.contains('col-fixa-dia') && !el.classList.contains('col-fixa-data')) {
+          el.classList.remove('col-oculta');
+        }
+      });
+
+      for (var tp in estatTipusIndividualsTP) {
+        if (estatTipusIndividualsTP[tp]) {
+          document.querySelectorAll('#contenidorVistaTipus .' + tp).forEach(function(el) {
+            el.classList.add('col-oculta');
+          });
+        }
+      }
+
+      for (var blk in estatBlocsTemporalsTP) {
+        if (estatBlocsTemporalsTP[blk]) {
+          document.querySelectorAll('#contenidorVistaTipus .' + blk).forEach(function(el) {
+            el.classList.add('col-oculta');
+          });
+        }
+      }
+
+      if (dadesTP && dadesTP.tipusActius) {
+        var actiusVisibles = 0;
+        dadesTP.tipusActius.forEach(function(tNom) {
+          var clsCol = sanititzarClau(tNom);
+          if (!estatTipusIndividualsTP[clsCol]) actiusVisibles++;
+        });
+        var columnesVisiblesPerBloc = (1 + actiusVisibles) * 3;
+
+        var mapaMacros = {
+          "tp-blk-otb": "thMacroTipusOTB",
+          "tp-blk-p1": "thMacroTipusP1",
+          "tp-blk-p7": "thMacroTipusP7",
+          "tp-blk-stly": "thMacroTipusSTLY"
+        };
+
+        for (var bId in mapaMacros) {
+          var thEl = document.getElementById(mapaMacros[bId]);
+          if (thEl) {
+            if (estatBlocsTemporalsTP[bId] || columnesVisiblesPerBloc === 0) {
+              thEl.classList.add('col-oculta');
+            } else {
+              thEl.classList.remove('col-oculta');
+              thEl.setAttribute('colspan', columnesVisiblesPerBloc);
+            }
+          }
+        }
+      }
+    }
+
+    function dibuixarGraellaTipus3Metriques() {
+      if (!dadesTP || !dadesTP.filas) return;
+      var cos = document.getElementById("cosTaulaTipus");
+      var html = "";
+      var files = dadesTP.filas;
+      var tipus = dadesTP.tipusActius || [];
+      var invMapa = dadesTP.inventariTipus || {};
+      var totalsMes = dadesTP.totalsMes || {};
+      var nomsMesos = ["Gener", "Febrer", "Març", "Abril", "Maig", "Juny", "Juliol", "Agost", "Setembre", "Octubre", "Novembre", "Desembre"];
+
+      var selSnapEl = document.getElementById("selCaptura");
+      var dataSnapActiva = (selSnapEl && selSnapEl.value) ? selSnapEl.value : dataRefActual;
+      var mesSnapActiu = "";
+      if (dataSnapActiva && dataSnapActiva.indexOf("-") !== -1) {
+        var pSnap = dataSnapActiva.split("-");
+        if (pSnap.length >= 2) mesSnapActiu = pSnap[0] + "-" + pSnap[1];
+      }
+
+      function celdas3(obj, nomBloc, clsExtra, esPK, fonsColor, invMax) {
+        var rnTxt = "-", revTxt = "-", adrTxt = "-";
+        var titleAttr = "";
+        var bgStyle = fonsColor ? 'style="background:' + fonsColor + ' !important;"' : '';
+
+        if (obj) {
+          if (esPK) {
+            rnTxt = fmtDiffStyle(obj.rn, false);
+            revTxt = fmtDiffPlana(obj.roomRev);
+            adrTxt = fmtDiffStyle(obj.adr, true);
+          } else {
+            rnTxt = obj.rn === 0 ? "0" : fmtInt(obj.rn);
+            revTxt = obj.roomRev === 0 ? "0" : fmtInt(obj.roomRev);
+            adrTxt = obj.adr === 0 ? "0,00" : fmt2Dec(obj.adr);
+
+            if (nomBloc === "tp-blk-otb" && invMax && invMax > 0) {
+              var disp = Math.max(0, invMax - obj.rn);
+              var occPct = ((obj.rn / invMax) * 100).toFixed(1);
+              titleAttr = 'title="Ocupació: ' + obj.rn + '/' + invMax + ' (' + occPct + '%) | Disp: ' + disp + ' hab."';
+              if (!fonsColor && obj.rn >= invMax) {
+                bgStyle = 'style="background:#fee2e2 !important; color:#b91c1c !important; font-weight:800;"';
+              }
+            }
+          }
+        }
+        return '<td class="' + nomBloc + ' ' + clsExtra + ' c-rn borda-esquerra-fn" ' + bgStyle + ' ' + titleAttr + '>' + rnTxt + '</td>' +
+               '<td class="' + nomBloc + ' ' + clsExtra + ' c-rev" ' + bgStyle + '>' + revTxt + '</td>' +
+               '<td class="' + nomBloc + ' ' + clsExtra + ' c-adr" ' + bgStyle + '>' + adrTxt + '</td>';
+      }
+
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        var esCapSetmana = (f.dia === "DV" || f.dia === "DS");
+        var esPassada = (f.data < dataRefActual);
+        var mesEsPassat = (f.mesClau && mesSnapActiu && f.mesClau < mesSnapActiu);
+        var estilDisplayFila = mesEsPassat ? 'style="display:none;"' : '';
+
+        var trCls = "fila-dia-mes";
+        if (esPassada) trCls += " fila-passada";
+        if (esCapSetmana) trCls += " fila-capsetmana";
+
+        html += '<tr class="' + trCls + '" data-mes-tp="' + f.mesClau + '" ' + estilDisplayFila + '>' +
+          '<td class="col-fixa-dia">' + f.dia + '</td>' +
+          '<td class="col-fixa-data">' + formatarDataDDMMAA(f.data) + '</td>';
+
+        var blocs = [
+          { data: f.otb, id: "tp-blk-otb", pk: false, bgTot: "#fff7ed" },
+          { data: f.p1,  id: "tp-blk-p1",  pk: true,  bgTot: "#f0fdfa" },
+          { data: f.p7,  id: "tp-blk-p7",  pk: true,  bgTot: "#f0fdfa" },
+          { data: f.stly,id: "tp-blk-stly",pk: false, bgTot: "#eff6ff" }
+        ];
+
+        blocs.forEach(function(b) {
+          html += celdas3(b.data ? b.data.total : null, b.id, "tp-col-total fw-bold", b.pk, b.bgTot, 0);
+          tipus.forEach(function(tNom) {
+            var clsCol = sanititzarClau(tNom);
+            var tObj = b.data && b.data.tipus ? b.data.tipus[tNom] : null;
+            html += celdas3(tObj, b.id, clsCol, b.pk, "", invMapa[tNom] || 0);
+          });
+        });
+
+        html += '</tr>';
+
+        var fSeg = files[i + 1];
+        if (!fSeg || fSeg.mesClau !== f.mesClau) {
+          var mK = f.mesClau;
+          var tM = totalsMes[mK] || {};
+          var pParts = mK.split("-");
+          var nomMes = (nomsMesos[parseInt(pParts[1], 10) - 1] || "").toUpperCase() + " " + pParts[0];
+          var abrMes = (nomsMesos[parseInt(pParts[1], 10) - 1] || "").substring(0,3).toUpperCase();
+          var prefixBoto = mesEsPassat ? "[+] " : "[-] ";
+
+          html += '<tr class="fila-total-mes">' +
+            '<td class="col-fixa-dia" style="font-size:10px; font-weight:800;">TOT</td>' +
+            '<td class="col-fixa-data">' +
+              '<span class="btn-plegar-mes" onclick="toggleMesTP(\'' + mK + '\', this)" title="Plegar / Desplegar ' + nomMes + '">' + prefixBoto + abrMes + '</span>' +
+            '</td>';
+
+          var blocsResum = [
+            { data: tM.otb, id: "tp-blk-otb", pk: false },
+            { data: tM.p1,  id: "tp-blk-p1",  pk: true },
+            { data: tM.p7,  id: "tp-blk-p7",  pk: true },
+            { data: tM.stly,id: "tp-blk-stly",pk: false }
+          ];
+
+          blocsResum.forEach(function(br) {
+            var bObj = br.data;
+            var totCalculat = null;
+            if (bObj && bObj.total) {
+              totCalculat = {
+                rn: bObj.total.rn,
+                roomRev: bObj.total.roomRev,
+                adr: bObj.total.rn !== 0 ? (bObj.total.roomRev / bObj.total.rn) : 0
+              };
+            }
+            html += celdas3(totCalculat, br.id, "tp-col-total fw-bold", br.pk, "#64748b; color:#ffffff;", 0);
+
+            tipus.forEach(function(tNom) {
+              var clsCol = sanititzarClau(tNom);
+              var tData = bObj && bObj.tipus ? bObj.tipus[tNom] : null;
+              var tCalc = null;
+              if (tData) {
+                tCalc = {
+                  rn: tData.rn,
+                  roomRev: tData.roomRev,
+                  adr: tData.rn !== 0 ? (tData.roomRev / tData.rn) : 0
+                };
+              }
+              html += celdas3(tCalc, br.id, clsCol + " fw-bold", br.pk, "#cbd5e1;", 0);
+            });
+          });
+
+          html += '</tr>';
+        }
+      }
+
+      cos.innerHTML = html;
+    }
+
+    function toggleMesTP(mesClau, btn) {
+      var filasMes = document.querySelectorAll('tr.fila-dia-mes[data-mes-tp="' + mesClau + '"]');
+      if (filasMes.length === 0) return;
+      var estaOcult = (filasMes[0].style.display === "none");
+
+      filasMes.forEach(function(tr) {
+        tr.style.display = estaOcult ? "" : "none";
+      });
+      btn.innerText = (estaOcult ? "[-] " : "[+] ") + btn.innerText.slice(4);
+    }
+
+    // =========================================================================
+    // 4. TAULER DE FITXA MENSUAL EXECUTIVA (AMB LOGOS I 1 SOLA PÀGINA A4)
+    // =========================================================================
+    function carregarTaulerMensual() {
+      document.getElementById("txtEstat").className = "badge bg-warning text-dark p-2";
+      document.getElementById("txtEstat").innerText = "Carregant Fitxa...";
+
+      var hotel = document.getElementById("selHotel").value || "";
+      var snap = document.getElementById("selCaptura").value || "";
+      var mesFitxa = document.getElementById("selMesFitxa").value || "";
+
+      google.script.run
+        .withSuccessHandler(function(resp) {
+          if (!resp) { mostrarError("Sense resposta de la fitxa mensual."); return; }
+          if (resp.error) { mostrarError(resp.error); return; }
+
+          dadesFitxaMensual = resp;
+          hotelActual = resp.hotelActual;
+          dataRefActual = resp.dataCapturaRef;
+
+          omplirSelect("selHotel", resp.llistaHotels, resp.hotelActual);
+          omplirSelect("selCaptura", resp.llistaSnaps, resp.dataCapturaRef);
+          omplirSelectMesos("selMesFitxa", resp.llistaMesos, resp.mesClauSel);
+
+          dibuixarFitxaMensualExecutiva(resp);
+
+          document.getElementById("txtEstat").className = "badge bg-success p-2";
+          document.getElementById("txtEstat").innerText = "Connectat";
+        })
+        .withFailureHandler(function(err) {
+          mostrarError("Error Fitxa Mensual: " + (err.message || err));
+        })
+        .obtenirFitxaMensualExecutiva(hotel, snap, mesFitxa);
+    }
+
+    function omplirSelectMesos(id, llista, selVal) {
+      var s = document.getElementById(id);
+      if (s.options.length === llista.length && s.value === selVal) return;
+      s.innerHTML = "";
+      llista.forEach(function(item) {
+        var opt = document.createElement("option");
+        opt.value = item.clau;
+        opt.innerText = item.nom;
+        if (item.clau === selVal) opt.selected = true;
+        s.appendChild(opt);
+      });
+    }
+
+    function dibuixarFitxaMensualExecutiva(dades) {
+      var k = dades.kpis;
+      var c = dades.canals;
+      var s = dades.satellits;
+
+      document.getElementById("thTitolMesFitxa").innerText = dades.nomMesComplet.toUpperCase();
+      document.getElementById("lblHotelFitxa").innerText = dades.hotelActual;
+      document.getElementById("lblDataCapturaFitxa").innerText = formatarDataDDMMAA(dades.dataCapturaRef);
+
+      // Gestió del Logo Corporatiu de l'Hotel
+      var imgLogo = document.getElementById("imgLogoHotelFitxa");
+      var sepLogo = document.getElementById("sepLogoHotel");
+      var urlLogo = LOGOS_HOTELS[dades.hotelActual] || "";
+
+      if (urlLogo) {
+        imgLogo.onerror = function() {
+          // Si a GitHub es va pujar literalment com Rivoli.ong, ho prova automàticament
+          if (this.src.indexOf("Rivoli.png") !== -1) {
+            this.src = this.src.replace("Rivoli.png", "Rivoli.ong");
+          } else {
+            this.classList.add("d-none");
+            sepLogo.classList.add("d-none");
+          }
+        };
+        imgLogo.src = urlLogo;
+        imgLogo.classList.remove("d-none");
+        sepLogo.classList.remove("d-none");
+      } else {
+        imgLogo.classList.add("d-none");
+        sepLogo.classList.add("d-none");
+      }
+
+      // 1. Web Share & Web Share -1
+      var boxDiff = document.getElementById("boxWebShareDiff");
+      var lblDiff = document.getElementById("lblWebShareDiff");
+      var lblAct = document.getElementById("lblWebShareAct");
+      
+      var shareAct = Number(s.webShare) || 0;
+      var shareAnt = Number(s.webShareAnt) || 0;
+      var diffShare = shareAct - shareAnt;
+
+      lblAct.innerText = shareAct.toFixed(2) + "%";
+      lblDiff.innerText = shareAnt.toFixed(2) + "%";
+
+      boxDiff.style.backgroundColor = "#ffffff";
+      boxDiff.style.border = "1px solid #cbd5e1";
+      lblDiff.style.color = "#000000";
+
+      lblAct.classList.remove("text-dark", "text-success", "text-danger");
+
+      if (diffShare > 0.001) {
+        lblAct.style.setProperty("color", "#16a34a", "important");
+      } else if (diffShare < -0.001) {
+        lblAct.style.setProperty("color", "#dc2626", "important");
+      } else {
+        lblAct.style.setProperty("color", "#0f172a", "important");
+      }
+
+      // 2. Indicador Sense Font
+      var cardSF = document.getElementById("cardSenseFont");
+      if (dades.esMesEnCurs && Math.abs(s.senseFontRev) > 1) {
+        cardSF.classList.remove("d-none");
+        var esPos = s.senseFontRev >= 0;
+        var signSF = esPos ? "+" : "";
+        var strSF = signSF + Math.round(s.senseFontRev).toLocaleString("es-ES") + " €";
+        
+        var lblSF = document.getElementById("lblSenseFontRev");
+        lblSF.innerText = strSF;
+        if (esPos) {
+          cardSF.style.backgroundColor = "#f0fdf4";
+          cardSF.style.borderColor = "#86efac";
+          lblSF.style.color = "#16a34a";
+        } else {
+          cardSF.style.backgroundColor = "#fef2f2";
+          cardSF.style.borderColor = "#fca5a5";
+          lblSF.style.color = "#dc2626";
+        }
+      } else {
+        cardSF.classList.add("d-none");
+      }
+
+      var anyLY = parseInt(dades.mesClauSel.split("-")[0], 10) - 1;
+      document.getElementById("thTancamentAnyTitol").innerText = "Tancament " + anyLY;
+
+      // 3. Taula KPIs Globals
+      var cosKpis = document.getElementById("cosKpisGlobalsMensual");
+      var filesKpisDef = [
+        { nom: "ADR",      clau: "adr",     fmt: "eur2" },
+        { nom: "Occ %",    clau: "occ",     fmt: "pct" },
+        { nom: "RevPar",   clau: "revpar",  fmt: "eur2" },
+        { nom: "RN",       clau: "rn",      fmt: "int" },
+        { nom: "Room Rev", clau: "roomRev", fmt: "eur0" },
+        { nom: "F&B",      clau: "fbRev",   fmt: "eur0" },
+        { nom: "Total Rev",clau: "totRev",  fmt: "eur0" }
+      ];
+
+      function fmtCampKpi(v, tipusFmt, esDiff) {
+        var num = Number(v) || 0;
+        if (tipusFmt === "pct") {
+          var strPct = (esDiff && num > 0 ? "+" : "") + num.toFixed(2) + "%";
+          if (esDiff && num > 0) return '<span class="pk-positiu">' + strPct + '</span>';
+          if (esDiff && num < 0) return '<span class="pk-negatiu">' + strPct + '</span>';
+          return strPct;
+        }
+        if (tipusFmt === "eur2") {
+          var strE2 = (esDiff && num > 0 ? "+" : "") + num.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+          if (esDiff && num > 0) return '<span class="pk-positiu">' + strE2 + '</span>';
+          if (esDiff && num < 0) return '<span class="pk-negatiu">' + strE2 + '</span>';
+          return strE2;
+        }
+        if (tipusFmt === "eur0") {
+          var strE0 = (esDiff && num > 0 ? "+" : "") + Math.round(num).toLocaleString("es-ES") + " €";
+          if (esDiff && num > 0) return '<span class="pk-positiu">' + strE0 + '</span>';
+          if (esDiff && num < 0) return '<span class="pk-negatiu">' + strE0 + '</span>';
+          return strE0;
+        }
+        var strInt = (esDiff && num > 0 ? "+" : "") + Math.round(num).toLocaleString("es-ES");
+        if (esDiff && num > 0) return '<span class="pk-positiu">' + strInt + '</span>';
+        if (esDiff && num < 0) return '<span class="pk-negatiu">' + strInt + '</span>';
+        return strInt;
+      }
+
+      var htmlKpis = "";
+      filesKpisDef.forEach(function(item) {
+        var valAvui   = k.avui[item.clau];
+        var valLY     = k.ly[item.clau];
+        var valVar7D  = k.var7d[item.clau];
+        var valVar7DLY= k.var7dLY[item.clau];
+        var valPress  = dades.tePressupost ? k.pressupost[item.clau] : null;
+        var valVarPr  = dades.tePressupost ? k.varPress[item.clau] : null;
+        var valTanc   = dades.teTancament ? k.tancament[item.clau] : null;
+
+        htmlKpis += '<tr>' +
+          '<td class="fw-bold" style="background:#f8fafc; text-align:left; padding-left:10px;">' + item.nom + '</td>' +
+          '<td class="fw-bold" style="background:#fae8ff;">' + fmtCampKpi(valAvui, item.fmt, false) + '</td>' +
+          '<td style="background:#ffedd5;">' + fmtCampKpi(valLY, item.fmt, false) + '</td>' +
+          '<td style="background:#fee2e2;">' + fmtCampKpi(valVar7D, item.fmt, true) + '</td>' +
+          '<td style="background:#fee2e2;">' + fmtCampKpi(valVar7DLY, item.fmt, true) + '</td>' +
+          '<td style="background:#dcfce7;">' + (valPress !== null ? fmtCampKpi(valPress, item.fmt, false) : "-") + '</td>' +
+          '<td style="background:#fee2e2;">' + (valVarPr !== null ? fmtCampKpi(valVarPr, item.fmt, true) : "-") + '</td>' +
+          '<td style="background:#f1f5f9;">' + (valTanc !== null ? fmtCampKpi(valTanc, item.fmt, false) : "-") + '</td>' +
+          '</tr>';
+      });
+
+      cosKpis.innerHTML = htmlKpis;
+
+      // 4. Taula Fonts de Negoci
+      var cosCanals = document.getElementById("cosCanalsFitxaMensual");
+      var htmlCanals = "";
+
+      var totPesOcup = 0;
+      var totPesProdc = 0;
+      var totOTBRN = 0;
+      var totOTBRev = 0;
+      var totPK7RN = 0;
+      var totPK7Rev = 0;
+      var totVarOTBRN = 0;
+      var totVarOTBRev = 0;
+      var totVarPKRN = 0;
+      var totVarPKRev = 0;
+
+      c.forEach(function(f) {
+        totPesOcup += f.pesOcup;
+        totPesProdc += f.pesProdc;
+        totOTBRN += f.otb.rn;
+        totOTBRev += f.otb.rev;
+        totPK7RN += f.pk7.rn;
+        totPK7Rev += f.pk7.rev;
+        totVarOTBRN += f.varOTBvsSTLY.rn;
+        totVarOTBRev += f.varOTBvsSTLY.rev;
+        totVarPKRN += f.varPKvsSTLY.rn;
+        totVarPKRev += f.varPKvsSTLY.rev;
+
+        var esSF = !!f.esSenseFont;
+        var fonsNom = esSF ? "background:#fef2f2; color:#b91c1c;" : "background:#f8fafc;";
+
+        htmlCanals += '<tr>' +
+          '<td class="fw-bold" style="text-align:left; padding-left:10px; ' + fonsNom + '">' + f.canal + '</td>' +
+          '<td style="background:#f1f5f9;">' + f.pesOcup.toFixed(2) + '%</td>' +
+          '<td style="background:#f1f5f9;">' + f.pesProdc.toFixed(2) + '%</td>' +
+
+          // OTB
+          '<td class="td-otb fw-bold">' + fmtInt(f.otb.rn) + '</td>' +
+          '<td class="td-otb">' + fmt2Dec(f.otb.adr, "€") + '</td>' +
+          '<td class="td-otb fw-bold">' + fmtInt(f.otb.rev, "€") + '</td>' +
+
+          // PK 7D
+          '<td class="td-pk-act">' + (esSF ? "-" : fmtDiffStyle(f.pk7.rn, false)) + '</td>' +
+          '<td class="td-pk-act">' + (esSF ? "-" : fmtDiffStyle(f.pk7.adr, true)) + '</td>' +
+          '<td class="td-pk-act">' + (esSF ? "-" : fmtDiffPlana(f.pk7.rev)) + '</td>' +
+
+          // Var OTB vs STLY
+          '<td style="background:#eff6ff;">' + (esSF ? "-" : fmtDiffStyle(f.varOTBvsSTLY.rn, false)) + '</td>' +
+          '<td style="background:#eff6ff;">' + (esSF ? "-" : fmtDiffStyle(f.varOTBvsSTLY.adr, true)) + '</td>' +
+          '<td style="background:#eff6ff;">' + (esSF ? "-" : fmtDiffPlana(f.varOTBvsSTLY.rev)) + '</td>' +
+
+          // Var PK 7D vs STLY
+          '<td style="background:#f1f5f9;">' + (esSF ? "-" : fmtDiffStyle(f.varPKvsSTLY.rn, false)) + '</td>' +
+          '<td style="background:#f1f5f9;">' + (esSF ? "-" : fmtDiffStyle(f.varPKvsSTLY.adr, true)) + '</td>' +
+          '<td style="background:#f1f5f9;">' + (esSF ? "-" : fmtDiffPlana(f.varPKvsSTLY.rev)) + '</td>' +
+          '</tr>';
+      });
+
+      // Fila Total Fonts
+      var totOTBADR = totOTBRN > 0 ? (totOTBRev / totOTBRN) : 0;
+      var totPK7ADR = totPK7RN !== 0 ? (totPK7Rev / totPK7RN) : 0;
+      var totVarOTBADR = totOTBADR - (k.ly.rn > 0 ? (k.ly.roomRev / k.ly.rn) : 0);
+      var totVarPKADR = totPK7ADR - (k.var7dLY.rn !== 0 ? (k.var7dLY.roomRev / k.var7dLY.rn) : 0);
+
+      htmlCanals += '<tr class="fila-total-mes" style="font-size:12px !important;">' +
+        '<td style="text-align:left; padding-left:10px;">TOTAL</td>' +
+        '<td>' + Math.round(totPesOcup) + '%</td>' +
+        '<td>' + Math.round(totPesProdc) + '%</td>' +
+
+        '<td>' + fmtInt(totOTBRN) + '</td>' +
+        '<td>' + fmt2Dec(totOTBADR, "€") + '</td>' +
+        '<td>' + fmtInt(totOTBRev, "€") + '</td>' +
+
+        '<td>' + fmtDiffStyle(totPK7RN, false) + '</td>' +
+        '<td>' + fmtDiffStyle(totPK7ADR, true) + '</td>' +
+        '<td>' + fmtDiffPlana(totPK7Rev) + '</td>' +
+
+        '<td>' + fmtDiffStyle(totVarOTBRN, false) + '</td>' +
+        '<td>' + fmtDiffStyle(totVarOTBADR, true) + '</td>' +
+        '<td>' + fmtDiffPlana(totVarOTBRev) + '</td>' +
+
+        '<td>' + fmtDiffStyle(totVarPKRN, false) + '</td>' +
+        '<td>' + fmtDiffStyle(totVarPKADR, true) + '</td>' +
+        '<td>' + fmtDiffPlana(totVarPKRev) + '</td>' +
+        '</tr>';
+
+      cosCanals.innerHTML = htmlCanals;
+    }
+
+    // =========================================================================
+    // EXPORTACIÓ A EXCEL (.CSV)
+    // =========================================================================
+    function exportarExcelFitxa() {
+      if (!dadesFitxaMensual) return;
+      var d = dadesFitxaMensual;
+      var csv = [];
+      csv.push(["FITXA MENSUAL EXECUTIVA", d.hotelActual, d.nomMesComplet, "Captura: " + d.dataCapturaRef].join(";"));
+      csv.push([]);
+
+      csv.push(["KPI", "AVUI", "ANY ANTERIOR", "Var 7D", "Var 7D STLY", "PRESSUPOST", "VAR VS PRESSUPOST", "Tancament LY"].join(";"));
+      var rowsKpi = document.querySelectorAll("#cosKpisGlobalsMensual tr");
+      rowsKpi.forEach(function(tr) {
+        var fila = [];
+        tr.querySelectorAll("td").forEach(function(td) { fila.push('"' + td.innerText.replace(/"/g, '""') + '"'); });
+        csv.push(fila.join(";"));
+      });
+
+      csv.push([]);
+      csv.push(["Web Share Actual", d.satellits.webShare.toFixed(2) + "%", "Web Share -1", d.satellits.webShareAnt.toFixed(2) + "%"].join(";"));
+      if (d.esMesEnCurs) {
+        csv.push(["Sense Font", d.satellits.senseFontRev + " €"].join(";"));
+      }
+      csv.push([]);
+
+      csv.push(["Font de negoci", "pes ocup.", "pes prodc.", "OTB RN", "OTB PM", "OTB Room Rev", "PK7 RN", "PK7 PM", "PK7 Rev", "Var OTB RN", "Var OTB PM", "Var OTB Rev", "Var PK7 RN", "Var PK7 PM", "Var PK7 Rev"].join(";"));
+      var rowsCanals = document.querySelectorAll("#cosCanalsFitxaMensual tr");
+      rowsCanals.forEach(function(tr) {
+        var fila = [];
+        tr.querySelectorAll("td").forEach(function(td) { fila.push('"' + td.innerText.replace(/"/g, '""') + '"'); });
+        csv.push(fila.join(";"));
+      });
+
+      var csvContingut = "\uFEFF" + csv.join("\r\n");
+      var blob = new Blob([csvContingut], { type: "text/csv;charset=utf-8;" });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", "Fitxa_" + d.hotelActual.replace(/\s+/g, '_') + "_" + d.mesClauSel + ".csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // =========================================================================
+    // UTILITATS COMUNS
+    // =========================================================================
+    function mostrarError(txt) {
+      var el = document.getElementById("alertaError");
+      if (el) { el.innerText = txt; el.classList.remove("d-none"); }
+      document.getElementById("txtEstat").className = "badge bg-danger p-2";
+      document.getElementById("txtEstat").innerText = "Error";
+    }
+
+    function omplirSelect(id, llista, selVal) {
+      var s = document.getElementById(id);
+      if (s.options.length === llista.length && s.value === selVal) return;
+      s.innerHTML = "";
+      llista.forEach(function(item) {
+        var opt = document.createElement("option");
+        opt.value = item;
+        opt.innerText = item;
+        if (item === selVal) opt.selected = true;
+        s.appendChild(opt);
+      });
+    }
+
+    function formatarDataDDMMAA(isoStr) {
+      if (!isoStr || isoStr.indexOf("-") === -1) return isoStr;
+      var p = isoStr.split("-");
+      if (p.length === 3) return p[2] + "-" + p[1] + "-" + p[0].slice(-2);
+      return isoStr;
+    }
+
+    function fmt2Dec(v, simbol) {
+      var num = Number(v) || 0;
+      return num.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + (simbol ? " " + simbol : "");
+    }
+
+    function fmtInt(v, simbol) {
+      var num = Math.round(Number(v) || 0);
+      var str = num.toLocaleString("es-ES") + (simbol ? " " + simbol : "");
+      return num < 0 ? '<span class="pk-negatiu">' + str + '</span>' : str;
+    }
+
+    function fmtDiffStyle(v, esMoneda2Dec) {
+      var num = Number(v) || 0;
+      var str = esMoneda2Dec ? 
+        (num >= 0 ? "+" : "") + num.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €" :
+        (num >= 0 ? "+" : "") + Math.round(num).toLocaleString("es-ES");
+      
+      if (num > 0) return '<span class="pk-positiu">' + str + '</span>';
+      if (num < 0) return '<span class="pk-negatiu">' + str + '</span>';
+      return esMoneda2Dec ? "0,00 €" : "0";
+    }
+
+    function fmtAdrNou(v) {
+      var num = Number(v) || 0;
+      if (num <= 0) return '<span style="color:#64748b;">-</span>';
+      return '<span class="pk-positiu">' + num.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €</span>";
+    }
+
+    function fmtDiffPlana(v) {
+      var num = Math.round(Number(v) || 0);
+      var str = (num >= 0 ? "+" : "") + num.toLocaleString("es-ES") + " €";
+      return num === 0 ? "0 €" : str;
+    }
+
+    function obtenirEstilOcc(pct) {
+      var p = Math.max(0, Math.min(100, Number(pct) || 0));
+      var r, g, b;
+      if (p < 50) {
+        var f = p / 50;
+        r = Math.round(187 + (254 - 187) * f);
+        g = Math.round(247 + (240 - 247) * f);
+        b = Math.round(208 + (138 - 208) * f);
+      } else {
+        var f = (p - 50) / 50;
+        r = Math.round(254 + (254 - 254) * f);
+        g = Math.round(240 + (202 - 240) * f);
+        b = Math.round(138 + (202 - 138) * f);
+      }
+      return 'style="background-color: rgb(' + r + ',' + g + ',' + b + ') !important; font-weight: 700; color: #000000;"';
+    }
+
+    function activarNavegacioTeclat() {
+      var inputs = document.querySelectorAll('.nav-cell');
+      inputs.forEach(function(inp) {
+        inp.addEventListener('keydown', function(e) {
+          var col = parseInt(this.getAttribute('data-col'), 10);
+          var row = parseInt(this.getAttribute('data-row'), 10);
+          var seguent = null;
+
+          if (e.key === 'ArrowDown' || e.key === 'Enter') {
+            seguent = document.querySelector('.nav-cell[data-col="' + col + '"][data-row="' + (row + 1) + '"]');
+          } else if (e.key === 'ArrowUp') {
+            seguent = document.querySelector('.nav-cell[data-col="' + col + '"][data-row="' + (row - 1) + '"]');
+          } else if (e.key === 'ArrowRight' && this.selectionStart === this.value.length) {
+            seguent = document.querySelector('.nav-cell[data-col="' + (col + 1) + '"][data-row="' + row + '"]');
+          } else if (e.key === 'ArrowLeft' && this.selectionStart === 0) {
+            seguent = document.querySelector('.nav-cell[data-col="' + (col - 1) + '"][data-row="' + row + '"]');
+          }
+
+          if (seguent) {
+            e.preventDefault();
+            seguent.focus();
+            seguent.select();
+          }
+        });
+      });
+    }
+
+    function seleccionarFila(dataIso) {
+      var tr = document.getElementById("tr_" + dataIso);
+      if (!tr) return;
+      if (tr.classList.contains("fila-seleccionada")) {
+        tr.classList.remove("fila-seleccionada");
+      } else {
+        document.querySelectorAll(".fila-seleccionada").forEach(function(el) { el.classList.remove("fila-seleccionada"); });
+        tr.classList.add("fila-seleccionada");
+      }
+    }
+
+    function ciclarEstatVenda(dataEstada) {
+      if (!potEditarPricing) return;
+      var tr = document.getElementById("tr_" + dataEstada);
+      if (!tr) return;
+
+      var estatActual = "obert";
+      if (tr.classList.contains("estat-stop_sales")) estatActual = "stop_sales";
+      else if (tr.classList.contains("estat-grups")) estatActual = "grups";
+      else if (tr.classList.contains("estat-hotel_tancat")) estatActual = "hotel_tancat";
+
+      var nouEstat = "obert";
+      if (estatActual === "obert") nouEstat = "stop_sales";
+      else if (estatActual === "stop_sales") nouEstat = "grups";
+      else if (estatActual === "grups") nouEstat = "hotel_tancat";
+      else if (estatActual === "hotel_tancat") nouEstat = "obert";
+
+      tr.classList.remove("estat-stop_sales", "estat-grups", "estat-hotel_tancat");
+      if (nouEstat !== "obert") {
+        tr.classList.add("estat-" + nouEstat);
+      }
+
+      if (hotelActual) {
+        google.script.run
+          .withFailureHandler(function(err) { console.error("Error estat venda:", err); })
+          .desarEstatVenda(hotelActual, dataEstada, nouEstat);
+      }
+    }
+
+    function ciclarColorTarifa(dataEstada) {
+      if (!potEditarPricing) return;
+      var inp = document.getElementById("inpTar_" + dataEstada);
+      var dot = document.getElementById("dotTar_" + dataEstada);
+      if (!inp || !dot) return;
+
+      var colorActual = "negre";
+      if (inp.classList.contains("tarifa-verd")) colorActual = "verd";
+      else if (inp.classList.contains("tarifa-vermell")) colorActual = "vermell";
+
+      var nouColor = "negre";
+      if (colorActual === "negre") nouColor = "verd";
+      else if (colorActual === "verd") nouColor = "vermell";
+      else if (colorActual === "vermell") nouColor = "negre";
+
+      inp.classList.remove("tarifa-negre", "tarifa-verd", "tarifa-vermell");
+      inp.classList.add("tarifa-" + nouColor);
+      dot.className = "btn-cicle-color dot-" + nouColor;
+
+      if (hotelActual) {
+        google.script.run
+          .withFailureHandler(function(err) { console.error("Error color:", err); })
+          .desarColorTarifa(hotelActual, dataEstada, nouColor);
+      }
+    }
+
+    function toggleFonsGroc(dataEstada) {
+      if (!potEditarPricing) return;
+      var inp = document.getElementById("inpTar_" + dataEstada);
+      if (!inp) return;
+      var estaGroc = inp.classList.contains("fons-groc-actiu");
+      if (estaGroc) {
+        inp.classList.remove("fons-groc-actiu");
+      } else {
+        inp.classList.add("fons-groc-actiu");
+      }
+      var nouEstatGroc = !estaGroc;
+      if (hotelActual) {
+        google.script.run
+          .withFailureHandler(function(err) { console.error("Error groc:", err); })
+          .desarFonsGrocTarifa(hotelActual, dataEstada, nouEstatGroc);
+      }
+    }
+
+    function executarCopiarMatinal() {
+      if (!potEditarPricing) return;
+      if (!confirm("Vols copiar les Tarifes Actuals a Anteriors per a l'hotel " + hotelActual + "? Les actuals tornaran a negre conservant el fons groc.")) return;
+      document.getElementById("txtEstat").className = "badge bg-warning text-dark p-2";
+      document.getElementById("txtEstat").innerText = "Copiant tarifes...";
+      google.script.run
+        .withSuccessHandler(function(resp) {
+          carregarTaulerPricing();
+        })
+        .withFailureHandler(function(err) {
+          mostrarError("Error en copiar tarifes: " + (err.message || err));
+        })
+        .copiarTarifesActualsAAnteriors(hotelActual);
+    }
+
+    function toggleMes(mesClau, btn) {
+      var filasMes = document.querySelectorAll('tr.fila-dia-mes[data-mes="' + mesClau + '"]');
+      var estaOculto = false;
+      filasMes.forEach(function(tr) {
+        if (tr.style.display === "none") {
+          tr.style.display = "";
+          estaOculto = false;
+        } else {
+          tr.style.display = "none";
+          estaOculto = true;
+        }
+      });
+      btn.innerText = estaOculto ? "[+] Desplegar" : "[-] Plegar";
+    }
+
+    function alternarBloc(classeGrup, btn, clsColorActiu) {
+      var elements = document.querySelectorAll('.' + classeGrup);
+      var ocultant = !btn.classList.contains('btn-inactiu');
+
+      if (ocultant) {
+        elements.forEach(function(el) { el.classList.add('col-oculta'); });
+        btn.classList.remove(clsColorActiu);
+        btn.classList.add('btn-inactiu');
+        estatBlocsOcults[classeGrup] = true;
+      } else {
+        elements.forEach(function(el) { el.classList.remove('col-oculta'); });
+        btn.classList.remove('btn-inactiu');
+        btn.classList.add(clsColorActiu);
+        delete estatBlocsOcults[classeGrup];
+      }
+    }
+
+    function aplicarEstatBlocsOcults() {
+      for (var grp in estatBlocsOcults) {
+        if (estatBlocsOcults[grp]) {
+          document.querySelectorAll('.' + grp).forEach(function(el) { el.classList.add('col-oculta'); });
+        }
+      }
+    }
+
+    function desarCamp(dataEstadaISO, camp, valor) {
+      if (!potEditarPricing) return;
+      if (!hotelActual) return;
+      google.script.run
+        .withFailureHandler(function(err) { console.error("Error desar:", err); })
+        .desarNotaEstrategia(hotelActual, dataEstadaISO, camp, valor);
+    }
+
+    window.onload = function() {
+      carregarTaulerPricing();
+    };
+  </script>
+</body>
+</html>
